@@ -1,14 +1,9 @@
-import glob
-import json
-import os
 from typing import Tuple
 
 import h5py
-import numpy as np
 import torch
 from Bio import SeqIO
 from torch.utils.data import Dataset
-from torchvision.transforms import transforms
 
 
 class EmbeddingsLocalizationDataset(Dataset):
@@ -16,7 +11,7 @@ class EmbeddingsLocalizationDataset(Dataset):
     Dataset of protein embeddings and the corresponding subcellular localization label.
     """
 
-    def __init__(self, embeddings_path: str, remapped_sequences: str, transform = lambda x: x) -> None:
+    def __init__(self, embeddings_path: str, remapped_sequences: str, transform=lambda x: x) -> None:
         """
         Create dataset.
 

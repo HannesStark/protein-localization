@@ -1,8 +1,10 @@
 import os
+from typing import Tuple
 
 from Bio import SeqIO
 import pandas as pd
 from tqdm import tqdm
+import numpy as np
 
 
 def remove_duplicates(fasta_path: str, output_dir: str = 'data'):
@@ -50,7 +52,7 @@ def create_annotations_csv(fasta_path: str, csv_path: str):
     df.to_csv(csv_path)
 
 
-def deeploc_train_test(deeploc_path: str, output_dir: str):
+def deeploc_train_test(deeploc_path: str, output_dir: str = 'fasta_files'):
     """Splits the deeploc fasta http://www.cbs.dtu.dk/services/DeepLoc-1.0/deeploc_data.fasta
      into train and test set and saves it to the output_dir
 
@@ -58,15 +60,66 @@ def deeploc_train_test(deeploc_path: str, output_dir: str):
         deeploc_path: path to deeploc .fasta file http://www.cbs.dtu.dk/services/DeepLoc-1.0/deeploc_data.fasta
         output_dir: directory to save the train fasta and test fasta file
     """
-    train = []
+    model_sequences = []
     test = []
     for record in SeqIO.parse(deeploc_path, "fasta"):
         info = record.description.split(' ')
         if info[-1] == 'test':
             test.append(record)
         else:
+            model_sequences.append(record)
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    SeqIO.write(model_sequences, os.path.join(output_dir, 'model_sequences.fasta'), 'fasta')
+    SeqIO.write(test, os.path.join(output_dir, 'test.fasta'), 'fasta')
+
+
+def train_val_split(fasta_path: str, output_dir: str = 'fasta_files', train_size: float = 0.8):
+    """
+    Splits a fasta file into train and validation fasta files and saves them to the output_dir
+    Args:
+        fasta_path: path to .fasta file to split
+        output_dir: directory to save the train.fasta and val.fasta file
+        train_size: ratio between train and validation set
+
+    Returns:
+
+    """
+
+    number_sequences = len([1 for line in open(fasta_path) if line.startswith(">")])
+    train_indices, val_indices = disjoint_indices(number_sequences, train_size, random=True)
+
+    train = []
+    val = []
+    for i, record in enumerate(SeqIO.parse(fasta_path, "fasta")):
+        if i in train_indices:
             train.append(record)
+        else:
+            val.append(record)
+
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
     SeqIO.write(train, os.path.join(output_dir, 'train.fasta'), 'fasta')
-    SeqIO.write(test, os.path.join(output_dir, 'test.fasta'), 'fasta')
+    SeqIO.write(val, os.path.join(output_dir, 'val.fasta'), 'fasta')
+
+
+def disjoint_indices(size: int, ratio: float, random=True) -> Tuple[np.ndarray, np.ndarray]:
+    """Creates disjoint sets of indices where all indices together are size many indices. The first set of the returned
+        tuple has size*ratio many indices and the second one has size*(ratio-1) many indices.
+
+    Args:
+        audio: total number of indices returned. First and second array together
+        ratio: relative sizes between the returned index arrays
+        random: should the indices be randomly sampled
+
+    Returns:
+        indices*ratio:
+    """
+    if random:
+        train_indices = np.random.choice(np.arange(size), int(size * ratio), replace=False)
+        val_indices = np.setdiff1d(np.arange(size), train_indices, assume_unique=True)
+        return train_indices, val_indices
+
+    indices = np.arange(size)
+    split_index = int(size * ratio)
+    return indices[:split_index], indices[split_index:]
