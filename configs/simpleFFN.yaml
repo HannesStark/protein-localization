@@ -3,7 +3,6 @@ experiment_name: 'simpleFFN'
 num_epochs: 1000
 batch_size: 2048
 lrate: 1.0e-4
-log_iterations: -1
 
 # Paths to Data
 train_embeddings: 'embeddings/train_reduced.h5'
