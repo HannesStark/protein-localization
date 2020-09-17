@@ -1,5 +1,4 @@
 import argparse
-import torch
 import yaml
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
@@ -22,27 +21,28 @@ def train(args):
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/simpleFFN.yaml')
-    parser.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
-    parser.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
-    parser.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
-    parser.add_argument('--lrate', type=float, default=1.0e-4, help='learning rate for training')
-    parser.add_argument('--log_iterations', type=int, default=5, help='log every log_iterations iterations')
+    p = argparse.ArgumentParser()
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/simpleFFN.yaml')
+    p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
+    p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
+    p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
+    p.add_argument('--lrate', type=float, default=1.0e-4, help='learning rate for training')
+    p.add_argument('--log_iterations', type=int, default=-1,
+                   help='log every log_iterations iterations (-1 for only logging after each epoch)')
 
-    parser.add_argument('--train_embeddings', type=str, default='embeddings/train.h5',
-                        help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
-    parser.add_argument('--train_remapping', type=str, default='embeddings/train_remapped.fasta',
-                        help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
-    parser.add_argument('--val_embeddings', type=str, default='embeddings/val.h5',
-                        help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
-    parser.add_argument('--val_remapping', type=str, default='embeddings/val_remapped.fasta',
-                        help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
-    parser.add_argument('--test_embeddings', type=str, default='embeddings/test.h5',
-                        help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
-    parser.add_argument('--test_remapping', type=str, default='embeddings/test_remapped.fasta',
-                        help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
-    args = parser.parse_args()
+    p.add_argument('--train_embeddings', type=str, default='embeddings/train.h5',
+                   help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
+    p.add_argument('--train_remapping', type=str, default='embeddings/train_remapped.fasta',
+                   help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
+    p.add_argument('--val_embeddings', type=str, default='embeddings/val.h5',
+                   help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
+    p.add_argument('--val_remapping', type=str, default='embeddings/val_remapped.fasta',
+                   help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
+    p.add_argument('--test_embeddings', type=str, default='embeddings/test.h5',
+                   help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
+    p.add_argument('--test_remapping', type=str, default='embeddings/test_remapped.fasta',
+                   help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
+    args = p.parse_args()
     if args.config:
         data = yaml.load(args.config, Loader=yaml.FullLoader)
         delattr(args, 'config')
