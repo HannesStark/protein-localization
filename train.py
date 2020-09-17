@@ -10,6 +10,7 @@ from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import LabelOneHot, ToTensor
 from models.simple_ffn import SimpleFFN
+from solvers.base_solver import BaseSolver
 
 
 def train(args):
@@ -20,14 +21,16 @@ def train(args):
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
     model = SimpleFFN()
 
-
-    print(train_set[0])
+    solver = BaseSolver(model, args, torch.optim.Adam, torch.nn.MSELoss())
+    solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/simpleFFN.yaml')
     parser.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
+    parser.add_argument('--lrate', type=float, default=1e-4, help='learning rate for training')
+    parser.add_argument('--log_iterations', type=int, default=5, help='log every log_iterations iterations')
 
     parser.add_argument('--train_embeddings', type=str, default='embeddings/train.h5',
                         help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
