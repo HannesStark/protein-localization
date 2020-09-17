@@ -6,3 +6,7 @@ information as in profile embeddings.
 
 ### Quickstart
 Project is not functional yet   
+
+### Requirements
+
+pyyaml

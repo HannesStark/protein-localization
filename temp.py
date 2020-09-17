@@ -3,6 +3,7 @@ from torchvision.transforms import transforms
 import pandas as pd
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import ToTensor, LabelToInt, LabelOneHot
+from models.simple_ffn import SimpleFFN
 from utils.preprocess import deeploc_train_test, train_val_split
 
 #dataset = EmbeddingsLocalizationDataset('embeddings/test_reduced.h5', 'embeddings/test_remapped.fasta',
@@ -19,3 +20,4 @@ for record in SeqIO.parse('fasta_files/train.fasta', "fasta"):
     labels.append(record.description.split(' ')[1].split('-')[0])
 df = pd.DataFrame(list(zip(identifiers, labels)), columns=['identifier', 'label'])
 print(df)
+

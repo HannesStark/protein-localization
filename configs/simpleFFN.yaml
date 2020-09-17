@@ -1,0 +1,8 @@
+
+# Paths to Data
+train_embeddings: 'embeddings/train_reduced.h5'
+train_remapping: 'embeddings/train_remapped.fasta'
+val_embeddings: 'embeddings/val_reduced.h5'
+val_remapping: 'embeddings/val_remapped.fasta'
+test_embeddings: 'embeddings/test_reduced.h5'
+test_remapping: 'embeddings/test_remapped.fasta'
