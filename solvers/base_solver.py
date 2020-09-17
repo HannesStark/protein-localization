@@ -10,7 +10,7 @@ class BaseSolver():
         self.args = args
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
-        self.writer = SummaryWriter('runs/' + args.experiment_name + datetime.now().strftime('%d-%m_%H:%M'))
+        self.writer = SummaryWriter('runs/{}_{}'.format(args.experiment_name, datetime.now().strftime('%d-%m_%H-%M')))
 
     def train(self, train_loader, val_loader):
         args = self.args
@@ -20,6 +20,7 @@ class BaseSolver():
             train_loss = 0
             for i, batch in enumerate(train_loader):
                 embedding, label = batch
+                embedding, label = embedding.to(self.device), label.to(self.device)
 
                 classification = self.model(embedding)
 
@@ -39,6 +40,7 @@ class BaseSolver():
             val_loss = 0
             for i, batch in enumerate(val_loader):
                 embedding, label = batch
+                embedding, label = embedding.to(self.device), label.to(self.device)
 
                 classification = self.model(embedding)
 

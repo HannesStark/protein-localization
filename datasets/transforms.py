@@ -17,7 +17,7 @@ class ToTensor():
     def __call__(self, sample: Tuple[np.ndarray, Union[int, np.ndarray]]) -> Tuple[torch.Tensor, torch.Tensor]:
         embedding, label = sample
         embedding = torch.from_numpy(embedding).float()
-        label = torch.from_numpy(np.array(label)).float()
+        label = torch.from_numpy(np.array(label)).long()
 
         return embedding, label
 
