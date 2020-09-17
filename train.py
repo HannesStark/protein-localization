@@ -1,12 +1,8 @@
 import argparse
-import os
-
 import torch
 import yaml
 from torch.utils.data import DataLoader
-
 from torchvision.transforms import transforms
-
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import LabelOneHot, ToTensor
 from models.simple_ffn import SimpleFFN
@@ -21,13 +17,14 @@ def train(args):
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
     model = SimpleFFN()
 
-    solver = BaseSolver(model, args, torch.optim.Adam, torch.nn.MSELoss())
+    solver = BaseSolver(model, args, torch.optim.Adam, torch.nn.CrossEntropyLoss(torch.nn.Sigmoid()))
     solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/simpleFFN.yaml')
+    parser.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     parser.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
     parser.add_argument('--lrate', type=float, default=1e-4, help='learning rate for training')
     parser.add_argument('--log_iterations', type=int, default=5, help='log every log_iterations iterations')

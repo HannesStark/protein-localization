@@ -1,16 +1,16 @@
 import torch
 from torch.utils.tensorboard import SummaryWriter
-import numpy as np
+from datetime import datetime
 
 
 class BaseSolver():
     def __init__(self, model, args, optim=torch.optim.Adam, loss_func=torch.nn.MSELoss()):
         self.optim = optim(list(model.parameters()), args.lrate)
         self.loss_func = loss_func
-        self.writer = SummaryWriter()
         self.args = args
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
+        self.writer = SummaryWriter('runs/' + args.experiment_name + datetime.now().strftime('%d-%m_%H:%M'))
 
     def train(self, train_loader, val_loader):
         args = self.args

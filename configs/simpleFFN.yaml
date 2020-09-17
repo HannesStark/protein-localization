@@ -1,3 +1,7 @@
+experiment_name: 'simpleFFN'
+
+batch_size: 1024
+lrate: 1e-4
 
 # Paths to Data
 train_embeddings: 'embeddings/train_reduced.h5'
