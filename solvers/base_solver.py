@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
@@ -18,37 +19,51 @@ class BaseSolver():
         for epoch in range(args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
             train_loss = 0
+            train_acc = 0  # training accuracy
             for i, batch in enumerate(train_loader):
                 embedding, label = batch
                 embedding, label = embedding.to(self.device), label.to(self.device)
 
-                classification = self.model(embedding)
+                prediction = self.model(embedding)
 
                 self.optim.zero_grad()
-                loss = self.loss_func(classification, label)
+                loss = self.loss_func(prediction, label)
                 loss.backward()
                 self.optim.step()
 
+                prediction = torch.max(prediction, dim=1)[1]  # get indices of the highes value in the prediction tensor
+                acc = (prediction == label).sum().item() / args.batch_size
+                train_acc += acc
                 loss_item = loss.item()
                 train_loss += loss_item
                 if i % args.log_iterations == args.log_iterations - 1:
                     print('[Epoch %d, Iteration %5d/%5d] TRAIN loss: %.7f' % (
                         epoch + 1, i + 1, len(train_loader), loss_item))
-            print('[Epoch %d] Train loss of Epoch: %.7f' % (epoch + 1, train_loss / len(train_loader)))
+                    print('[Epoch %d, Iteration %5d/%5d] TRAIN accuracy: %.4f%%' % (
+                        epoch + 1, i + 1, len(train_loader), acc * 100))
 
             self.model.eval()
             val_loss = 0
+            val_acc = 0  # validation accuracy
             for i, batch in enumerate(val_loader):
                 embedding, label = batch
                 embedding, label = embedding.to(self.device), label.to(self.device)
 
-                classification = self.model(embedding)
+                prediction = self.model(embedding)
 
-                loss = self.loss_func(classification, label)
+                loss = self.loss_func(prediction, label)
+                prediction = torch.max(prediction, dim=1)[1]  # get indices of the highes value in the prediction tensor
+                val_acc += (prediction == label).sum().item() / args.batch_size
                 val_loss += loss.item()
 
             print(
-                '[Epoch %d] VAL loss of Epoch: %.7f' % (epoch + 1, val_loss / (len(val_loader) or not len(val_loader))))
+                '[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (
+                    epoch + 1, 100 * val_acc / (len(val_loader) or not len(val_loader)),
+                    100 * train_acc / len(train_loader)))
+            self.writer.add_scalars('Epoch Accuracy', {'train acc': 100 * train_acc / len(train_loader),
+                                                       'val acc': 100 * val_acc / (
+                                                               len(val_loader) or not len(val_loader))},
+                                    epoch)
             self.writer.add_scalars('Epoch Loss', {'train loss': train_loss / len(train_loader),
                                                    'val loss': val_loss / (len(val_loader) or not len(val_loader))},
                                     epoch)
