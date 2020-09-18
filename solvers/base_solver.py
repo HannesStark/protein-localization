@@ -84,7 +84,7 @@ class BaseSolver():
 
             plt.show()
             val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
-            sn.heatmap(train_cm, annot=True, fmt='g', linewidths=0.1,
+            sn.heatmap(val_cm, annot=True, fmt='g', linewidths=0.1,
                        linecolor='white')
 
             plt.show()
