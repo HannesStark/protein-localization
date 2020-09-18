@@ -2,7 +2,13 @@ import torch
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
-from sklearn.metrics import plot_confusion_matrix
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sn
+import pandas as pd
+
+from utils.general import LOCALIZATION, LOCALIZATION_abbrev
+
 
 class BaseSolver():
     def __init__(self, model, args, optim=torch.optim.Adam, loss_func=torch.nn.MSELoss()):
@@ -61,13 +67,8 @@ class BaseSolver():
             train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and label
             val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and label
 
-            num_classes = np.amax(train_results) + 1  # assumes that class with the highest index appears at least once
-            train_confusion = np.zeros((num_classes, num_classes), dtype=int)  # confusion matrix for train
-            val_confusion = np.zeros((num_classes, num_classes), dtype=int)  # confusion matrix for validation
-            for pred_label in train_results:  # + 1 for each predicted row and true column
-                train_confusion[pred_label[0], pred_label[1]] += 1
-            for pred_label in val_results:  # + 1 for each predicted row and true column
-                val_confusion[pred_label[0], pred_label[1]] += 1
+            train_confusion = confusion_matrix(train_results[:, 1], train_results[:, 0])  # confusion matrix for train
+            val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
 
             train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
@@ -77,6 +78,15 @@ class BaseSolver():
             self.writer.add_scalars('Epoch Loss', {'train loss': train_loss / t_iters, 'val loss': val_loss / v_iters},
                                     epoch)
 
-            print(train_confusion)
+            train_cm = pd.DataFrame(train_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
+            sn.heatmap(train_cm, annot=True, cmap='Blues', fmt='g', linewidths=0.1,
+                       linecolor='gray')
+
+            plt.show()
+            val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
+            sn.heatmap(train_cm, annot=True, fmt='g', linewidths=0.1,
+                       linecolor='white')
+
+            plt.show()
             # TODO: implement saving of model
             # save_run(self.writer.log_dir, [self.model], parser)
