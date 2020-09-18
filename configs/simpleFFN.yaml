@@ -1,6 +1,6 @@
 experiment_name: 'simpleFFN'
 
-num_epochs: 1000
+num_epochs: 5000
 batch_size: 2048
 lrate: 1.0e-4
 
