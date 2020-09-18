@@ -79,13 +79,11 @@ class BaseSolver():
                                     epoch)
 
             train_cm = pd.DataFrame(train_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
-            sn.heatmap(train_cm, annot=True, cmap='Blues', fmt='g', linewidths=0.1,
-                       linecolor='gray')
+            sn.heatmap(train_cm, annot=True, cmap='Blues', fmt='g', linewidths=0.1, linecolor='gray')
 
             plt.show()
             val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
-            sn.heatmap(val_cm, annot=True, fmt='g', linewidths=0.1,
-                       linecolor='white')
+            sn.heatmap(val_cm, annot=True, fmt='g', linewidths=0.1,  linecolor='white')
 
             plt.show()
             # TODO: implement saving of model
