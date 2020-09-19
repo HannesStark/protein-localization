@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sn
 import pandas as pd
 
-from utils.general import LOCALIZATION, LOCALIZATION_abbrev
+from utils.general import LOCALIZATION, LOCALIZATION_abbrev, tensorboard_confusion_matrix
 
 
 class BaseSolver():
@@ -67,24 +67,15 @@ class BaseSolver():
             train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and label
             val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and label
 
-            train_confusion = confusion_matrix(train_results[:, 1], train_results[:, 0])  # confusion matrix for train
-            val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
-
             train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
             print('[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (epoch + 1, val_acc, train_acc))
+
             # write to tensorboard
-            self.writer.add_scalars('Epoch Accuracy', {'train acc': train_acc, 'val acc': val_acc}, epoch)
+            tensorboard_confusion_matrix(train_results, val_results, self.writer, epoch + 1)
+            self.writer.add_scalars('Epoch Accuracy', {'train acc': train_acc, 'val acc': val_acc}, epoch + 1)
             self.writer.add_scalars('Epoch Loss', {'train loss': train_loss / t_iters, 'val loss': val_loss / v_iters},
-                                    epoch)
+                                    epoch + 1)
 
-            train_cm = pd.DataFrame(train_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
-            sn.heatmap(train_cm, annot=True, cmap='Blues', fmt='g', linewidths=0.1, linecolor='gray')
-
-            plt.show()
-            val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
-            sn.heatmap(val_cm, annot=True, fmt='g', linewidths=0.1,  linecolor='white')
-
-            plt.show()
             # TODO: implement saving of model
             # save_run(self.writer.log_dir, [self.model], parser)
