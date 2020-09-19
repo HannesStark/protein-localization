@@ -23,4 +23,4 @@ import numpy as np
 #df = pd.DataFrame(list(zip(identifiers, labels)), columns=['identifier', 'label'])
 #print(df)
 
-create_annotations_csv('fasta_files/train.fasta', '.')
+create_annotations_csv('/mnt/project/bio_embeddings/data/deeploc/train.fasta', '.')
