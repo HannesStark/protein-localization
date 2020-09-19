@@ -5,6 +5,8 @@ from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDatas
 from datasets.transforms import ToTensor, LabelToInt, LabelOneHot
 from models.simple_ffn import SimpleFFN
 from utils.preprocess import deeploc_train_test, train_val_split, create_annotations_csv
+import numpy as np
+
 
 #dataset = EmbeddingsLocalizationDataset('embeddings/test_reduced.h5', 'embeddings/test_remapped.fasta',
 #                                        transform=transforms.Compose([LabelOneHot(), ToTensor()]))
@@ -21,5 +23,12 @@ from utils.preprocess import deeploc_train_test, train_val_split, create_annotat
 #df = pd.DataFrame(list(zip(identifiers, labels)), columns=['identifier', 'label'])
 #print(df)
 
-create_annotations_csv('fasta_files/train.fasta', '.')
+#create_annotations_csv('fasta_files/train.fasta', '.')
 
+a = np.array([0,0,1,3,1,5,0,1,3,1,5,0,1,3,1,5,0,1,3,1,5])
+b = np.array([0,5,3,3,0,5,5,3,3,0,5,5,3,3,0,5,5,3,3,0,5])
+
+train_results = np.stack((a,b),axis=1)
+
+train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
+print(train_acc)

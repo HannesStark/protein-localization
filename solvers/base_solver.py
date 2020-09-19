@@ -29,6 +29,7 @@ class BaseSolver():
             self.model.train()
             train_results = []  # prediction and corresponding label
             train_loss = 0
+            debug = 0
             for i, batch in enumerate(train_loader):
                 embedding, label = batch
                 embedding, label = embedding.to(self.device), label.to(self.device)
@@ -44,6 +45,7 @@ class BaseSolver():
                 train_results.append(torch.stack((prediction, label), dim=1).detach().cpu().numpy())
                 loss_item = loss.item()
                 train_loss += loss_item
+                debug += 100 * (prediction == label).sum().item() / args.batch_size
                 if i % args.log_iterations == args.log_iterations - 1:  # log every log_iterations
                     print('[Epoch %d, Iteration %5d/%5d] TRAIN loss: %.7f' % (
                         epoch + 1, i + 1, t_iters, loss_item))
