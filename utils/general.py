@@ -29,9 +29,9 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     train_cm = pd.DataFrame(train_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
     val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
 
-    fig, ax = plt.subplots(1, 2, figsize=(9, 4))
+    fig, ax = plt.subplots(1, 2, figsize=(15, 6.5))
     ax[0].set_title('Training')
     ax[1].set_title('Validation')
-    sn.heatmap(train_cm, ax=ax[0], annot=True, cmap='Blues', fmt='g', rasterized=False, annot_kws={"size": 7})
-    sn.heatmap(val_cm, ax=ax[1], annot=True, cmap='YlOrBr', fmt='g', rasterized=False, annot_kws={"size": 7})
-    writer.add_figure('Confusion Matrix ', fig, global_step=step, )
+    sn.heatmap(train_cm, ax=ax[0], annot=True, cmap='Blues', fmt='g', rasterized=False)
+    sn.heatmap(val_cm, ax=ax[1], annot=True, cmap='YlOrBr', fmt='g', rasterized=False)
+    writer.add_figure('Confusion Matrix ', fig, global_step=step)

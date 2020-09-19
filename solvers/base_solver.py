@@ -28,7 +28,7 @@ class BaseSolver():
         for epoch in range(args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
             train_results = []  # prediction and corresponding label
-            train_loss = 0  
+            train_loss = 0
             for i, batch in enumerate(train_loader):
                 embedding, label = batch
                 embedding, label = embedding.to(self.device), label.to(self.device)
