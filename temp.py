@@ -13,14 +13,14 @@ import numpy as np
 
 #print(dataset[0])
 
-#train_val_split('fasta_files/model_sequences_homreduced.fasta', train_size=0.85)
+train_val_split('data/fasta_files/test_as_per_deeploc.fasta', train_size=0.5)
 
 #identifiers = []
 #labels = []
-#for record in SeqIO.parse('fasta_files/train.fasta', "fasta"):
+#for record in SeqIO.parse('old_fasta_files/test.fasta', "fasta"):
 #    identifiers.append(record.id)
 #    labels.append(record.description.split(' ')[1].split('-')[0])
 #df = pd.DataFrame(list(zip(identifiers, labels)), columns=['identifier', 'label'])
 #print(df)
 
-create_annotations_csv('/mnt/project/bio_embeddings/data/deeploc/train.fasta', '.')
+#create_annotations_csv('old_fasta_files/test.fasta', '.')

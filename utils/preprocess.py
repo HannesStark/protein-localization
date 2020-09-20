@@ -52,7 +52,7 @@ def create_annotations_csv(fasta_path: str, csv_path: str):
     df.to_csv(csv_path)
 
 
-def deeploc_train_test(deeploc_path: str, output_dir: str = 'fasta_files'):
+def deeploc_train_test(deeploc_path: str, output_dir: str = 'old_fasta_files'):
     """Splits the deeploc fasta http://www.cbs.dtu.dk/services/DeepLoc-1.0/deeploc_data.fasta
      into train and test set and saves it to the output_dir
 
@@ -71,15 +71,15 @@ def deeploc_train_test(deeploc_path: str, output_dir: str = 'fasta_files'):
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
     SeqIO.write(model_sequences, os.path.join(output_dir, 'model_sequences.fasta'), 'fasta')
-    SeqIO.write(test, os.path.join(output_dir, 'test.fasta'), 'fasta')
+    SeqIO.write(test, os.path.join(output_dir, 'test_as_per_deeploc.fasta'), 'fasta')
 
 
-def train_val_split(fasta_path: str, output_dir: str = 'fasta_files', train_size: float = 0.8):
+def train_val_split(fasta_path: str, output_dir: str = 'data', train_size: float = 0.8):
     """
     Splits a fasta file into train and validation fasta files and saves them to the output_dir
     Args:
         fasta_path: path to .fasta file to split
-        output_dir: directory to save the train.fasta and val.fasta file
+        output_dir: directory to save the test.fasta and val.fasta file
         train_size: ratio between train and validation set
 
     Returns:
@@ -99,7 +99,7 @@ def train_val_split(fasta_path: str, output_dir: str = 'fasta_files', train_size
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
-    SeqIO.write(train, os.path.join(output_dir, 'train.fasta'), 'fasta')
+    SeqIO.write(train, os.path.join(output_dir, 'test.fasta'), 'fasta')
     SeqIO.write(val, os.path.join(output_dir, 'val.fasta'), 'fasta')
 
 

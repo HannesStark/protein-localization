@@ -1,6 +1,4 @@
 data
 .idea
-embeddings
 __pycache__
-fasta_files
 runs

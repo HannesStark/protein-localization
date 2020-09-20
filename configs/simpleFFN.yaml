@@ -5,9 +5,12 @@ batch_size: 2048
 lrate: 1.0e-4
 
 # Paths to Data
-train_embeddings: 'embeddings/train_reduced.h5'
-train_remapping: 'embeddings/train_remapped.fasta'
-val_embeddings: 'embeddings/val_reduced.h5'
-val_remapping: 'embeddings/val_remapped.fasta'
-test_embeddings: 'embeddings/test_reduced.h5'
-test_remapping: 'embeddings/test_remapped.fasta'
+train_embeddings: 'data/embeddings/train_reduced.h5'
+train_remapping: 'data/embeddings/train_remapped.fasta'
+#val_embeddings: 'data/embeddings/val_reduced.h5'
+#val_remapping: 'data/embeddings/val_remapped.fasta'
+test_embeddings: 'data/embeddings/test_reduced.h5'
+test_remapping: 'data/embeddings/test_remapped.fasta'
+
+val_embeddings: 'data/embeddings/test_reduced.h5'
+val_remapping: 'data/embeddings/test_remapped.fasta'

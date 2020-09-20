@@ -30,17 +30,17 @@ def parse_arguments():
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
 
-    p.add_argument('--train_embeddings', type=str, default='embeddings/train.h5',
+    p.add_argument('--train_embeddings', type=str, default='data/embeddings/train.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
-    p.add_argument('--train_remapping', type=str, default='embeddings/train_remapped.fasta',
+    p.add_argument('--train_remapping', type=str, default='data/embeddings/train_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
-    p.add_argument('--val_embeddings', type=str, default='embeddings/val.h5',
+    p.add_argument('--val_embeddings', type=str, default='data/embeddings/val.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
-    p.add_argument('--val_remapping', type=str, default='embeddings/val_remapped.fasta',
+    p.add_argument('--val_remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
-    p.add_argument('--test_embeddings', type=str, default='embeddings/test.h5',
+    p.add_argument('--test_embeddings', type=str, default='data/embeddings/test.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
-    p.add_argument('--test_remapping', type=str, default='embeddings/test_remapped.fasta',
+    p.add_argument('--test_remapping', type=str, default='data/embeddings/test_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
     args = p.parse_args()
     if args.config:

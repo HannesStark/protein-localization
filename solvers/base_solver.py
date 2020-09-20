@@ -35,10 +35,10 @@ class BaseSolver():
 
                 prediction = self.model(embedding)
 
-                self.optim.zero_grad()
                 loss = self.loss_func(prediction, label)
                 loss.backward()
                 self.optim.step()
+                self.optim.zero_grad()
 
                 prediction = torch.max(prediction, dim=1)[1]  # get indices of the highest value in the prediction
                 train_results.append(torch.stack((prediction, label), dim=1).detach().cpu().numpy())
