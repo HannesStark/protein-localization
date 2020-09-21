@@ -1,4 +1,4 @@
-experiment_name: 'debug'
+experiment_name: 'compare_to_old_model'
 
 num_epochs: 5000
 batch_size: 2048
@@ -7,8 +7,8 @@ lrate: 1.0e-4
 # Paths to Data
 train_embeddings: 'data/embeddings/train_reduced.h5'
 train_remapping: 'data/embeddings/train_remapped.fasta'
-val_embeddings: 'data/embeddings/val_reduced.h5'
-val_remapping: 'data/embeddings/val_remapped.fasta'
+val_embeddings: 'data/old_embeddings/test_reduced.h5'
+val_remapping: 'data/old_embeddings/test_remapped.fasta'
 test_embeddings: 'data/embeddings/test_reduced.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
