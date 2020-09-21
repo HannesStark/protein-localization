@@ -3,7 +3,7 @@ import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
-from utils.general import tensorboard_confusion_matrix
+from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
 
 
 class BaseSolver():
@@ -73,5 +73,4 @@ class BaseSolver():
             self.writer.add_scalars('Epoch Loss', {'train loss': train_loss / t_iters, 'val loss': val_loss / v_iters},
                                     epoch + 1)
 
-            # TODO: implement saving of model
-            # save_run(self.writer.log_dir, [self.model], parser)
+            experiment_checkpoint(self.writer.log_dir, self.model, args.config.name)

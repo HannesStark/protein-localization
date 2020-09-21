@@ -1,4 +1,8 @@
+import os
+import shutil
+
 import numpy as np
+import torch
 from sklearn.metrics import confusion_matrix
 from torch.utils.tensorboard import SummaryWriter
 import pandas as pd
@@ -35,3 +39,16 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     sn.heatmap(train_cm, ax=ax[0], annot=True, cmap='Blues', fmt='g', rasterized=False)
     sn.heatmap(val_cm, ax=ax[1], annot=True, cmap='YlOrBr', fmt='g', rasterized=False)
     writer.add_figure('Confusion Matrix ', fig, global_step=step)
+
+
+def experiment_checkpoint(run_directory: str, model, config_path: str):
+    """
+    Saves state dict of model and the used config file to the run_directory
+    Args:
+        run_directory: where to save
+        model: pytorch nn.Module model
+        config_path: path to the config file that was used for this run
+
+    """
+    torch.save(model.state_dict(), os.path.join(run_directory, 'model.pt'))
+    shutil.copyfile(config_path, os.path.join(run_directory, os.path.basename(config_path)))

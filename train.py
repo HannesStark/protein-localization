@@ -49,7 +49,6 @@ def parse_arguments():
     args = p.parse_args()
     if args.config:
         data = yaml.load(args.config, Loader=yaml.FullLoader)
-        delattr(args, 'config')
         arg_dict = args.__dict__
         for key, value in data.items():
             if isinstance(value, list):
