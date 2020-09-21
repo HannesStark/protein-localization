@@ -25,7 +25,7 @@ class FFN(nn.Module):
         )
         self.hidden = nn.ModuleList()
         for i in range(self.number_hidden_layers):
-            self.positional_net.append(nn.Sequential(
+            self.hidden.append(nn.Sequential(
                 nn.Linear(hidden_dim, hidden_dim),
                 nn.Dropout(dropout),
                 nn.ReLU(),
