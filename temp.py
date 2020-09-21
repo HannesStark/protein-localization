@@ -3,7 +3,7 @@ from torchvision.transforms import transforms
 import pandas as pd
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import ToTensor, LabelToInt, LabelOneHot
-from models.simple_ffn import SimpleFFN
+
 from utils.preprocess import deeploc_train_test, train_val_split, create_annotations_csv
 import numpy as np
 

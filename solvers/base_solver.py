@@ -2,12 +2,8 @@ import torch
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
-from sklearn.metrics import confusion_matrix
-import matplotlib.pyplot as plt
-import seaborn as sn
-import pandas as pd
 
-from utils.general import LOCALIZATION, LOCALIZATION_abbrev, tensorboard_confusion_matrix
+from utils.general import tensorboard_confusion_matrix
 
 
 class BaseSolver():

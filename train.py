@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
-from models.simple_ffn import SimpleFFN
+from models.ffn import FFN
 from solvers.base_solver import BaseSolver
 
 
@@ -14,7 +14,7 @@ def train(args):
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, transform)
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
     val_loader = DataLoader(val_set, batch_size=args.batch_size)
-    model = SimpleFFN()
+    model = FFN(train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
 
     solver = BaseSolver(model, args, torch.optim.Adam, torch.nn.CrossEntropyLoss())
     solver.train(train_loader, val_loader)
@@ -29,6 +29,10 @@ def parse_arguments():
     p.add_argument('--lrate', type=float, default=1.0e-4, help='learning rate for training')
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
+
+    p.add_argument('--hidden_dim', type=int, default=32, help='neurons in hidden layers of feed forward network')
+    p.add_argument('--num_hidden_layers', type=int, default=0, help='hidden layers in feed forward network')
+    p.add_argument('--dropout', type=float, default=0.25, help='dropout in feed forward network')
 
     p.add_argument('--train_embeddings', type=str, default='data/embeddings/train.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')

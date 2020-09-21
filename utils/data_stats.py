@@ -4,7 +4,7 @@ from Bio import SeqIO
 import pandas as pd
 import matplotlib.pyplot as plt
 
-fasta_path = '../data/fasta_files/model_sequences_homreduced.fasta'
+fasta_path = '../data/old_fasta_files/train_plus_val.fasta'
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
     color = 'orange'
