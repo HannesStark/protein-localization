@@ -23,7 +23,8 @@ class ConvAvgPool(nn.Module):
         self.linear = nn.Sequential(
             nn.Linear(1024, 32),
             nn.Dropout(0.25),
-            nn.ReLU()
+            nn.ReLU(),
+            nn.BatchNorm1d(32)
         )
 
         self.output = nn.Linear(32, 10)
