@@ -1,9 +1,11 @@
 import os
 import shutil
+from typing import List, Tuple
 
 import numpy as np
 import torch
 from sklearn.metrics import confusion_matrix
+from torch.nn.utils.rnn import pad_sequence
 from torch.utils.tensorboard import SummaryWriter
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -52,3 +54,19 @@ def experiment_checkpoint(run_directory: str, model, config_path: str):
     """
     torch.save(model.state_dict(), os.path.join(run_directory, 'model.pt'))
     shutil.copyfile(config_path, os.path.join(run_directory, os.path.basename(config_path)))
+
+
+def padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor]]) -> Tuple[torch.Tensor, torch.Tensor]:
+    """
+    Takes list of tuples with embeddings of variable sizes and pads them with zeros
+    Args:
+        batch: list of tuples with embeddings and the corresponding label
+
+    Returns: tuple of tensor of embeddings with [batchsize, length_of_longest_sequence, embeddings_dim]
+    and tensor of labels [batchsize, labels_dim]
+
+    """
+    embeddings = [item[0] for item in batch]
+    labels = torch.tensor([item[1] for item in batch])
+    embeddings = pad_sequence(embeddings, batch_first=True)
+    return (embeddings, labels)

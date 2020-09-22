@@ -1,15 +1,13 @@
-from Bio import SeqIO
+import torch
+from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
-import pandas as pd
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
-from datasets.transforms import ToTensor, LabelToInt, LabelOneHot
+from datasets.transforms import ToTensor, LabelToInt
+from torchvision.transforms import transforms
+from torch.nn.utils.rnn import pad_sequence
+from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
+from datasets.transforms import ToTensor, LabelToInt
 
-from utils.preprocess import deeploc_train_test, train_val_split, create_annotations_csv
-import numpy as np
-
-dataset = EmbeddingsLocalizationDataset('data/embeddings/train.h5', 'data/embeddings/train_remapped.fasta',
-                                        transform=transforms.Compose([LabelToInt(), ToTensor()]))
-print(dataset[0][0].shape)
 
 # print(dataset[0])
 
@@ -24,3 +22,29 @@ print(dataset[0][0].shape)
 # print(df)
 
 # create_annotations_csv('old_fasta_files/test.fasta', '.')
+from models.conv_avg_pool import ConvAvgPool
+
+
+def my_collate(batch):
+    data = [item[0] for item in batch]
+    target = torch.tensor([item[1] for item in batch])
+    data = pad_sequence(data, batch_first=True)
+    return (data, target)
+
+model = ConvAvgPool()
+
+dataset = EmbeddingsLocalizationDataset('data/embeddings/train.h5', 'data/embeddings/train_remapped.fasta',
+                                        transform=transforms.Compose([LabelToInt(), ToTensor()]))
+
+
+trainset = DataLoader(dataset=dataset,
+                      batch_size=4,
+                      shuffle=True,
+                      collate_fn=my_collate, # use custom collate function here
+                      pin_memory=True)
+
+trainiter = iter(trainset)
+embeddings, labels = trainiter.next()
+print(embeddings.shape)
+print(labels.shape)
+

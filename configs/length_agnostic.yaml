@@ -3,6 +3,7 @@ experiment_name: 'first_len_agnostic_net'
 num_epochs: 5000
 batch_size: 2048
 lrate: 1.0e-4
+log_iterations: 40
 
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
@@ -13,6 +14,7 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
+model_type: 'var-length'
 hidden_dim: 64
 num_hidden_layers: 1
 dropout: 0.25
