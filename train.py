@@ -18,7 +18,7 @@ def train(args):
         val_loader = DataLoader(val_set, batch_size=args.batch_size)
         model = FFN(train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
     elif args.model_type == 'var-length':
-        train_loader = DataLoader(train_set, batch_size=1)
+        train_loader = DataLoader(train_set, batch_size=args.batch_size)
         val_loader = DataLoader(val_set, batch_size=1)
         model = ConvAvgPool()
     else:

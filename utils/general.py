@@ -56,7 +56,7 @@ def experiment_checkpoint(run_directory: str, model, config_path: str):
     shutil.copyfile(config_path, os.path.join(run_directory, os.path.basename(config_path)))
 
 
-def padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor]]) -> Tuple[torch.Tensor, torch.Tensor]:
+def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor]]) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     Takes list of tuples with embeddings of variable sizes and pads them with zeros
     Args:
@@ -69,4 +69,4 @@ def padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor]]) -> Tuple[torc
     embeddings = [item[0] for item in batch]
     labels = torch.tensor([item[1] for item in batch])
     embeddings = pad_sequence(embeddings, batch_first=True)
-    return (embeddings, labels)
+    return (embeddings.permute(0, 2, 1), labels)
