@@ -7,6 +7,7 @@ from datasets.transforms import *
 from models.conv_avg_pool import ConvAvgPool
 from models.ffn import FFN
 from solvers.base_solver import BaseSolver
+from utils.general import padded_permuted_collate
 
 
 def train(args):
@@ -18,8 +19,9 @@ def train(args):
         val_loader = DataLoader(val_set, batch_size=args.batch_size)
         model = FFN(train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
     elif args.model_type == 'var-length':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size)
-        val_loader = DataLoader(val_set, batch_size=1)
+        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
+                                  collate_fn=padded_permuted_collate)
+        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
         model = ConvAvgPool()
     else:
         raise ValueError('given model_type does not exist')
