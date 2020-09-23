@@ -1,4 +1,4 @@
-experiment_name: 'deeper_network'
+experiment_name: 'split_3'
 
 num_epochs: 5000
 batch_size: 2048
@@ -14,6 +14,6 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
 model_type: 'fixed-length'
-hidden_dim: 64
-num_hidden_layers: 1
+hidden_dim: 32
+num_hidden_layers: 0
 dropout: 0.25

@@ -7,12 +7,12 @@ from tqdm import tqdm
 import numpy as np
 
 
-def remove_duplicates(fasta_path: str, output_dir: str = 'data'):
+def remove_duplicates(fasta_path: str, output_path: str):
     """removes duplicates from a fasta file and saves a new fasta file as "duplicates_removed + original_filename.fasta"
 
     Args:
         fasta_path: path to fasta file from which duplicates should be removed
-        output_dir: where to save the fasta file with the duplicates removed. 'data' by default
+        output_path: where to save the fasta file with the duplicates removed.
 
     Returns:
 
@@ -23,10 +23,7 @@ def remove_duplicates(fasta_path: str, output_dir: str = 'data'):
         if record.seq not in record_seq:
             record_seq.append(record.seq)
             records.append(record)
-
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-    SeqIO.write(records, os.path.join(output_dir, 'duplicates_removed' + os.path.basename(fasta_path)), 'fasta')
+    SeqIO.write(records, os.path.join(output_path, 'duplicates_removed' + os.path.basename(fasta_path)), 'fasta')
 
 
 def create_annotations_csv(fasta_path: str, csv_path: str):
@@ -52,7 +49,7 @@ def create_annotations_csv(fasta_path: str, csv_path: str):
     df.to_csv(csv_path)
 
 
-def deeploc_train_test(deeploc_path: str, output_dir: str = 'old_fasta_files'):
+def deeploc_train_test(deeploc_path: str, output_dir: str = 'data'):
     """Splits the deeploc fasta http://www.cbs.dtu.dk/services/DeepLoc-1.0/deeploc_data.fasta
      into train and test set and saves it to the output_dir
 
@@ -99,8 +96,32 @@ def train_val_split(fasta_path: str, output_dir: str = 'data', train_size: float
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
-    SeqIO.write(train, os.path.join(output_dir, 'test.fasta'), 'fasta')
+    SeqIO.write(train, os.path.join(output_dir, 'train.fasta'), 'fasta')
     SeqIO.write(val, os.path.join(output_dir, 'val.fasta'), 'fasta')
+
+
+def retrieve_by_id(ids_fasta: str, target_fasta: str, output_path: str):
+    """
+        pick sequences from target fasta that have the same ids as ids_fasta and save them to output path
+    Args:
+        ids_fasta: path to fasta file with ids that you want to pick from the target fasta
+        target_fasta: path to fasta file from which records should be retrieved
+        output_path: path to save the retrieved records as .fasta
+
+    Returns:
+
+    """
+
+    ids = []
+    for record in SeqIO.parse(ids_fasta, 'fasta'):
+        ids.append(record.id)
+
+    records = []
+    for record in SeqIO.parse(target_fasta, 'fasta'):
+        if record.id in ids:
+            records.append(record)
+
+    SeqIO.write(records, output_path, 'fasta')
 
 
 def disjoint_indices(size: int, ratio: float, random=True) -> Tuple[np.ndarray, np.ndarray]:
