@@ -18,3 +18,4 @@ model_type: 'var-length'
 hidden_dim: 64
 num_hidden_layers: 1
 dropout: 0.25
+max_length: 6000

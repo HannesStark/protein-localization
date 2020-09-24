@@ -12,8 +12,8 @@ from utils.general import padded_permuted_collate
 
 def train(args):
     transform = transforms.Compose([LabelToInt(), ToTensor()])
-    train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, transform)
-    val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, transform)
+    train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.max_length, transform)
+    val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, transform=transform)
     if args.model_type == 'fixed-length':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
         val_loader = DataLoader(val_set, batch_size=args.batch_size)
@@ -31,7 +31,7 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/simpleFFN.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/variable_length.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
@@ -43,6 +43,8 @@ def parse_arguments():
     p.add_argument('--hidden_dim', type=int, default=32, help='neurons in hidden layers of feed forward network')
     p.add_argument('--num_hidden_layers', type=int, default=0, help='hidden layers in feed forward network')
     p.add_argument('--dropout', type=float, default=0.25, help='dropout in feed forward network')
+    p.add_argument('--max_length', type=int, default=6000, help='maximum lenght of sequences that will be used for '
+                                                                'training when using embedddings of variable length')
 
     p.add_argument('--train_embeddings', type=str, default='data/embeddings/train.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
