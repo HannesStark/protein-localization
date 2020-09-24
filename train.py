@@ -24,7 +24,7 @@ def train(args):
         val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
         model = ConvAvgPool()
         print(sum(p.numel() for p in model.parameters() if p.requires_grad)
-)
+              )
     else:
         raise ValueError('given model_type does not exist')
     solver = BaseSolver(model, args, torch.optim.Adam, torch.nn.CrossEntropyLoss())

@@ -28,11 +28,27 @@ class AvgMaxPool():
     """
 
     def __init__(self, dim: int = -2):
+        """
+
+        Args:
+            dim: dimension along which to pool
+        """
         self.dim = dim
 
     def __call__(self, sample: Tuple[torch.Tensor, torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+
+        Args:
+            sample: ([sequence_length, embedding_size],[label_encoding_size]) tuple of embedding and label
+
+        Returns:
+            embedding: [2*embedding_size] the embedding tensor avg pooled and mean pooled along dim and concatenated
+            label: the original label
+        """
         embedding, label = sample
-        embedding = torch.from_numpy(embedding).float()
+        avg_pool = torch.mean(embedding, dim=self.dim)
+        max_pool, _ = torch.max(embedding, dim=self.dim)
+        embedding = torch.cat([avg_pool, max_pool], dim=-1)
         return embedding, label
 
 

@@ -1,8 +1,8 @@
 experiment_name: 'conv_net'
 
 num_epochs: 5000
-batch_size: 16
-lrate: 1.0e-4
+batch_size: 30
+lrate: 5.0e-5
 log_iterations: 5
 
 # Paths to Data
