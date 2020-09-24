@@ -41,10 +41,9 @@ class BaseSolver():
                 loss_item = loss.item()
                 train_loss += loss_item
                 if i % args.log_iterations == args.log_iterations - 1:  # log every log_iterations
-                    print('[Epoch %d, Iteration %5d/%5d] TRAIN loss: %.7f' % (
-                        epoch + 1, i + 1, t_iters, loss_item))
-                    print('[Epoch %d, Iteration %5d/%5d] TRAIN accuracy: %.4f%%' % (
-                        epoch + 1, i + 1, t_iters, 100 * (prediction == label).sum().item() / args.batch_size))
+                    print('[Epoch %d, Iter %5d/%5d] TRAIN loss: %.7f,TRAIN accuracy: %.4f%%' % (
+                        epoch + 1, i + 1, t_iters, loss_item,
+                        100 * (prediction == label).sum().item() / args.batch_size))
 
             self.model.eval()
             val_results = []  # prediction and corresponding label
@@ -52,13 +51,13 @@ class BaseSolver():
             for i, batch in enumerate(val_loader):
                 embedding, label = batch
                 embedding, label = embedding.to(self.device), label.to(self.device)
+                with torch.no_grad():
+                    prediction = self.model(embedding)
 
-                prediction = self.model(embedding)
-
-                loss = self.loss_func(prediction, label)
-                prediction = torch.max(prediction, dim=1)[1]  # get indices of the highest value in the prediction
-                val_results.append(torch.stack((prediction, label), dim=1).detach().cpu().numpy())
-                val_loss += loss.item()
+                    loss = self.loss_func(prediction, label)
+                    prediction = torch.max(prediction, dim=1)[1]  # get indices of the highest value in the prediction
+                    val_results.append(torch.stack((prediction, label), dim=1).data.detach().cpu().numpy())
+                    val_loss += loss.item()
 
             train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and label
             val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and label

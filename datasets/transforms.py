@@ -22,6 +22,20 @@ class ToTensor():
         return embedding, label
 
 
+class AvgMaxPool():
+    """
+    Pools embeddings along dim and concatenates max and avg pool
+    """
+
+    def __init__(self, dim: int = -2):
+        self.dim = dim
+
+    def __call__(self, sample: Tuple[torch.Tensor, torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor]:
+        embedding, label = sample
+        embedding = torch.from_numpy(embedding).float()
+        return embedding, label
+
+
 class LabelToInt():
     """
     Turn string label of localization into an integer

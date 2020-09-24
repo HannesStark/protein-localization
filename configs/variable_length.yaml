@@ -1,9 +1,9 @@
-experiment_name: 'first_len_agnostic_net'
+experiment_name: 'conv_net'
 
 num_epochs: 5000
-batch_size: 2048
+batch_size: 16
 lrate: 1.0e-4
-log_iterations: 40
+log_iterations: 5
 
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
