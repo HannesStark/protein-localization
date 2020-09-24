@@ -33,6 +33,6 @@ class ConvAvgPool(nn.Module):
         o = x
         for conv_layer in self.conv_layers:
             o = conv_layer(o)
-        x = torch.mean(x, dim=-1)
-        x = self.linear(x)
-        return self.output(x)
+        o = torch.mean(o, dim=-1)
+        o = self.linear(o)
+        return self.output(o)
