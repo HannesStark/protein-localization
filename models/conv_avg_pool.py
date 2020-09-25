@@ -7,7 +7,7 @@ class ConvAvgPool(nn.Module):
     def __init__(self, n_conv_layers: int = 5):
         super(ConvAvgPool, self).__init__()
 
-        self.conv1 = nn.Conv1d(1024, 256, 3, stride=3)
+        self.conv1 = nn.Conv1d(1024, 1024, 3, stride=3)
         self.conv3 = nn.Conv1d(256, 128, 3, stride=2)
         self.conv_layers = nn.ModuleList()
         for i in range(n_conv_layers):
@@ -18,9 +18,9 @@ class ConvAvgPool(nn.Module):
             ))
 
         self.linear = nn.Sequential(
-            nn.Linear(256, 32),
+            nn.Linear(1024, 32),
             nn.Dropout(0.25),
-            nn.Sigmoid(),
+            nn.ReLU(),
             nn.BatchNorm1d(32)
         )
 
@@ -34,12 +34,12 @@ class ConvAvgPool(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
-        o = torch.sigmoid(self.conv1(x))
-        o = torch.sigmoid(self.conv3(o))
-        for conv_layer in self.conv_layers:
-            o = conv_layer(o)
-        avg_pool = torch.mean(o, dim=-1)
-        max_pool, _ = torch.max(o, dim=-1)
-        o = torch.cat([avg_pool, max_pool], dim=-1)
+        o = F.relu(self.conv1(x))
+        #o = torch.sigmoid(self.conv3(o))
+        #for conv_layer in self.conv_layers:
+        #    o = conv_layer(o)
+        o = torch.mean(o, dim=-1)
+        #max_pool, _ = torch.max(o, dim=-1)
+        #o = torch.cat([avg_pool, max_pool], dim=-1)
         o = self.linear(o)
         return self.output(o)

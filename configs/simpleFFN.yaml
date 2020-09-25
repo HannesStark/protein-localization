@@ -1,19 +1,19 @@
-experiment_name: 'split_3'
+experiment_name: 'max_avg_pool'
 
 num_epochs: 5000
 batch_size: 2048
 lrate: 1.0e-4
 
 # Paths to Data
-train_embeddings: 'data/embeddings/train_reduced.h5'
+train_embeddings: 'data/embeddings/train.h5'
 train_remapping: 'data/embeddings/train_remapped.fasta'
-val_embeddings: 'data/embeddings/val_reduced.h5'
+val_embeddings: 'data/embeddings/val.h5'
 val_remapping: 'data/embeddings/val_remapped.fasta'
-test_embeddings: 'data/embeddings/test_reduced.h5'
+test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'fixed-length'
+model_type: 'ffn'
 hidden_dim: 32
 num_hidden_layers: 0
 dropout: 0.25

@@ -1,10 +1,36 @@
 import os
-from typing import Tuple
+from typing import Tuple, List
 
+import h5py
 from Bio import SeqIO
 import pandas as pd
 from tqdm import tqdm
 import numpy as np
+
+
+def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames: List[str]):
+    """
+    Pools along the length dimension of embeddings and saves them as h5
+    Args:
+        input_paths: paths to h5 files with arrays that should be pooled along their first dimension
+        output_dir: directory where to save the files
+        output_filenames: names as which the files should be saved
+
+    Returns:
+
+    """
+    if len(input_paths) != len(output_filenames):
+        raise ValueError('You cannot have more input files than output files')
+    for i, input_path in enumerate(input_paths):
+        output_path = os.path.join(output_dir, output_filenames[i])
+        embeddings = h5py.File(input_path, 'r')
+        reduced_embeddings = h5py.File(output_path, 'w')
+        for key in tqdm(embeddings.keys()):
+            embedding = embeddings[key][:]
+            mean_pool = np.mean(embedding, axis=0)
+            max_pool = np.max(embedding, axis=0)
+            reduced = np.concatenate([mean_pool, max_pool], axis=-1)
+            reduced_embeddings.create_dataset(key, data=reduced)
 
 
 def remove_duplicates(fasta_path: str, output_path: str):

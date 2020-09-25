@@ -14,10 +14,10 @@ def train(args):
     transform = transforms.Compose([LabelToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.max_length, transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, transform=transform)
-    if args.model_type == 'fixed-length':
+    if args.model_type == 'ffn':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
         val_loader = DataLoader(val_set, batch_size=args.batch_size)
-        model = FFN(train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
+        model = FFN(2*train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
     elif args.model_type == 'var-length':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
                                   collate_fn=padded_permuted_collate)
@@ -41,7 +41,7 @@ def parse_arguments():
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
 
-    p.add_argument('--model_type', type=str, help='type of model [fixed-length, var-length]')
+    p.add_argument('--model_type', type=str, help='type of model [ffn, var-length]')
     p.add_argument('--hidden_dim', type=int, default=32, help='neurons in hidden layers of feed forward network')
     p.add_argument('--num_hidden_layers', type=int, default=0, help='hidden layers in feed forward network')
     p.add_argument('--dropout', type=float, default=0.25, help='dropout in feed forward network')
