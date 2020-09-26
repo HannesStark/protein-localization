@@ -15,6 +15,8 @@ LOCALIZATION = ['Cell.membrane', 'Cytoplasm', 'Endoplasmic.reticulum', 'Golgi.ap
                 'Mitochondrion', 'Nucleus', 'Peroxisome', 'Plastid', 'Extracellular']
 LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', 'Pla', 'Ext']
 
+SOLUBILITY = ['M', 'S']
+
 
 def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, step: int):
     """

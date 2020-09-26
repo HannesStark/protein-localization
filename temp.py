@@ -46,4 +46,10 @@ from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_sp
 # retrieve_by_id('data/split3_fasta_files/downloaded_without_annotations_model_homreduced.fasta', 'data/split3_fasta_files/model_sequences.fasta',
 #               'data/split3_fasta_files/model_homreduced.fasta')
 
-reduce_embeddings(['data/embeddings/train.h5', 'data/embeddings/val.h5','data/embeddings/test.h5'], 'data/embeddings', ['train_mean_max.h5','val_mean_max.h5','test_mean_max.h5'])
+#reduce_embeddings(['data/embeddings/train.h5', 'data/embeddings/val.h5','data/embeddings/test.h5'], 'data/embeddings', ['train_mean_max.h5','val_mean_max.h5','test_mean_max.h5'])
+id_labels_list = []
+for record in SeqIO.parse('data/embeddings/test_remapped.fasta', 'fasta'):
+    localization, solubility  = record.description.split(' ')[2].split('-')
+    print(solubility)
+    if len(record.seq) <= 6000:
+        id_labels_list.append({'id': record.id, 'label': localization})

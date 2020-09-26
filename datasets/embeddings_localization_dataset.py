@@ -26,11 +26,12 @@ class EmbeddingsLocalizationDataset(Dataset):
         super().__init__()
         self.transform = transform
         self.embeddings_file = h5py.File(embeddings_path, 'r')
-        self.id_labels_list = []
+        self.id_localization_solubility_list = []
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
-            label = record.description.split(' ')[2].split('-')[0]
+            localization, solubility = record.description.split(' ')[2].split('-')
             if len(record.seq) <= max_length:
-                self.id_labels_list.append({'id': record.id, 'label': label})
+                self.id_localization_solubility_list.append(
+                    {'id': record.id, 'localization': localization, 'solubility': solubility})
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, str]:
         """retrieve single sample from the dataset
@@ -41,14 +42,15 @@ class EmbeddingsLocalizationDataset(Dataset):
         Returns:
             embedding: either a one dimensional Tensor [embedding_size] if the provided embeddings_path is of reduced
             embeddings or [length_of_sequence, embeddings_size] if the h5 file contains non reduced embeddings
-            label: label in the format specified by the given transform.
+            localization: localization in the format specified by the given transform.
         """
-        id_label = self.id_labels_list[index]
-        embedding = self.embeddings_file[id_label['id']][:]
+        id_localization_solubility = self.id_localization_solubility_list[index]
+        embedding = self.embeddings_file[id_localization_solubility['id']][:]
 
-        embedding, label = self.transform((embedding, id_label['label']))
+        embedding, localization, solubility = self.transform(
+            (embedding, id_localization_solubility['localization'], id_localization_solubility['solubility']))
 
-        return embedding, label
+        return embedding, localization, solubility
 
     def __len__(self) -> int:
-        return len(self.id_labels_list)
+        return len(self.id_localization_solubility_list)

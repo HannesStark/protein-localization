@@ -3,7 +3,7 @@ from typing import Tuple, Union
 import torch
 import numpy as np
 
-from utils.general import LOCALIZATION
+from utils.general import LOCALIZATION, SOLUBILITY
 
 
 class ToTensor():
@@ -14,12 +14,13 @@ class ToTensor():
     def __init__(self):
         pass
 
-    def __call__(self, sample: Tuple[np.ndarray, Union[int, np.ndarray]]) -> Tuple[torch.Tensor, torch.Tensor]:
-        embedding, label = sample
+    def __call__(self, sample: Tuple[np.ndarray, int, int]) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        embedding, localization, solubility = sample
         embedding = torch.from_numpy(embedding).float()
-        label = torch.from_numpy(np.array(label)).long()
+        localization = torch.tensor(localization).long()
+        solubility = torch.tensor(localization).long()
 
-        return embedding, label
+        return embedding, localization, solubility
 
 
 class AvgMaxPool():
@@ -35,58 +36,62 @@ class AvgMaxPool():
         """
         self.dim = dim
 
-    def __call__(self, sample: Tuple[torch.Tensor, torch.Tensor]) -> Tuple[torch.Tensor, torch.Tensor]:
+    def __call__(self, sample: Tuple[torch.Tensor, torch.Tensor, torch.Tensor]) -> Tuple[
+        torch.Tensor, torch.Tensor, torch.Tensor]:
         """
 
         Args:
-            sample: ([sequence_length, embedding_size],[label_encoding_size]) tuple of embedding and label
+            sample: ([sequence_length, embedding_size],[localization_encoding_size], [1]) tuple of embedding and localization
 
         Returns:
             embedding: [2*embedding_size] the embedding tensor avg pooled and mean pooled along dim and concatenated
-            label: the original label
+            localization: the original localization
+            solubility: the original solubility
         """
-        embedding, label = sample
+        embedding, localization, solubility = sample
         avg_pool = torch.mean(embedding, dim=self.dim)
         max_pool, _ = torch.max(embedding, dim=self.dim)
         embedding = torch.cat([avg_pool, max_pool], dim=-1)
-        return embedding, label
+        return embedding, localization, solubility
 
 
 class LabelToInt():
     """
-    Turn string label of localization into an integer
+    Turn string localization of localization into an integer
     """
 
     def __init__(self):
         pass
 
-    def __call__(self, sample: Tuple[np.ndarray, str]) -> Tuple[np.ndarray, int]:
-        embedding, label = sample
-        label = LOCALIZATION.index(label)  # get label as integer
+    def __call__(self, sample: Tuple[np.ndarray, str, str]) -> Tuple[np.ndarray, int, int]:
+        embedding, localization, solubility = sample
+        localization = LOCALIZATION.index(localization)  # get localization as integer
+        solubility = SOLUBILITY.index(solubility)  # get solubility as integer
 
-        return embedding, label
+        return embedding, localization, solubility
 
 
 class LabelOneHot():
     """
-    Turn string label of localization into a one hot np array
+    Turn string localization of localization into a one hot np array
     """
 
     def __init__(self):
         pass
 
-    def __call__(self, sample: Tuple[np.ndarray, str]) -> Tuple[np.ndarray, np.ndarray]:
+    def __call__(self, sample: Tuple[np.ndarray, str, str]) -> Tuple[np.ndarray, np.ndarray, int]:
         """
 
         Args:
-            sample: tuple of embedding and label
+            sample: tuple of embedding and localization
 
         Returns:
             embedding: the original embedding
-            label: [10] array with one hot encoding of label
+            localization: [10] array with one hot encoding of localization
         """
-        embedding, label = sample
-        label = LOCALIZATION.index(label)  # get label as integer
-        one_hot_label = np.zeros(len(LOCALIZATION))
-        one_hot_label[label] = 1
-        return embedding, one_hot_label
+        embedding, localization, solubility = sample
+        localization = LOCALIZATION.index(localization)  # get localization as integer
+        one_hot_localization = np.zeros(len(LOCALIZATION))
+        one_hot_localization[localization] = 1
+        solubility = SOLUBILITY.index(solubility)
+        return embedding, one_hot_localization, solubility
