@@ -1,4 +1,4 @@
-experiment_name: 'attention'
+experiment_name: 'attention_run2'
 
 num_epochs: 5000
 batch_size: 30

@@ -18,8 +18,7 @@ class ToTensor():
         embedding, localization, solubility = sample
         embedding = torch.from_numpy(embedding).float()
         localization = torch.tensor(localization).long()
-        solubility = torch.tensor(localization).long()
-
+        solubility = torch.tensor(solubility).float()
         return embedding, localization, solubility
 
 
@@ -66,8 +65,8 @@ class LabelToInt():
     def __call__(self, sample: Tuple[np.ndarray, str, str]) -> Tuple[np.ndarray, int, int]:
         embedding, localization, solubility = sample
         localization = LOCALIZATION.index(localization)  # get localization as integer
-        solubility = SOLUBILITY.index(solubility)  # get solubility as integer
-
+        # solubility = SOLUBILITY.index(solubility)  # get solubility as integer
+        solubility = 1
         return embedding, localization, solubility
 
 

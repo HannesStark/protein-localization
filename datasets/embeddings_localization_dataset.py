@@ -28,12 +28,13 @@ class EmbeddingsLocalizationDataset(Dataset):
         self.embeddings_file = h5py.File(embeddings_path, 'r')
         self.id_localization_solubility_list = []
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
-            localization, solubility = record.description.split(' ')[2].split('-')
+            localization = record.description.split(' ')[2].split('-')[0]
+            solubility = record.description.split(' ')[2].split('-')[-1]
             if len(record.seq) <= max_length:
                 self.id_localization_solubility_list.append(
                     {'id': record.id, 'localization': localization, 'solubility': solubility})
 
-    def __getitem__(self, index: int) -> Tuple[torch.Tensor, str]:
+    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """retrieve single sample from the dataset
 
         Args:

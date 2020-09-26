@@ -15,7 +15,7 @@ LOCALIZATION = ['Cell.membrane', 'Cytoplasm', 'Endoplasmic.reticulum', 'Golgi.ap
                 'Mitochondrion', 'Nucleus', 'Peroxisome', 'Plastid', 'Extracellular']
 LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', 'Pla', 'Ext']
 
-SOLUBILITY = ['M', 'S']
+SOLUBILITY = ['M', 'S', 'U']
 
 
 def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, step: int):
@@ -58,7 +58,8 @@ def experiment_checkpoint(run_directory: str, model, config_path: str):
     shutil.copyfile(config_path, os.path.join(run_directory, os.path.basename(config_path)))
 
 
-def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor]]) -> Tuple[torch.Tensor, torch.Tensor]:
+def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
+    torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     Takes list of tuples with embeddings of variable sizes and pads them with zeros
     Args:
@@ -69,6 +70,7 @@ def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor]]) -> T
 
     """
     embeddings = [item[0] for item in batch]
-    labels = torch.tensor([item[1] for item in batch])
+    localization = torch.tensor([item[1] for item in batch])
+    solubility = torch.tensor([item[1] for item in batch]).float()
     embeddings = pad_sequence(embeddings, batch_first=True)
-    return (embeddings.permute(0, 2, 1), labels)
+    return embeddings.permute(0, 2, 1), localization, solubility
