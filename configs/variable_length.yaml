@@ -1,7 +1,7 @@
-experiment_name: 'conv_net'
+experiment_name: '1_layer_256_channels'
 
 num_epochs: 5000
-batch_size: 30
+batch_size: 40
 lrate: 5.0e-5
 log_iterations: 5
 

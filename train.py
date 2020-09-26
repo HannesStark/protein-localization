@@ -17,7 +17,7 @@ def train(args):
     if args.model_type == 'ffn':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
         val_loader = DataLoader(val_set, batch_size=args.batch_size)
-        model = FFN(2*train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
+        model = FFN(train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
     elif args.model_type == 'var-length':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
                                   collate_fn=padded_permuted_collate)

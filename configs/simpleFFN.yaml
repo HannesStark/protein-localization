@@ -1,19 +1,25 @@
-experiment_name: 'max_avg_pool'
+experiment_name: 'max_avg_dropout05'
 
 num_epochs: 5000
 batch_size: 2048
 lrate: 1.0e-4
 
-# Paths to Data
-train_embeddings: 'data/embeddings/train.h5'
+# Paths to mean reduced
+#train_embeddings: 'data/embeddings/train.h5'
+#val_embeddings: 'data/embeddings/val.h5'
+#test_embeddings: 'data/embeddings/test.h5'
+
+# Paths to mean_max reduced
+train_embeddings: 'data/embeddings/train_mean_max.h5'
+val_embeddings: 'data/embeddings/val_mean_max.h5'
+test_embeddings: 'data/embeddings/test_mean_max.h5'
+
 train_remapping: 'data/embeddings/train_remapped.fasta'
-val_embeddings: 'data/embeddings/val.h5'
 val_remapping: 'data/embeddings/val_remapped.fasta'
-test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
 model_type: 'ffn'
 hidden_dim: 32
 num_hidden_layers: 0
-dropout: 0.25
+dropout: 0.5
