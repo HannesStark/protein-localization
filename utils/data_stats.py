@@ -4,7 +4,7 @@ from Bio import SeqIO
 import pandas as pd
 import matplotlib.pyplot as plt
 
-fasta_path = '../data/fasta_files1/train_plus_val.fasta'
+fasta_path = '../data/fasta_files/test_as_per_deeploc.fasta'
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
     color = 'orange'
@@ -25,7 +25,7 @@ print(df.describe())
 
 print(df['label'].value_counts())
 
-print('percentage of sequences larger than 510 AAs: {}'.format(100*len(df[df['length'] > 510])/len(df)))
+print('percentage of sequences larger than threshold AAs: {}'.format(100*len(df[df['length'] > 1000])/len(df)))
 print(df[df['length'] > 6000])
 
 cut_off = 2000
