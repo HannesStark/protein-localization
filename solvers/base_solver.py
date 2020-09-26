@@ -3,11 +3,12 @@ import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
+from models.loss_functions import cross_entropy_joint
 from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
 
 
 class BaseSolver():
-    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=torch.nn.MSELoss()):
+    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint):
         self.optim = optim(list(model.parameters()), args.lrate)
         self.loss_func = loss_func
         self.args = args
@@ -23,44 +24,44 @@ class BaseSolver():
 
         for epoch in range(args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
-            train_results = []  # prediction and corresponding label
+            train_results = []  # prediction and corresponding localization
             train_loss = 0
             for i, batch in enumerate(train_loader):
-                embedding, label = batch
-                embedding, label = embedding.to(self.device), label.to(self.device)
+                embedding, loc, sol = batch # get localization and solubility label
+                embedding, loc, sol = embedding.to(self.device), loc.to(self.device), sol.to(self.device)
 
                 prediction = self.model(embedding)
 
-                loss = self.loss_func(prediction, label)
+                loss = self.loss_func(prediction, loc, sol, args)
                 loss.backward()
                 self.optim.step()
                 self.optim.zero_grad()
 
                 prediction = torch.max(prediction, dim=1)[1]  # get indices of the highest value in the prediction
-                train_results.append(torch.stack((prediction, label), dim=1).detach().cpu().numpy())
+                train_results.append(torch.stack((prediction, loc), dim=1).detach().cpu().numpy())
                 loss_item = loss.item()
                 train_loss += loss_item
                 if i % args.log_iterations == args.log_iterations - 1:  # log every log_iterations
                     print('[Epoch %d, Iter %5d/%5d] TRAIN loss: %.7f,TRAIN accuracy: %.4f%%' % (
                         epoch + 1, i + 1, t_iters, loss_item,
-                        100 * (prediction == label).sum().item() / args.batch_size))
+                        100 * (prediction == loc).sum().item() / args.batch_size))
 
             self.model.eval()
-            val_results = []  # prediction and corresponding label
+            val_results = []  # prediction and corresponding loc
             val_loss = 0
             for i, batch in enumerate(val_loader):
-                embedding, label = batch
-                embedding, label = embedding.to(self.device), label.to(self.device)
+                embedding, loc, sol = batch  # get localization and solubility label
+                embedding, loc, sol = embedding.to(self.device), loc.to(self.device), sol.to(self.device)
                 with torch.no_grad():
                     prediction = self.model(embedding)
 
-                    loss = self.loss_func(prediction, label)
+                    loss = self.loss_func(prediction, loc, sol, args)
                     prediction = torch.max(prediction, dim=1)[1]  # get indices of the highest value in the prediction
-                    val_results.append(torch.stack((prediction, label), dim=1).data.detach().cpu().numpy())
+                    val_results.append(torch.stack((prediction, loc), dim=1).data.detach().cpu().numpy())
                     val_loss += loss.item()
 
-            train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and label
-            val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and label
+            train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and loc
+            val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and loc
 
             train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)

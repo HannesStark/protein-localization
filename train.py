@@ -7,6 +7,7 @@ from datasets.transforms import *
 from models.AttentionNet import AttentionNet
 from models.conv_avg_pool import ConvAvgPool
 from models.ffn import FFN
+from models.loss_functions import cross_entropy_joint
 from solvers.base_solver import BaseSolver
 from utils.general import padded_permuted_collate
 
@@ -18,7 +19,7 @@ def train(args):
     if args.model_type == 'ffn':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
         val_loader = DataLoader(val_set, batch_size=args.batch_size)
-        model = FFN(train_set[0][0].shape[0], args.hidden_dim, 10, args.num_hidden_layers, args.dropout)
+        model = FFN(train_set[0][0].shape[0], args.hidden_dim, 11, args.num_hidden_layers, args.dropout)
     elif args.model_type == 'convolution':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
                                   collate_fn=padded_permuted_collate)
@@ -35,7 +36,7 @@ def train(args):
               )
     else:
         raise ValueError('given model_type does not exist')
-    solver = BaseSolver(model, args, torch.optim.Adam, torch.nn.CrossEntropyLoss())
+    solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint)
     solver.train(train_loader, val_loader)
 
 
@@ -50,6 +51,8 @@ def parse_arguments():
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
 
     p.add_argument('--model_type', type=str, help='type of model [ffn, convolution, attention]')
+    p.add_argument('--solubility_loss', type=float, default=0,
+                   help='how much the loss of the solubility will be weighted')
     p.add_argument('--hidden_dim', type=int, default=32, help='neurons in hidden layers of feed forward network')
     p.add_argument('--num_hidden_layers', type=int, default=0, help='hidden layers in feed forward network')
     p.add_argument('--dropout', type=float, default=0.25, help='dropout in feed forward network')

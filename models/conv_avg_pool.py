@@ -24,7 +24,7 @@ class ConvAvgPool(nn.Module):
             nn.BatchNorm1d(32)
         )
 
-        self.output = nn.Linear(32, 10)
+        self.output = nn.Linear(32, 11)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """

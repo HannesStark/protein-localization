@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class FFN(nn.Module):
-    def __init__(self, input_dim: int = 1024, hidden_dim: int = 32, output_dim: int = 10, number_hidden_layers: int = 0,
+    def __init__(self, input_dim: int = 1024, hidden_dim: int = 32, output_dim: int = 11, number_hidden_layers: int = 0,
                  dropout: float = 0.25):
         """
         Simple Feed forward model with default parameters like the network tha is ued in the SeqVec paper.

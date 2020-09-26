@@ -7,7 +7,7 @@ class AttentionNet(nn.Module):
     def __init__(self):
         super(AttentionNet, self).__init__()
 
-        self.conv1 = nn.Conv1d(1024, 1024, 15, stride=7)
+        self.conv1 = nn.Conv1d(1024, 1024, 1, stride=1)
 
         self.linear = nn.Sequential(
             nn.Linear(1024, 32),
@@ -16,7 +16,7 @@ class AttentionNet(nn.Module):
             nn.BatchNorm1d(32)
         )
 
-        self.output = nn.Linear(32, 10)
+        self.output = nn.Linear(32, 11)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -28,6 +28,6 @@ class AttentionNet(nn.Module):
         """
         o = self.conv1(x)
         attention = F.softmax(o, dim=-1)
-        o = torch.sum(o * attention, dim=-1)
+        o = torch.sum(x * attention, dim=-1)
         o = self.linear(o)
         return self.output(o)
