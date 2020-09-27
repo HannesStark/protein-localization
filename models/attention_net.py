@@ -11,7 +11,7 @@ class AttentionNet(nn.Module):
 
         self.linear = nn.Sequential(
             nn.Linear(1024, 32),
-            nn.Dropout(0.25),
+            nn.Dropout(0.3),
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
