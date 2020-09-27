@@ -36,19 +36,21 @@ def train(args):
               )
     else:
         raise ValueError('given model_type does not exist')
-    solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint)
+
+    solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint, checkpoint_dir=args.checkpoint)
     solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/attention.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/simpleFFN.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
     p.add_argument('--lrate', type=float, default=1.0e-4, help='learning rate for training')
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
+    p.add_argument('--checkpoint', type=str, help='path to directory that contains a checkpoint')
 
     p.add_argument('--model_type', type=str, help='type of model [ffn, convolution, attention]')
     p.add_argument('--solubility_loss', type=float, default=0,

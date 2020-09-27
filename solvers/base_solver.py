@@ -1,3 +1,5 @@
+import os
+
 import torch
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
@@ -8,36 +10,44 @@ from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
 
 
 class BaseSolver():
-    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint):
+    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint, checkpoint_dir: str = None):
         self.optim = optim(list(model.parameters()), args.lrate)
         self.loss_func = loss_func
         self.args = args
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
-        self.writer = SummaryWriter(
-            'runs/{}_{}'.format(args.experiment_name, datetime.now().strftime('%d-%m_%H-%M-%S')))
+        if checkpoint_dir:
+            checkpoint = torch.load(os.path.join(checkpoint_dir, 'checkpoint.pt'), map_location=self.device)
+            self.writer = SummaryWriter(checkpoint_dir)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.optim.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.start_epoch = checkpoint['epoch']
+        else:
+            self.start_epoch = 0
+            self.writer = SummaryWriter(
+                'runs/{}_{}'.format(args.experiment_name, datetime.now().strftime('%d-%m_%H-%M-%S')))
 
     def train(self, train_loader, val_loader):
         args = self.args
         t_iters = len(train_loader)  # number of iterations in training loop
         v_iters = (len(val_loader) or not len(val_loader))  # number of iterations in validation loop or 1 if it's empty
 
-        for epoch in range(args.num_epochs):  # loop over the dataset multiple times
+        for epoch in range(self.start_epoch, args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
             train_results = []  # prediction and corresponding localization
             train_loss = 0
             for i, batch in enumerate(train_loader):
-                embedding, loc, sol = batch # get localization and solubility label
+                embedding, loc, sol = batch  # get localization and solubility label
                 embedding, loc, sol = embedding.to(self.device), loc.to(self.device), sol.to(self.device)
 
                 prediction = self.model(embedding)
-
                 loss = self.loss_func(prediction, loc, sol, args)
                 loss.backward()
                 self.optim.step()
                 self.optim.zero_grad()
 
-                prediction = torch.max(prediction, dim=1)[1]  # get indices of the highest value in the prediction
+                prediction = torch.max(prediction[..., :10], dim=1)[
+                    1]  # get indices of the highest value in the prediction
                 train_results.append(torch.stack((prediction, loc), dim=1).detach().cpu().numpy())
                 loss_item = loss.item()
                 train_loss += loss_item
@@ -56,7 +66,8 @@ class BaseSolver():
                     prediction = self.model(embedding)
 
                     loss = self.loss_func(prediction, loc, sol, args)
-                    prediction = torch.max(prediction, dim=1)[1]  # get indices of the highest value in the prediction
+                    prediction = torch.max(prediction[..., :10], dim=1)[
+                        1]  # get indices of the highest value in the prediction
                     val_results.append(torch.stack((prediction, loc), dim=1).data.detach().cpu().numpy())
                     val_loss += loss.item()
 
@@ -73,4 +84,4 @@ class BaseSolver():
             self.writer.add_scalars('Epoch Loss', {'train loss': train_loss / t_iters, 'val loss': val_loss / v_iters},
                                     epoch + 1)
 
-            experiment_checkpoint(self.writer.log_dir, self.model, args.config.name)
+            experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args.config.name)

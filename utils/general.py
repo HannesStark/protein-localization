@@ -45,16 +45,21 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     writer.add_figure('Confusion Matrix ', fig, global_step=step)
 
 
-def experiment_checkpoint(run_directory: str, model, config_path: str):
+def experiment_checkpoint(run_directory: str, model, optimizer, epoch: int, config_path: str):
     """
     Saves state dict of model and the used config file to the run_directory
     Args:
         run_directory: where to save
         model: pytorch nn.Module model
+        optimizer:
         config_path: path to the config file that was used for this run
 
     """
-    torch.save(model.state_dict(), os.path.join(run_directory, 'model.pt'))
+    torch.save({
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+    }, os.path.join(run_directory, 'checkpoint.pt'))
     shutil.copyfile(config_path, os.path.join(run_directory, os.path.basename(config_path)))
 
 

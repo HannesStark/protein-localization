@@ -1,7 +1,7 @@
 experiment_name: 'attention_run2'
 
 num_epochs: 5000
-batch_size: 30
+batch_size: 20
 lrate: 5.0e-5
 log_iterations: 5
 

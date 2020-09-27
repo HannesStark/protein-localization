@@ -3,6 +3,7 @@ experiment_name: 'max_avg_dropout05'
 num_epochs: 5000
 batch_size: 2048
 lrate: 1.0e-4
+checkpoint: 'runs/max_avg_dropout05_27-09_08-49-02'
 
 # Paths to mean reduced
 #train_embeddings: 'data/embeddings/train.h5'
