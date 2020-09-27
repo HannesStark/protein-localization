@@ -8,6 +8,7 @@ class AttentionNet(nn.Module):
         super(AttentionNet, self).__init__()
 
         self.conv1 = nn.Conv1d(1024, 1024, 1, stride=1)
+        self.conv2 = nn.Conv1d(1024, 1024, 1, stride=1)
 
         self.linear = nn.Sequential(
             nn.Linear(1024, 32),
@@ -27,7 +28,8 @@ class AttentionNet(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         o = self.conv1(x)
-        attention = F.softmax(o, dim=-1)
-        o = torch.sum(x * attention, dim=-1)
+        attention = self.conv2(x)
+        attention = F.softmax(attention, dim=-1)
+        o = torch.sum(o * attention, dim=-1)
         o = self.linear(o)
         return self.output(o)

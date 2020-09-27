@@ -1,0 +1,21 @@
+experiment_name: 'more_standard_attention'
+
+num_epochs: 5000
+batch_size: 20
+lrate: 5.0e-5
+log_iterations: 5
+
+# Paths to Data
+train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
+train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
+val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
+val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
+test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
+test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
+
+# Model parameters
+model_type: 'attention'
+hidden_dim: 32
+num_hidden_layers: 0
+dropout: 0.25
+max_length: 6000
