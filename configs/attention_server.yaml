@@ -1,4 +1,4 @@
-experiment_name: 'more_standard_attention'
+experiment_name: 'attention_no_dropout'
 
 num_epochs: 5000
 batch_size: 20
@@ -17,5 +17,5 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 model_type: 'attention'
 hidden_dim: 32
 num_hidden_layers: 0
-dropout: 0.25
+dropout: 0
 max_length: 6000
