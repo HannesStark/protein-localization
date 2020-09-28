@@ -66,7 +66,7 @@ class LabelToInt():
         embedding, localization, solubility = sample
         localization = LOCALIZATION.index(localization)  # get localization as integer
         # solubility = SOLUBILITY.index(solubility)  # get solubility as integer
-        solubility = 1
+        solubility = 1 # quick hack because many proteins have unknown solubility
         return embedding, localization, solubility
 
 

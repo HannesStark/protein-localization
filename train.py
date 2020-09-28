@@ -33,12 +33,11 @@ def train(args):
         val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
         model = AttentionNet()
         print(sum(p.numel() for p in model.parameters() if p.requires_grad))
-    elif args.model_type == 'attention':
+    elif args.model_type == 'lstm':
         train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
                                   collate_fn=padded_permuted_collate)
         val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
-        model = LSTM(train_set[0][0].shape[0], train_set[0][0].shape[0], 11, args.hidden_dim, args.num_hidden_layers,
-                     args.dropout)
+        model = LSTM(train_set[0][0][0].shape[0], 11, args.hidden_dim, args.num_hidden_layers, args.dropout)
         print(sum(p.numel() for p in model.parameters() if p.requires_grad))
     else:
         raise ValueError('given model_type does not exist')
@@ -49,7 +48,7 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/attention.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/lstm.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')

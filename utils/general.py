@@ -79,3 +79,20 @@ def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.
     solubility = torch.tensor([item[1] for item in batch]).float()
     embeddings = pad_sequence(embeddings, batch_first=True)
     return embeddings.permute(0, 2, 1), localization, solubility
+
+def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
+    torch.Tensor, torch.Tensor, torch.Tensor]:
+    """
+    Takes list of tuples with embeddings of variable sizes and pads them with zeros
+    Args:
+        batch: list of tuples with embeddings and the corresponding label
+
+    Returns: tuple of tensor of embeddings with [batchsize, length_of_longest_sequence, embeddings_dim]
+    and tensor of labels [batchsize, labels_dim]
+
+    """
+    embeddings = [item[0] for item in batch]
+    localization = torch.tensor([item[1] for item in batch])
+    solubility = torch.tensor([item[1] for item in batch]).float()
+    embeddings = pad_sequence(embeddings, batch_first=True)
+    return embeddings.permute(0, 2, 1), localization, solubility

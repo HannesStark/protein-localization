@@ -1,7 +1,7 @@
-experiment_name: 'one_conv_attention'
+experiment_name: 'lstm'
 
 num_epochs: 5000
-batch_size: 20
+batch_size: 15
 lrate: 5.0e-5
 log_iterations: 5
 
@@ -15,7 +15,7 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
 model_type: 'lstm'
-hidden_dim: 32
-num_hidden_layers: 0
-dropout: 0.25
+hidden_dim: 40
+num_hidden_layers: 2
+dropout: 0.5
 max_length: 6000
