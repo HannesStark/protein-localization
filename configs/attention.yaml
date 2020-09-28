@@ -1,8 +1,8 @@
-experiment_name: 'one_conv_attention'
+experiment_name: 'attention_02_dropout'
 
 num_epochs: 5000
-batch_size: 15
-lrate: 5.0e-5
+batch_size: 20
+lrate: 1.0e-4
 log_iterations: 5
 
 # Paths to Data
@@ -17,5 +17,5 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 model_type: 'attention'
 hidden_dim: 32
 num_hidden_layers: 0
-dropout: 0.25
+dropout: 0.2
 max_length: 6000
