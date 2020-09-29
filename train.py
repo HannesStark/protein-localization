@@ -6,9 +6,11 @@ from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDatas
 from datasets.transforms import *
 from models.attention_net import AttentionNet
 from models.conv_avg_pool import ConvAvgPool
+from models.attend_first_concat_second import AttendFirstConcatSecond
 from models.ffn import FFN
 from models.loss_functions import cross_entropy_joint
 from models.lstm import LSTM
+from models.reduced_conv import ReducedConv
 from solvers.base_solver import BaseSolver
 from utils.general import padded_permuted_collate
 
@@ -39,6 +41,23 @@ def train(args):
         val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
         model = LSTM(train_set[0][0][0].shape[0], 11, args.hidden_dim, args.num_hidden_layers, args.dropout)
         print(sum(p.numel() for p in model.parameters() if p.requires_grad))
+    elif args.model_type == 'reduced_conv':
+        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
+        val_loader = DataLoader(val_set, batch_size=args.batch_size)
+        model = ReducedConv(train_set[0][0].shape[0], args.hidden_dim, 11, args.dropout)
+        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
+    elif args.model_type == 'attend_concat':
+        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
+                                  collate_fn=padded_permuted_collate)
+        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
+        model = AttendFirstConcatSecond()
+        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
+    elif args.model_type == 'concat_attend':
+        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
+                                  collate_fn=padded_permuted_collate)
+        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
+        model = AttendFirstConcatSecond()
+        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
     else:
         raise ValueError('given model_type does not exist')
 
@@ -48,7 +67,7 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/attention.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/concat_attend.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')

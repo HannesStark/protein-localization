@@ -12,7 +12,7 @@ class AttentionNet(nn.Module):
 
         self.linear = nn.Sequential(
             nn.Linear(1024, 32),
-            nn.Dropout(0.2),
+            nn.Dropout(0.4),
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
@@ -27,6 +27,7 @@ class AttentionNet(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
+        print(x.shape)
         o = self.conv1(x)
         attention = F.softmax(o, dim=-1)
         o = torch.sum(o * attention, dim=-1)

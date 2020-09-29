@@ -1,9 +1,9 @@
-experiment_name: 'lstm'
+experiment_name: 'attend_concat'
 
 num_epochs: 5000
-batch_size: 32
+batch_size: 20
 lrate: 1.0e-4
-log_iterations: 100
+log_iterations: 5
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
@@ -14,8 +14,8 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'lstm'
-hidden_dim: 40
-num_hidden_layers: 2
-dropout: 0.5
+model_type: 'attend_concat'
+hidden_dim: 32
+num_hidden_layers: 0
+dropout: 0.2
 max_length: 6000

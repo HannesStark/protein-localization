@@ -14,7 +14,7 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'var-length'
+model_type: 'convolution'
 hidden_dim: 64
 num_hidden_layers: 1
 dropout: 0.25

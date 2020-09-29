@@ -7,8 +7,8 @@ class ConvAvgPool(nn.Module):
     def __init__(self, n_conv_layers: int = 5):
         super(ConvAvgPool, self).__init__()
 
-        self.conv1 = nn.Conv1d(1024, 256, 3, stride=3)
-        self.conv2 = nn.Conv1d(256, 128, 3, stride=2)
+        self.conv1 = nn.Conv1d(1024, 256, 20, stride=3)
+        self.conv2 = nn.Conv1d(256, 128, 15, stride=2)
         self.conv_layers = nn.ModuleList()
         for i in range(n_conv_layers):
             self.conv_layers.append(nn.Sequential(
@@ -29,7 +29,7 @@ class ConvAvgPool(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Args:
-            x: [batch_size, sequence_length, embeddings_dim] embedding tensor that should be classified
+            x: [batch_size, embeddings_dim, sequence_length] embedding tensor that should be classified
 
         Returns:
             classification: [batch_size,output_dim] tensor with logits
