@@ -60,4 +60,5 @@ class ConvsStrangeAttendConcat(nn.Module):
         o6 = torch.sum(o6 * F.softmax(attention6, dim=-1), dim=-1)
 
         o = torch.cat([o1, o2, o3, o4, o5, o6], dim=-1)  # [batchsize, embeddingsdim*3]
+        o = self.linear(o)
         return self.output(o)

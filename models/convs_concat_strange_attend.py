@@ -17,7 +17,7 @@ class ConvsConcatStrangeAttend(nn.Module):
         self.attend1 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
 
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim * 3, 15),
+            nn.Linear(512, 15),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(15)
@@ -44,5 +44,6 @@ class ConvsConcatStrangeAttend(nn.Module):
 
         attention1 = self.attend1(o)
         o = torch.sum(o * F.softmax(attention1, dim=-1), dim=-1)  # [batchsize, embeddingsdim*3]
+
         o = self.linear(o)
         return self.output(o)

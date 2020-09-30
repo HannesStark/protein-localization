@@ -7,12 +7,12 @@ class ConvsAttendConcat(nn.Module):
     def __init__(self, embeddings_dim: int = 1024, dropout=0.25):
         super(ConvsAttendConcat, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, 512, 21, stride=1)
-        self.conv2 = nn.Conv1d(embeddings_dim, 512, 15, stride=1)
-        self.conv3 = nn.Conv1d(embeddings_dim, 512, 9, stride=1)
-        self.conv4 = nn.Conv1d(embeddings_dim, 512, 5, stride=1)
-        self.conv5 = nn.Conv1d(embeddings_dim, 512, 3, stride=1)
-        self.conv6 = nn.Conv1d(embeddings_dim, 512, 1, stride=1)
+        self.conv1 = nn.Conv1d(embeddings_dim, 512, 21, stride=1, padding=10)
+        self.conv2 = nn.Conv1d(embeddings_dim, 512, 15, stride=1, padding=7)
+        self.conv3 = nn.Conv1d(embeddings_dim, 512, 9, stride=1, padding=4)
+        self.conv4 = nn.Conv1d(embeddings_dim, 512, 5, stride=1, padding=2)
+        self.conv5 = nn.Conv1d(embeddings_dim, 512, 3, stride=1, padding=1)
+        self.conv6 = nn.Conv1d(embeddings_dim, 512, 1, stride=1, padding=0)
 
         self.attend = nn.Sequential(nn.Conv1d(embeddings_dim, 512, 1, stride=1), nn.Dropout(dropout))
 

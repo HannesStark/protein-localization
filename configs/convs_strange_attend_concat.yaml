@@ -1,7 +1,7 @@
 experiment_name: 'ConvsStrangeAttendConcat'
 
 num_epochs: 5000
-batch_size: 30
+batch_size: 2
 lrate: 1.0e-4
 log_iterations: 5
 
