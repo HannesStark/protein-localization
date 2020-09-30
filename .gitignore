@@ -6,3 +6,4 @@ bsub.yaml
 bsub.yml
 stderr.log
 stdout.log
+bsub*
