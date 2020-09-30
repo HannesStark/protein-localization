@@ -40,7 +40,6 @@ import pandas as pd
 # ids = df["seq"]
 # print(df[ids.isin(ids[ids.duplicated()])].sort_values(by="seq"))
 #
-from models.conv_avg_pool import ConvAvgPool
 from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings
 
 # train_val_split('data/split3_fasta_files/model_homreduced.fasta','data/split3_fasta_files',train_size=0.85)
@@ -48,30 +47,52 @@ from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_sp
 # retrieve_by_id('data/split3_fasta_files/downloaded_without_annotations_model_homreduced.fasta', 'data/split3_fasta_files/model_sequences.fasta',
 #               'data/split3_fasta_files/model_homreduced.fasta')
 
-#reduce_embeddings(['data/embeddings/train.h5', 'data/embeddings/val.h5','data/embeddings/test.h5'], 'data/embeddings', ['train_mean_max.h5','val_mean_max.h5','test_mean_max.h5'])
-#id_labels_list = []
-#for record in SeqIO.parse('data/embeddings/train_remapped.fasta', 'fasta'):
+# reduce_embeddings(['data/embeddings/train.h5', 'data/embeddings/val.h5','data/embeddings/test.h5'], 'data/embeddings', ['train_mean_max.h5','val_mean_max.h5','test_mean_max.h5'])
+# id_labels_list = []
+# for record in SeqIO.parse('data/embeddings/train_remapped.fasta', 'fasta'):
 #    print(record.id)
 #    localization, solubility  = record.description.split(' ')[2].split('-')[0]
 #    if len(record.seq) <= 6000:
 #        id_labels_list.append({'id': record.id, 'label': localization})
 
-def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
-    torch.Tensor, torch.Tensor, torch.Tensor]:
-    """
-    Takes list of tuples with embeddings of variable sizes and pads them with zeros
-    Args:
-        batch: list of tuples with embeddings and the corresponding label
+# def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
+#    torch.Tensor, torch.Tensor, torch.Tensor]:
+#    """
+#    Takes list of tuples with embeddings of variable sizes and pads them with zeros
+#    Args:
+#        batch: list of tuples with embeddings and the corresponding label
+#
+#    Returns: tuple of tensor of embeddings with [batchsize, length_of_longest_sequence, embeddings_dim]
+#    and tensor of labels [batchsize, labels_dim]
+#
+#    """
+#    embeddings = [item[0] for item in batch]
+#    localization = torch.tensor([item[1] for item in batch])
+#    solubility = torch.tensor([item[1] for item in batch]).float()
+#    embeddings = pad_sequence(embeddings, batch_first=True)
+#    return embeddings.permute(0, 2, 1), localization, solubility
+#
+# transform = transforms.Compose([LabelToInt(), ToTensor()])
+# train_set = EmbeddingsLocalizationDataset('data/fasta_files/test_as_per_deeploc.fasta', 'data/fasta_files/test_remappings.fasta', 6000, transform)
 
-    Returns: tuple of tensor of embeddings with [batchsize, length_of_longest_sequence, embeddings_dim]
-    and tensor of labels [batchsize, labels_dim]
+from models import *
 
-    """
-    embeddings = [item[0] for item in batch]
-    localization = torch.tensor([item[1] for item in batch])
-    solubility = torch.tensor([item[1] for item in batch]).float()
-    embeddings = pad_sequence(embeddings, batch_first=True)
-    return embeddings.permute(0, 2, 1), localization, solubility
 
-transform = transforms.Compose([LabelToInt(), ToTensor()])
-train_set = EmbeddingsLocalizationDataset('data/fasta_files/test_as_per_deeploc.fasta', 'data/fasta_files/test_remappings.fasta', 6000, transform)
+class TryingDispatch():
+    def __init__(self, batchsize=3, n_layers=5, test=0):
+        print("initialized")
+        self.a = "teststring"
+        print(batchsize)
+        print(n_layers)
+        print(test)
+
+    def stringprint(self):
+        print(self.a)
+
+
+kwargs = {'batchsize': 5, 'n_layers': 17}
+instance = globals()['TryingDispatch'](**kwargs)
+
+print(type(instance))
+
+instance.stringprint()

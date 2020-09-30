@@ -3,21 +3,20 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class AttentionNet(nn.Module):
-    def __init__(self):
-        super(AttentionNet, self).__init__()
+class FirstAttention(nn.Module):
+    def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25):
+        super(FirstAttention, self).__init__()
 
-        self.conv1 = nn.Conv1d(1024, 1024, 1, stride=1)
-        self.conv2 = nn.Conv1d(1024, 1024, 1, stride=1)
+        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1)
 
         self.linear = nn.Sequential(
-            nn.Linear(1024, 32),
-            nn.Dropout(0.4),
+            nn.Linear(embeddings_dim, 32),
+            nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
 
-        self.output = nn.Linear(32, 11)
+        self.output = nn.Linear(32, output_dim)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -27,9 +26,8 @@ class AttentionNet(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
-        print(x.shape)
         o = self.conv1(x)
         attention = F.softmax(o, dim=-1)
-        o = torch.sum(o * attention, dim=-1)
+        o = torch.sum(x * attention, dim=-1)
         o = self.linear(o)
         return self.output(o)

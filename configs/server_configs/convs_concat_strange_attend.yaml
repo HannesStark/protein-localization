@@ -1,8 +1,8 @@
-experiment_name: 'attention_no_dropout'
+experiment_name: 'ConvsConcatStrangeAttend'
 
 num_epochs: 5000
-batch_size: 20
-lrate: 5.0e-5
+batch_size: 30
+lrate: 1.0e-4
 log_iterations: 5
 
 # Paths to Data
@@ -14,8 +14,6 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'attention'
-hidden_dim: 32
-num_hidden_layers: 0
-dropout: 0
-max_length: 6000
+model_type: 'ConvsConcatStrangeAttend'
+model_parameters:
+  dropout: 0.25

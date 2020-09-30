@@ -1,8 +1,8 @@
-experiment_name: '1_layer_256_channels'
+experiment_name: 'ConvsStrangeAttendConcat'
 
 num_epochs: 5000
-batch_size: 40
-lrate: 5.0e-5
+batch_size: 30
+lrate: 1.0e-4
 log_iterations: 5
 
 # Paths to Data
@@ -14,8 +14,6 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'convolution'
-hidden_dim: 64
-num_hidden_layers: 1
-dropout: 0.25
-max_length: 6000
+model_type: 'ConvsStrangeAttendConcat'
+model_parameters:
+  dropout: 0.25

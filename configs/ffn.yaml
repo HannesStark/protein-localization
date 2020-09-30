@@ -20,7 +20,9 @@ val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'ffn'
-hidden_dim: 32
-num_hidden_layers: 0
-dropout: 0.5
+model_type: 'FFN'
+model_parameters:
+  output_dim: 11
+  hidden_dim: 32
+  n_hidden_layers: 0
+  dropout: 0.5

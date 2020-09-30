@@ -3,14 +3,9 @@ import yaml
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
+from models import *
 from datasets.transforms import *
-from models.attention_net import AttentionNet
-from models.conv_avg_pool import ConvAvgPool
-from models.attend_first_concat_second import AttendFirstConcatSecond
-from models.ffn import FFN
 from models.loss_functions import cross_entropy_joint
-from models.lstm import LSTM
-from models.reduced_conv import ReducedConv
 from solvers.base_solver import BaseSolver
 from utils.general import padded_permuted_collate
 
@@ -19,55 +14,23 @@ def train(args):
     transform = transforms.Compose([LabelToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.max_length, transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, transform=transform)
-    if args.model_type == 'ffn':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
-        val_loader = DataLoader(val_set, batch_size=args.batch_size)
-        model = FFN(train_set[0][0].shape[0], args.hidden_dim, 11, args.num_hidden_layers, args.dropout)
-    elif args.model_type == 'convolution':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
-                                  collate_fn=padded_permuted_collate)
-        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
-        model = ConvAvgPool()
-        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
-    elif args.model_type == 'attention':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
-                                  collate_fn=padded_permuted_collate)
-        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
-        model = AttentionNet()
-        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
-    elif args.model_type == 'lstm':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
-                                  collate_fn=padded_permuted_collate)
-        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
-        model = LSTM(train_set[0][0][0].shape[0], 11, args.hidden_dim, args.num_hidden_layers, args.dropout)
-        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
-    elif args.model_type == 'reduced_conv':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
-        val_loader = DataLoader(val_set, batch_size=args.batch_size)
-        model = ReducedConv(train_set[0][0].shape[0], args.hidden_dim, 11, args.dropout)
-        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
-    elif args.model_type == 'attend_concat':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
-                                  collate_fn=padded_permuted_collate)
-        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
-        model = AttendFirstConcatSecond()
-        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
-    elif args.model_type == 'concat_attend':
-        train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,
-                                  collate_fn=padded_permuted_collate)
-        val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=padded_permuted_collate)
-        model = AttendFirstConcatSecond()
-        print(sum(p.numel() for p in model.parameters() if p.requires_grad))
-    else:
-        raise ValueError('given model_type does not exist')
 
+    if len(train_set[0][0].shape) == 2: # if we have per residue embeddings they have an additional lenght dim
+        collate_function = padded_permuted_collate
+    else: # if we have reduced sequence wise embeddings use the default collate function by passing None
+        collate_function = None
+
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,collate_fn=collate_function)
+    val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=collate_function)
+
+    model = globals()[args.model_type](embeddings_dim=train_set[0][0].shape[-1], **args.model_parameters)
     solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint, checkpoint_dir=args.checkpoint)
     solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/concat_attend.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/first_attention.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
@@ -76,12 +39,10 @@ def parse_arguments():
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
     p.add_argument('--checkpoint', type=str, help='path to directory that contains a checkpoint')
 
-    p.add_argument('--model_type', type=str, help='type of model [ffn, convolution, attention]')
+    p.add_argument('--model_type', type=str, default='FFN', help='Classname of one of the models in the models dir')
+    p.add_argument('--model_parameters', type=dict, help='dictionary of model parameters')
     p.add_argument('--solubility_loss', type=float, default=0,
                    help='how much the loss of the solubility will be weighted')
-    p.add_argument('--hidden_dim', type=int, default=32, help='neurons in hidden layers of feed forward network')
-    p.add_argument('--num_hidden_layers', type=int, default=0, help='hidden layers in feed forward network')
-    p.add_argument('--dropout', type=float, default=0.25, help='dropout in feed forward network')
     p.add_argument('--max_length', type=int, default=6000, help='maximum lenght of sequences that will be used for '
                                                                 'training when using embedddings of variable length')
 

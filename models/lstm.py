@@ -3,10 +3,10 @@ import torch.nn as nn
 
 
 class LSTM(nn.Module):
-    def __init__(self, embedding_dim, output_dim, lstm_hidden_dim, n_layers, dropout):
+    def __init__(self, embeddings_dim: int, output_dim, lstm_hidden_dim, n_layers, dropout):
         super(LSTM, self).__init__()
 
-        self.lstm = nn.LSTM(embedding_dim, lstm_hidden_dim, num_layers=n_layers, bidirectional=True, dropout=dropout)
+        self.lstm = nn.LSTM(embeddings_dim, lstm_hidden_dim, num_layers=n_layers, bidirectional=True, dropout=dropout)
         self.dropout = nn.Dropout(dropout)
 
         self.output = nn.Linear(lstm_hidden_dim * 2, output_dim)

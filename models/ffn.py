@@ -3,28 +3,28 @@ import torch.nn as nn
 
 
 class FFN(nn.Module):
-    def __init__(self, input_dim: int = 1024, hidden_dim: int = 32, output_dim: int = 11, number_hidden_layers: int = 0,
-                 dropout: float = 0.25):
+    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 11, hidden_dim: int = 32,
+                 n_hidden_layers: int = 0, dropout: float = 0.25):
         """
         Simple Feed forward model with default parameters like the network tha is ued in the SeqVec paper.
         Args:
-            input_dim: dimension of the input
+            embeddings_dim: dimension of the input
             hidden_dim: dimension of the hidden layers
             output_dim: output dimension (number of classes that should be classified)
-            number_hidden_layers: number of hidden layers (0 by default)
+            n_hidden_layers: number of hidden layers (0 by default)
             dropout: dropout ratio of every layer
         """
         super(FFN, self).__init__()
 
-        self.number_hidden_layers = number_hidden_layers
+        self.n_hidden_layers = n_hidden_layers
         self.input = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
+            nn.Linear(embeddings_dim, hidden_dim),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(hidden_dim)
         )
         self.hidden = nn.ModuleList()
-        for i in range(self.number_hidden_layers):
+        for i in range(self.n_hidden_layers):
             self.hidden.append(nn.Sequential(
                 nn.Linear(hidden_dim, hidden_dim),
                 nn.Dropout(dropout),

@@ -1,4 +1,4 @@
-experiment_name: 'concat_attend'
+experiment_name: 'ConvsStrangeAttendConcat'
 
 num_epochs: 5000
 batch_size: 30
@@ -14,8 +14,6 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'concat_attend'
-hidden_dim: 32
-num_hidden_layers: 0
-dropout: 0.2
-max_length: 6000
+model_type: 'ConvsStrangeAttendConcat'
+model_parameters:
+  dropout: 0.25

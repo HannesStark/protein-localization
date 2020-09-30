@@ -3,26 +3,31 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class AttendFirstConcatSecond(nn.Module):
-    def __init__(self, n_conv_layers: int = 5):
-        super(AttendFirstConcatSecond, self).__init__()
+class ConvsStrangeAttendConcat(nn.Module):
+    def __init__(self, embeddings_dim: int = 1024, dropout=0.25):
+        super(ConvsStrangeAttendConcat, self).__init__()
 
-        self.conv1 = nn.Conv1d(1024, 512, 21, stride=1)
-        self.conv2 = nn.Conv1d(1024, 512, 15, stride=1)
-        self.conv3 = nn.Conv1d(1024, 512, 9, stride=1)
-        self.conv4 = nn.Conv1d(1024, 512, 5, stride=1)
-        self.conv5 = nn.Conv1d(1024, 512, 3, stride=1)
-        self.conv6 = nn.Conv1d(1024, 512, 1, stride=1)
+        self.conv1 = nn.Conv1d(embeddings_dim, 512, 21, stride=1)
+        self.conv2 = nn.Conv1d(embeddings_dim, 512, 15, stride=1)
+        self.conv3 = nn.Conv1d(embeddings_dim, 512, 9, stride=1)
+        self.conv4 = nn.Conv1d(embeddings_dim, 512, 5, stride=1)
+        self.conv5 = nn.Conv1d(embeddings_dim, 512, 3, stride=1)
+        self.conv6 = nn.Conv1d(embeddings_dim, 512, 1, stride=1)
 
-        self.attend1 = nn.Conv1d(512, 512, 1, stride=1)
-        self.attend2 = nn.Conv1d(512, 512, 1, stride=1)
-        self.attend3 = nn.Conv1d(512, 512, 1, stride=1)
-        self.attend4 = nn.Conv1d(512, 512, 1, stride=1)
-        self.attend5 = nn.Conv1d(512, 512, 1, stride=1)
-        self.attend6 = nn.Conv1d(512, 512, 1, stride=1)
+        self.attend1 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
+        self.attend2 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
+        self.attend3 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
+        self.attend4 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
+        self.attend5 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
+        self.attend6 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
 
-
-        self.output = nn.Linear(3072, 11)
+        self.linear = nn.Sequential(
+            nn.Linear(embeddings_dim * 3, 15),
+            nn.Dropout(dropout),
+            nn.ReLU(),
+            nn.BatchNorm1d(15)
+        )
+        self.output = nn.Linear(15, 11)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """

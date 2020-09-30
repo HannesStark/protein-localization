@@ -1,7 +1,7 @@
-experiment_name: 'attention_02_dropout'
+experiment_name: 'ConvsConcatStrangeAttend'
 
 num_epochs: 5000
-batch_size: 20
+batch_size: 30
 lrate: 1.0e-4
 log_iterations: 5
 
@@ -14,8 +14,6 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'attention'
-hidden_dim: 32
-num_hidden_layers: 0
-dropout: 0.2
-max_length: 6000
+model_type: 'ConvsConcatStrangeAttend'
+model_parameters:
+  dropout: 0.25
