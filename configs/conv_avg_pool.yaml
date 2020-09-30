@@ -1,7 +1,7 @@
 experiment_name: 'FirstAttention'
 
 num_epochs: 5000
-batch_size: 20
+batch_size: 2
 lrate: 1.0e-4
 log_iterations: 5
 
@@ -14,6 +14,6 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'AttendFirstConcatSecond'
+model_type: 'ConvAvgPool'
 model_parameters:
   dropout: 0.25
