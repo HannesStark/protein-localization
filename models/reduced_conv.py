@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class ReducedConv(nn.Module):
@@ -15,8 +16,8 @@ class ReducedConv(nn.Module):
         """
         super(ReducedConv, self).__init__()
 
-        self.conv1 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
-        self.conv2 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
+        self.flat_conv1 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
+        self.flat_conv2 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim // 4, hidden_dim),
@@ -35,8 +36,8 @@ class ReducedConv(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         o = x[:, None, :]
-        o = self.conv1(o)
-        o = self.conv2(o)
+        o = F.relu(self.flat_conv1(o))
+        o = F.relu(self.flat_conv2(o))
         o = o.view(x.shape[0], -1)
         o = self.linear(o)
         return self.output(o)

@@ -21,8 +21,11 @@ class ConvsStrangeAttendConcat(nn.Module):
         self.attend5 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
         self.attend6 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
 
+        self.flat_conv1 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
+        self.flat_conv2 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
+
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim * 3, 32),
+            nn.Linear(3 * embeddings_dim // 4, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
@@ -60,5 +63,10 @@ class ConvsStrangeAttendConcat(nn.Module):
         o6 = torch.sum(o6 * F.softmax(attention6, dim=-1), dim=-1)
 
         o = torch.cat([o1, o2, o3, o4, o5, o6], dim=-1)  # [batchsize, embeddingsdim*3]
+
+        o = o[:, None, :]
+        o = F.relu(self.flat_conv1(o))
+        o = F.relu(self.flat_conv2(o))
+        o = o.view(x.shape[0], -1)  # [batchsize, embeddingsdim//?]
         o = self.linear(o)
         return self.output(o)

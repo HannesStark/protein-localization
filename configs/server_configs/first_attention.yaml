@@ -1,7 +1,7 @@
-experiment_name: ''
+experiment_name: 'dropout03'
 
 num_epochs: 5000
-batch_size: 64
+batch_size: 128
 lrate: 5.0e-5
 log_iterations: 5
 
@@ -17,4 +17,4 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 model_type: 'FirstAttention'
 model_parameters:
   output_dim: 11
-  dropout: 0.25
+  dropout: 0.3
