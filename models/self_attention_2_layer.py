@@ -4,9 +4,9 @@ import torch.nn as nn
 from models.multi_head_attention import MultiHeadAttention
 
 
-class SelfAttention(nn.Module):
+class SelfAttention2Layer(nn.Module):
     def __init__(self, embeddings_dim: int = 1024, dropout=0.25, attention_dropout=0.25, n_heads=8):
-        super(SelfAttention, self).__init__()
+        super(SelfAttention2Layer, self).__init__()
 
         self.multi_head_attention1 = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads)
         self.multi_head_attention2 = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads, skip_last_linear=True)
