@@ -1,4 +1,4 @@
-experiment_name: 'simpleFFN'
+experiment_name: ''
 
 num_epochs: 5000
 batch_size: 2048

@@ -10,22 +10,22 @@ from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
 
 
 class BaseSolver():
-    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint, checkpoint_dir: str = None):
+    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint):
         self.optim = optim(list(model.parameters()), args.lrate)
         self.loss_func = loss_func
         self.args = args
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
-        if checkpoint_dir:
-            checkpoint = torch.load(os.path.join(checkpoint_dir, 'checkpoint.pt'), map_location=self.device)
-            self.writer = SummaryWriter(checkpoint_dir)
+        if args.checkpoint:
+            checkpoint = torch.load(os.path.join(args.checkpoint, 'checkpoint.pt'), map_location=self.device)
+            self.writer = SummaryWriter(args.checkpoint)
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.optim.load_state_dict(checkpoint['optimizer_state_dict'])
             self.start_epoch = checkpoint['epoch']
         else:
             self.start_epoch = 0
             self.writer = SummaryWriter(
-                'runs/{}_{}'.format(args.experiment_name, datetime.now().strftime('%d-%m_%H-%M-%S')))
+                'runs/{}_{}_{}'.format(args.model_type, args.experiment_name, datetime.now().strftime('%d-%m_%H-%M-%S')))
 
     def train(self, train_loader, val_loader):
         args = self.args

@@ -25,13 +25,13 @@ def train(args):
 
     model = globals()[args.model_type](embeddings_dim=train_set[0][0].shape[-1], **args.model_parameters)
     print('trainable params: ', sum(p.numel() for p in model.parameters() if p.requires_grad))
-    solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint, checkpoint_dir=args.checkpoint)
+    solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint)
     solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/convs_concat_strange_attend.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/reduced_conv.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')

@@ -15,12 +15,11 @@ class ReducedConv(nn.Module):
         """
         super(ReducedConv, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 3, stride=1)
-        self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, 3, stride=1)
-        self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, 3, stride=2)
+        self.conv1 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
+        self.conv2 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
 
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim, hidden_dim),
+            nn.Linear(embeddings_dim // 4, hidden_dim),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(hidden_dim)
@@ -35,13 +34,9 @@ class ReducedConv(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
-        x = x[:,None,:]
-        print(x.shape)
-        o = x
+        o = x[:, None, :]
         o = self.conv1(o)
         o = self.conv2(o)
-        o = torch.cat([o, x], dim=-1)
-        o = self.input(o)
-        for hidden_layer in self.hidden:
-            o = hidden_layer(o)
+        o = o.view(x.shape[0], -1)
+        o = self.linear(o)
         return self.output(o)

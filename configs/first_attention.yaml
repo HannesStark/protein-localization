@@ -1,8 +1,8 @@
 experiment_name: ''
 
 num_epochs: 5000
-batch_size: 10
-lrate: 1.0e-3
+batch_size: 20
+lrate: 1.0e-4
 log_iterations: 5
 
 # Paths to Data
@@ -14,8 +14,7 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'LSTM'
-hidden_dim: 40
-num_hidden_layers: 2
-dropout: 0.5
-max_length: 6000
+model_type: 'FirstAttention'
+model_parameters:
+  output_dim: 11
+  dropout: 0.25

@@ -1,4 +1,4 @@
-experiment_name: 'ConvAvgPool2'
+experiment_name: ''
 
 num_epochs: 5000
 batch_size: 30

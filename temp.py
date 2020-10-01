@@ -1,3 +1,4 @@
+import inspect
 from typing import List, Tuple
 
 import torch
@@ -91,8 +92,8 @@ class TryingDispatch():
 
 
 kwargs = {'batchsize': 5, 'n_layers': 17}
-instance = globals()['TryingDispatch'](**kwargs)
-
-print(type(instance))
-
-instance.stringprint()
+instance = TryingDispatch()
+print(inspect.getfile(ConvAvgPool))
+classname = type(instance).__name__
+model = inspect.getsource(globals()[classname])
+print(model)

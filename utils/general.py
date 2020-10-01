@@ -1,3 +1,4 @@
+import inspect
 import os
 import shutil
 from typing import List, Tuple
@@ -10,6 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sn
+from models import *  # imports all classes in the models directory
 
 LOCALIZATION = ['Cell.membrane', 'Cytoplasm', 'Endoplasmic.reticulum', 'Golgi.apparatus', 'Lysosome/Vacuole',
                 'Mitochondrion', 'Nucleus', 'Peroxisome', 'Plastid', 'Extracellular']
@@ -62,6 +64,14 @@ def experiment_checkpoint(run_directory: str, model, optimizer, epoch: int, conf
     }, os.path.join(run_directory, 'checkpoint.pt'))
     shutil.copyfile(config_path, os.path.join(run_directory, os.path.basename(config_path)))
 
+    # Sorry for this.
+    # Get the class of the used model (works because of the "from models import *" calling the init.py in the models dir)
+    model_class = globals()[type(model).__name__]
+    source_code = inspect.getsource(model_class)  # Get the sourcecode of the class of the model.
+    file_name = os.path.basename(inspect.getfile(model_class))
+    with open(os.path.join(run_directory, file_name), "w") as f:
+        f.write(source_code)
+
 
 def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
     torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -79,6 +89,7 @@ def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.
     solubility = torch.tensor([item[1] for item in batch]).float()
     embeddings = pad_sequence(embeddings, batch_first=True)
     return embeddings.permute(0, 2, 1), localization, solubility
+
 
 def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
     torch.Tensor, torch.Tensor, torch.Tensor]:

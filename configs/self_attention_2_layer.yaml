@@ -1,4 +1,4 @@
-experiment_name: 'FirstAttention'
+experiment_name: ''
 
 num_epochs: 5000
 batch_size: 20
@@ -14,7 +14,7 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'SelfAttention'
+model_type: 'SelfAttention' # the actual name of the class of the model that should be used
 model_parameters:
   dropout: 0.25
   attention_dropout: 0.25
