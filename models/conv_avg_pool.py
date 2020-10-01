@@ -7,9 +7,9 @@ class ConvAvgPool(nn.Module):
     def __init__(self, embeddings_dim: int = 1024, dropout=0.25):
         super(ConvAvgPool, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 21, stride=1)
-        self.conv2 = nn.Conv1d(embeddings_dim, 512, 21, stride=1)
-        self.conv3 = nn.Conv1d(512, 512, 3, stride=1)
+        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 3, stride=2, padding=1)
+        self.conv2 = nn.Conv1d(embeddings_dim, 512, 3, stride=2, padding=1)
+        self.conv3 = nn.Conv1d(512, 512, 3, stride=2, padding=1)
 
         self.linear = nn.Sequential(
             nn.Linear(512, 32),

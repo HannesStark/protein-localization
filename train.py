@@ -15,22 +15,23 @@ def train(args):
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.max_length, transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, transform=transform)
 
-    if len(train_set[0][0].shape) == 2: # if we have per residue embeddings they have an additional lenght dim
+    if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional lenght dim
         collate_function = padded_permuted_collate
-    else: # if we have reduced sequence wise embeddings use the default collate function by passing None
+    else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
         collate_function = None
 
-    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True,collate_fn=collate_function)
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, collate_fn=collate_function)
     val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=collate_function)
 
     model = globals()[args.model_type](embeddings_dim=train_set[0][0].shape[-1], **args.model_parameters)
+    print('trainable params: ', sum(p.numel() for p in model.parameters() if p.requires_grad))
     solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint, checkpoint_dir=args.checkpoint)
     solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/self_attention.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/convs_concat_strange_attend.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')

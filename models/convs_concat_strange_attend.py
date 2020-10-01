@@ -17,12 +17,12 @@ class ConvsConcatStrangeAttend(nn.Module):
         self.attend1 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
 
         self.linear = nn.Sequential(
-            nn.Linear(512, 15),
+            nn.Linear(512, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
-            nn.BatchNorm1d(15)
+            nn.BatchNorm1d(32)
         )
-        self.output = nn.Linear(15, 11)
+        self.output = nn.Linear(32, 11)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """

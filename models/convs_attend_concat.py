@@ -17,12 +17,12 @@ class ConvsAttendConcat(nn.Module):
         self.attend = nn.Sequential(nn.Conv1d(embeddings_dim, 512, 1, stride=1), nn.Dropout(dropout))
 
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim * 3, 15),
+            nn.Linear(embeddings_dim * 3, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
-            nn.BatchNorm1d(15)
+            nn.BatchNorm1d(32)
         )
-        self.output = nn.Linear(15, 11)
+        self.output = nn.Linear(32, 11)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
