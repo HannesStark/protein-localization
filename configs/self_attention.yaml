@@ -16,6 +16,6 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 # Model parameters
 model_type: 'SelfAttention'
 model_parameters:
-  dropout: 0.25
-  attention_dropout: 0.25
+  dropout: 0.5
+  attention_dropout: 0.5
   n_heads: 8

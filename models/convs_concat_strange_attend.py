@@ -7,19 +7,17 @@ class ConvsConcatStrangeAttend(nn.Module):
     def __init__(self, embeddings_dim: int = 1024, dropout=0.25):
         super(ConvsConcatStrangeAttend, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 21, stride=1)
-        self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, 15, stride=1)
-        self.conv3 = nn.Conv1d(embeddings_dim, embeddings_dim, 9, stride=1)
-        self.conv4 = nn.Conv1d(embeddings_dim, embeddings_dim, 5, stride=1)
-        self.conv5 = nn.Conv1d(embeddings_dim, embeddings_dim, 3, stride=1)
-        self.conv6 = nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1)
+        self.conv1 = nn.Conv1d(embeddings_dim, 512, 21, stride=1)
+        self.conv2 = nn.Conv1d(embeddings_dim, 512, 15, stride=1)
+        self.conv3 = nn.Conv1d(embeddings_dim, 512, 9, stride=1)
+        self.conv4 = nn.Conv1d(embeddings_dim, 512, 5, stride=1)
+        self.conv5 = nn.Conv1d(embeddings_dim, 512, 3, stride=1)
+        self.conv6 = nn.Conv1d(embeddings_dim, 512, 1, stride=1)
 
-        self.attend1 = nn.Sequential(nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1), nn.Dropout(dropout))
+        self.attend1 = nn.Sequential(nn.Conv1d(512, 512, 1, stride=1), nn.Dropout(dropout))
 
-        self.flat_conv1 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
-        self.flat_conv2 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim // 4, 32),
+            nn.Linear(512, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
@@ -45,12 +43,7 @@ class ConvsConcatStrangeAttend(nn.Module):
         o = torch.cat([o1, o2, o3, o4, o5, o6], dim=-1)  # [batchsize, sequence_lenght, embeddingsdim*3]
 
         attention1 = self.attend1(o)
-        o = torch.sum(o * F.softmax(attention1, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
+        o = torch.sum(o * F.softmax(attention1, dim=-1), dim=-1)  # [batchsize, embeddingsdim//512]
 
-        o = o[:, None, :]
-        o = F.relu(self.flat_conv1(o))
-        o = F.relu(self.flat_conv2(o))
-        o = o.view(x.shape[0], -1)  # [batchsize, embeddingsdim//?]
-        print(o.shape)
         o = self.linear(o)
         return self.output(o)

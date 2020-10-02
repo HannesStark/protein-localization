@@ -11,11 +11,8 @@ class SelfAttention(nn.Module):
 
         self.multi_head_attention = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads, skip_last_linear=True)
 
-        self.flat_conv1 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
-        self.flat_conv2 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
-
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim // 4, 32),
+            nn.Linear(embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
@@ -35,9 +32,6 @@ class SelfAttention(nn.Module):
 
         o, _ = self.multi_head_attention(query, x, x)  # [batch_size, 1, embeddings_dim]
         o = o.squeeze()  # [batch_size, embeddings_dim]
-        o = o[:, None, :]
-        o = F.relu(self.flat_conv1(o))
-        o = F.relu(self.flat_conv2(o))
-        o = o.view(x.shape[0], -1)  # [batchsize, embeddingsdim//?]
+
         o = self.linear(o)
         return self.output(o)

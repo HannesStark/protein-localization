@@ -28,6 +28,6 @@ class FirstAttention(nn.Module):
         """
         o = self.conv1(x)
         attention = F.softmax(o, dim=-1)
-        o = torch.sum(x * attention, dim=-1)
+        o = torch.sum(o * attention, dim=-1)
         o = self.linear(o)
         return self.output(o)
