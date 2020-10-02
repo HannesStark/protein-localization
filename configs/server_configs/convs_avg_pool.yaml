@@ -1,8 +1,8 @@
-experiment_name: 'kernel9'
+experiment_name: ''
 
 num_epochs: 5000
-batch_size: 128
-lrate: 5.0e-5
+batch_size: 16
+lrate: 1.0e-4
 log_iterations: 5
 
 # Paths to Data
@@ -14,7 +14,7 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'FirstAttention'
+model_type: 'ConvsAvgPool'
 model_parameters:
-  output_dim: 11
   dropout: 0.25
+

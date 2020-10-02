@@ -4,11 +4,11 @@ import torch.nn.functional as F
 
 
 class ConvAvgPool(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, dropout=0.25):
+    def __init__(self, embeddings_dim: int = 1024, dropout=0.25, kernel_size=7):
         super(ConvAvgPool, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 7, stride=1, padding=0)
-
+        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
+                               padding=0)
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),

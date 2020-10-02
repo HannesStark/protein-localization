@@ -1,9 +1,9 @@
-experiment_name: 'conv_output'
+experiment_name: '7'
 
 num_epochs: 5000
 batch_size: 32
 lrate: 1.0e-4
-log_iterations: 5
+log_iterations: 50
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
@@ -16,4 +16,5 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 # Model parameters
 model_type: 'ConvAvgPool'
 model_parameters:
-  dropout: 0.25
+  dropout: 0.3
+  kernel_size: 7

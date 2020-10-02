@@ -7,7 +7,7 @@ class FirstAttention(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25):
         super(FirstAttention, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1)
+        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 9, stride=1, padding=5)
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),
@@ -28,6 +28,6 @@ class FirstAttention(nn.Module):
         """
         o = self.conv1(x)
         attention = F.softmax(o, dim=-1)
-        o = torch.sum(o * attention, dim=-1)
+        o = torch.sum(x * attention, dim=-1)
         o = self.linear(o)
         return self.output(o)

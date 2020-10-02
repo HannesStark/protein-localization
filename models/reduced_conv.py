@@ -16,10 +16,12 @@ class ReducedConv(nn.Module):
         """
         super(ReducedConv, self).__init__()
 
-        self.flat_conv1 = nn.Conv1d(1, 1, 3, stride=2, padding=1)
+        self.flat_conv1 = nn.Conv1d(1, 1, 31, stride=2, padding=15)
+        self.flat_conv2 = nn.Conv1d(1, 1, 31, stride=2, padding=15)
+        self.flat_conv3 = nn.Conv1d(1, 1, 31, stride=2, padding=15)
 
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim // 2, hidden_dim),
+            nn.Linear(embeddings_dim // 8, hidden_dim),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(hidden_dim)
@@ -35,6 +37,8 @@ class ReducedConv(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         o = x[:, None, :]
+        o = F.relu(self.flat_conv1(o))
+        o = F.relu(self.flat_conv1(o))
         o = F.relu(self.flat_conv1(o))
         o = o.view(x.shape[0], -1)
         o = self.linear(o)
