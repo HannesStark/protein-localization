@@ -9,15 +9,16 @@ class SelfAttention2Layer(nn.Module):
         super(SelfAttention2Layer, self).__init__()
 
         self.multi_head_attention1 = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads)
-        self.multi_head_attention2 = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads, skip_last_linear=True)
+        self.multi_head_attention2 = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads,
+                                                        skip_last_linear=True)
 
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim, 16),
+            nn.Linear(embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
-            nn.BatchNorm1d(16)
+            nn.BatchNorm1d(32)
         )
-        self.output = nn.Linear(16, 11)
+        self.output = nn.Linear(32, 11)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -29,10 +30,11 @@ class SelfAttention2Layer(nn.Module):
         """
         x = x.permute(0, 2, 1)  # [batch_size, sequence_length, embeddings_dim]
 
-        self.multi_head_attention2()
-        query = x.mean(dim=-1)  # [batch_size, embeddings_dim]
+        o, _ = self.multi_head_attention1(x, x, x)
+        print(o.shape)
+        query = o.mean(dim=-2)  # [batch_size, embeddings_dim]
 
-        o, _ = self.multi_head_attention(query, x, x)  # [batch_size, 1, embeddings_dim]
+        o, _ = self.multi_head_attention2(query, o, o)  # [batch_size, 1, embeddings_dim]
         o = o.squeeze()  # [batch_size, embeddings_dim]
         o = self.linear(o)
         return self.output(o)

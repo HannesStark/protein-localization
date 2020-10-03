@@ -1,4 +1,4 @@
-experiment_name: ''
+experiment_name: 'Sigmoid'
 
 num_epochs: 5000
 batch_size: 32
@@ -14,7 +14,7 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'ConvsAvgPoolv2'
+model_type: 'ConvAvgPoolSigmoid'
 model_parameters:
   dropout: 0.25
-
+  kernel_size: 11

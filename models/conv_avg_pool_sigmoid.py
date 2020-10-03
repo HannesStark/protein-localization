@@ -3,19 +3,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class ConvsAvgPool(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, dropout=0.25):
-        super(ConvsAvgPool, self).__init__()
+class ConvAvgPoolSigmoid(nn.Module):
+    def __init__(self, embeddings_dim: int = 1024, dropout=0.25, kernel_size=7):
+        super(ConvAvgPoolSigmoid, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 21, stride=1)
-        self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, 15, stride=1)
-        self.conv3 = nn.Conv1d(embeddings_dim, embeddings_dim, 9, stride=1)
-
+        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
+                               padding=0)
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),
             nn.Dropout(dropout),
-            nn.ReLU(),
+            nn.Sigmoid(),
             nn.BatchNorm1d(32)
         )
         self.output = nn.Linear(32, 11)
@@ -28,14 +26,7 @@ class ConvsAvgPool(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
-
-        o1 = F.relu(self.conv1(x))  # [batchsize, embeddingsdim, seq_len]
-        o2 = F.relu(self.conv2(x))
-        o3 = F.relu(self.conv3(x))
-
-
-        o = torch.cat([o1, o2, o3], dim=-1)  # [batchsize, embeddingsdim, seq_len*6]
+        o = torch.sigmoid(self.conv1(x))
         o = torch.mean(o, dim=-1)
-
         o = self.linear(o)
         return self.output(o)

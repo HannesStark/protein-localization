@@ -14,8 +14,7 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'SelfAttention2Layer' # the actual name of the class of the model that should be used
+model_type: 'ConvsAvgPoolv2'
 model_parameters:
   dropout: 0.25
-  attention_dropout: 0.25
-  n_heads: 8
+

@@ -1,10 +1,11 @@
-experiment_name: ''
+experiment_name: 'lower_lr'
 
 num_epochs: 5000
 batch_size: 2
 lrate: 1.0e-4
-log_iterations: 5
+log_iterations: 50
 
+# Paths to Data
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
 train_remapping: 'data/embeddings/train_remapped.fasta'
@@ -14,8 +15,7 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'SelfAttention2Layer' # the actual name of the class of the model that should be used
+model_type: 'ConvAvgPool'
 model_parameters:
-  dropout: 0.25
-  attention_dropout: 0.25
-  n_heads: 8
+  dropout: 0.4
+  kernel_size: 11
