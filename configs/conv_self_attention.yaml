@@ -6,7 +6,6 @@ lrate: 1.0e-4
 log_iterations: 50
 
 # Paths to Data
-# Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
 train_remapping: 'data/embeddings/train_remapped.fasta'
 val_embeddings: 'data/embeddings/val.h5'
