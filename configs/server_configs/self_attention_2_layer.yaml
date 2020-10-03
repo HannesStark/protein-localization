@@ -1,7 +1,7 @@
 experiment_name: ''
 
 num_epochs: 5000
-batch_size: 8
+batch_size: 4
 lrate: 5.0e-5
 log_iterations: 5
 
