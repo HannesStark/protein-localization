@@ -1,9 +1,10 @@
+from models import *  # required dont remove this
+from torch.optim import *  # required dont remove this
 import argparse
 import yaml
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
-from models import *
 from datasets.transforms import *
 from models.loss_functions import cross_entropy_joint
 from solvers.base_solver import BaseSolver
@@ -23,19 +24,24 @@ def train(args):
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, collate_fn=collate_function)
     val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=collate_function)
 
+    # Needs "from models import *" to work
     model = globals()[args.model_type](embeddings_dim=train_set[0][0].shape[-1], **args.model_parameters)
     print('trainable params: ', sum(p.numel() for p in model.parameters() if p.requires_grad))
-    solver = BaseSolver(model, args, torch.optim.Adam, cross_entropy_joint)
+
+    # Needs "from torch.optim import *" to work
+    solver = BaseSolver(model, args, globals()[args.optimizer], cross_entropy_joint)
     solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/conv_self_attention.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/conv_avg_pool11_adamW.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
     p.add_argument('--lrate', type=float, default=1.0e-4, help='learning rate for training')
+    p.add_argument('--weight_decay', type=float, default=0, help='weight decay in training')
+    p.add_argument('--optimizer', type=str, default='Adam', help='Class name of torch.optim like [Adam, SGD, AdamW]')
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
     p.add_argument('--checkpoint', type=str, help='path to directory that contains a checkpoint')

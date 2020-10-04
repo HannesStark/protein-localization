@@ -1,4 +1,4 @@
-experiment_name: 'kernel9'
+experiment_name: 'kernel11'
 
 num_epochs: 5000
 batch_size: 12
@@ -18,3 +18,4 @@ model_type: 'FirstAttention'
 model_parameters:
   output_dim: 11
   dropout: 0.25
+  kernel_size: 11

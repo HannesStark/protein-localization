@@ -4,6 +4,7 @@ num_epochs: 5000
 batch_size: 2
 lrate: 1.0e-4
 log_iterations: 5
+checkpoint: 'runs/SelfAttention2Layer__03-10_10-32-16'
 
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'

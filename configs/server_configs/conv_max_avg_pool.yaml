@@ -1,4 +1,4 @@
-experiment_name: 'conv_output'
+experiment_name: '11_Dropout0.15'
 
 num_epochs: 5000
 batch_size: 32
@@ -16,5 +16,5 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 # Model parameters
 model_type: 'ConvMaxAvgPool'
 model_parameters:
-  dropout: 0.25
+  dropout: 0.15
   kernel_size: 11

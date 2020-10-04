@@ -12,6 +12,8 @@ from torch.nn.utils.rnn import pad_sequence
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import ToTensor, LabelToInt
 import pandas as pd
+import torch
+from torch.optim import *
 
 # print(dataset[0])
 
@@ -79,21 +81,25 @@ from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_sp
 from models import *
 
 
-class TryingDispatch():
-    def __init__(self, batchsize=3, n_layers=5, test=0):
-        print("initialized")
-        self.a = "teststring"
-        print(batchsize)
-        print(n_layers)
-        print(test)
+#class TryingDispatch():
+#    def __init__(self, batchsize=3, n_layers=5, test=0):
+#        print("initialized")
+#        self.a = "teststring"
+#        print(batchsize)
+#        print(n_layers)
+#        print(test)
+#
+#    def stringprint(self):
+#        print(self.a)
+#
+#
+#kwargs = {'batchsize': 5, 'n_layers': 17}
+#instance = TryingDispatch()
+#print(inspect.getfile(ConvAvgPool))
+#classname = type(instance).__name__
+#model = inspect.getsource(globals()[classname])
+#print(model)
 
-    def stringprint(self):
-        print(self.a)
+thing = globals()['Adam']()
 
-
-kwargs = {'batchsize': 5, 'n_layers': 17}
-instance = TryingDispatch()
-print(inspect.getfile(ConvAvgPool))
-classname = type(instance).__name__
-model = inspect.getsource(globals()[classname])
-print(model)
+print(type(thing))

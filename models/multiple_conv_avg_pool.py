@@ -9,7 +9,7 @@ class MultipleConvAvgPool(nn.Module):
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
                                padding=0)
-        self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
+        self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=3, stride=1,
                                padding=0)
 
         self.linear = nn.Sequential(

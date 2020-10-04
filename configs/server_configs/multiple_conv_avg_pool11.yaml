@@ -1,4 +1,4 @@
-experiment_name: ''
+experiment_name: 'kernel11and3'
 
 num_epochs: 5000
 batch_size: 32

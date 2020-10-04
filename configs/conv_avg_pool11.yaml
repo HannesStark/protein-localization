@@ -1,11 +1,12 @@
-experiment_name: 'lower_lr'
+experiment_name: 'weight_decay'
 
 num_epochs: 5000
 batch_size: 2
 lrate: 3.0e-5
 log_iterations: 50
+optimizer: Adam
+weight_decay: 0.01
 
-# Paths to Data
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
 train_remapping: 'data/embeddings/train_remapped.fasta'

@@ -1,9 +1,11 @@
-experiment_name: 'lower_lr'
+experiment_name: 'weight_decay'
 
 num_epochs: 5000
 batch_size: 32
 lrate: 3.0e-5
 log_iterations: 50
+optimizer: Adam
+weight_decay: 0.01
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
