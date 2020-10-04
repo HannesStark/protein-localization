@@ -51,9 +51,14 @@ from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_sp
 
 # retrieve_by_id('data/split3_fasta_files/downloaded_without_annotations_model_homreduced.fasta', 'data/split3_fasta_files/model_sequences.fasta',
 #               'data/split3_fasta_files/model_homreduced.fasta')
-#sum_seqvec_embeddings(
-#    ['data/seqvec_embeddings/3train.h5', 'data/seqvec_embeddings/3val.h5', 'data/seqvec_embeddings/3test.h5'],
-#    'data/seqvec_embeddings', ['train.h5', 'val.h5', 'test.h5'])
+sum_seqvec_embeddings(
+    ['/mnt/project/bio_embeddings/runs/hannes/embed_train_seqvec/embeddings/bert_embeddings/embeddings_file.h5',
+     '/mnt/project/bio_embeddings/runs/hannes/embed_val_seqvec/embeddings/bert_embeddings/embeddings_file.h5',
+     '/mnt/project/bio_embeddings/runs/hannes/embed_test_seqvec/embeddings/bert_embeddings/embeddings_file.h5'],
+    '/mnt/project/bio_embeddings/runs/hannes',
+    ['embed_train_seqvec/embeddings/bert_embeddings/embeddings_file_summed.h5',
+     'embed_val_seqvec/embeddings/bert_embeddings/embeddings_file_summed.h5',
+     'embed_test_seqvec/embeddings/bert_embeddings/embeddings_file_summed.h5'])
 # reduce_embeddings(['data/embeddings/train.h5', 'data/embeddings/val.h5','data/embeddings/test.h5'], 'data/embeddings', ['train_mean_max.h5','val_mean_max.h5','test_mean_max.h5'])
 # id_labels_list = []
 # for record in SeqIO.parse('data/embeddings/train_remapped.fasta', 'fasta'):
@@ -102,8 +107,3 @@ from models import *
 # classname = type(instance).__name__
 # model = inspect.getsource(globals()[classname])
 # print(model)
-
-embeddings_file = h5py.File('data/embeddings/train.h5', 'r')
-
-for key in embeddings_file.keys():
-    print(embeddings_file[key][:].shape)

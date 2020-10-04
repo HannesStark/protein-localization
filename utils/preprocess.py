@@ -33,6 +33,28 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
             reduced_embeddings.create_dataset(key, data=reduced)
 
 
+def sum_seqvec_embeddings(input_paths: List[str], output_dir: str, output_filenames: List[str]):
+    """
+    sums the layers of the seqvec embeddings and saves the resulting embeddings
+    Args:
+        input_paths: paths to h5 files with arrays that should summed
+        output_dir: directory where to save the files
+        output_filenames: names as which the files should be saved
+
+    Returns:
+
+    """
+    if len(input_paths) != len(output_filenames):
+        raise ValueError('You cannot have more input files than output files')
+    for i, input_path in enumerate(input_paths):
+        output_path = os.path.join(output_dir, output_filenames[i])
+        embeddings = h5py.File(input_path, 'r')
+        summed_embeddings = h5py.File(output_path, 'w')
+        for key in tqdm(embeddings.keys()):
+            embedding = embeddings[key][:]
+            summed_embeddings.create_dataset(key, data=np.sum(embedding, axis=0))
+
+
 def remove_duplicates(fasta_path: str, output_path: str):
     """removes duplicates from a fasta file and saves a new fasta file as "duplicates_removed + original_filename.fasta"
 
