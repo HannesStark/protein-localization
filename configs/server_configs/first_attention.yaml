@@ -1,9 +1,9 @@
-experiment_name: 'kernel11'
+experiment_name: 'kernel7'
 
 num_epochs: 5000
 batch_size: 128
-lrate: 5.0e-5
-log_iterations: 5
+lrate: 1.0e-4
+log_iterations: 50
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
@@ -18,4 +18,4 @@ model_type: 'FirstAttention'
 model_parameters:
   output_dim: 11
   dropout: 0.25
-  kernel_size: 11
+  kernel_size: 7

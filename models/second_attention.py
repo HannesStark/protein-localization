@@ -7,7 +7,7 @@ class SecondAttention(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size=7):
         super(SecondAttention, self).__init__()
 
-        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=4)
+        self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size//2)
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),
