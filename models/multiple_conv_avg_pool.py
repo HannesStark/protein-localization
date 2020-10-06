@@ -29,7 +29,7 @@ class MultipleConvAvgPool(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         o = F.relu(self.conv1(x))
-        o = F.relu(self.conv2(x))
+        o = F.relu(self.conv2(o))
         o = torch.mean(o, dim=-1)
         o = self.linear(o)
         return self.output(o)

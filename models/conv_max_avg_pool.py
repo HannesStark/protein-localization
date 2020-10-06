@@ -26,7 +26,7 @@ class ConvMaxAvgPool(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
-        o = F.relu(self.conv1(x))
+        o = F.relu(self.conv1(x)) # [batch_size, embeddings_dim, sequence_length - kernel_size//2]
         o1 = torch.mean(o, dim=-1)
         o2, _ = torch.max(o, dim=-1)
         o = torch.cat([o1, o2], dim=-1)

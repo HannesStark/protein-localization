@@ -1,4 +1,5 @@
 import inspect
+import struct
 from typing import List, Tuple
 
 import h5py
@@ -102,8 +103,14 @@ from models import *
 # classname = type(instance).__name__
 # model = inspect.getsource(globals()[classname])
 # print(model)
+import tensorflow as tf
 
-embeddings_file = h5py.File('data/embeddings/train.h5', 'r')
 
-for key in embeddings_file.keys():
-    print(embeddings_file[key][:].shape)
+from tensorflow.python.lib.io import tf_record
+from tensorflow.python.framework import tensor_util
+accs = []
+for e in tf_record.tf_record_iterator('runs/.ex4/ConvMaxAvgPool_9adamW_05-10_18-40-09/Epoch Accuracy_val acc/events.out.tfevents.1601916102.lsf-server-2.15446.2'):
+    accs.append(e)
+print(len(accs))
+print(accs[0])
+print(struct.unpack('f', accs[0]))
