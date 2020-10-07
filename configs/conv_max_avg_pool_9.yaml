@@ -1,9 +1,9 @@
-experiment_name: 'kernel9_fullAttention'
+experiment_name: '9'
 
 num_epochs: 5000
-batch_size: 2
+batch_size: 14
 lrate: 1.0e-4
-log_iterations: 50
+log_iterations: 2
 
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
@@ -14,9 +14,7 @@ test_embeddings: 'data/embeddings/test.h5'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'ConvSelfAttention'
+model_type: 'ConvMaxAvgPool'
 model_parameters:
   dropout: 0.25
-  attention_dropout: 0.25
-  n_heads: 8
   kernel_size: 9

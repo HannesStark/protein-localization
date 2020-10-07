@@ -1,7 +1,7 @@
-experiment_name: ''
+experiment_name: 'kernel9_fullAttention'
 
 num_epochs: 5000
-batch_size: 32
+batch_size: 4
 lrate: 1.0e-4
 log_iterations: 50
 
@@ -16,7 +16,7 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 # Model parameters
 model_type: 'ConvSelfAttention'
 model_parameters:
-  dropout: 0.5
-  attention_dropout: 0.5
+  dropout: 0.25
+  attention_dropout: 0.25
   n_heads: 8
-  kernel_size: 11
+  kernel_size: 9

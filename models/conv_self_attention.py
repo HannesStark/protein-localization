@@ -15,7 +15,7 @@ class ConvSelfAttention(nn.Module):
                                                        skip_last_linear=True)
 
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim, 32),
+            nn.Linear(2 * embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
@@ -32,12 +32,11 @@ class ConvSelfAttention(nn.Module):
         """
         o = F.relu(self.conv1(x))
 
-
-        query = torch.mean(o, dim=-1)  # [batch_size, embeddings_dim]
         o = o.permute(0, 2, 1)  # [batch_size, sequence_length, embeddings_dim]
 
-        o, _ = self.multi_head_attention(query, o, o)  # [batch_size, 1, embeddings_dim]
-        o = o.squeeze()  # [batch_size, embeddings_dim]
-
+        o, _ = self.multi_head_attention(o, o, o)  # [batch_size, seq_len , embeddings_dim]
+        o1 = torch.mean(o, dim=-2)
+        o2, _ = torch.max(o, dim=-2)
+        o = torch.cat([o1, o2], dim=-1)
         o = self.linear(o)
         return self.output(o)
