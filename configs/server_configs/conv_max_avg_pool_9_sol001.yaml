@@ -1,10 +1,10 @@
-experiment_name: '9'
+experiment_name: '9_solubility001'
 
 num_epochs: 5000
 batch_size: 64
 lrate: 1.0e-4
 log_iterations: 100
-solubility_loss: 0
+solubility_loss: 0.01
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
