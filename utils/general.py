@@ -73,22 +73,24 @@ def experiment_checkpoint(run_directory: str, model, optimizer, epoch: int, conf
         f.write(source_code)
 
 
-def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
-    torch.Tensor, torch.Tensor, torch.Tensor]:
+def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]]) -> Tuple[
+    torch.Tensor, torch.Tensor, torch.Tensor, dict]:
     """
     Takes list of tuples with embeddings of variable sizes and pads them with zeros
     Args:
         batch: list of tuples with embeddings and the corresponding label
 
     Returns: tuple of tensor of embeddings with [batchsize, length_of_longest_sequence, embeddings_dim]
-    and tensor of labels [batchsize, labels_dim]
+    and tensor of labels [batchsize, labels_dim] and metadate collated according to default collate
 
     """
     embeddings = [item[0] for item in batch]
     localization = torch.tensor([item[1] for item in batch])
-    solubility = torch.tensor([item[1] for item in batch]).float()
+    solubility = torch.tensor([item[2] for item in batch]).float()
+    metadata = [item[3] for item in batch]
+    metadata = torch.utils.data.dataloader.default_collate(metadata)
     embeddings = pad_sequence(embeddings, batch_first=True)
-    return embeddings.permute(0, 2, 1), localization, solubility
+    return embeddings.permute(0, 2, 1), localization, solubility, metadata
 
 
 def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
