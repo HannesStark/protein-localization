@@ -31,7 +31,9 @@ class EmbeddingsLocalizationDataset(Dataset):
             localization = record.description.split(' ')[2].split('-')[0]
             solubility = record.description.split(' ')[2].split('-')[-1]
             if len(record.seq) <= max_length:
-                metadata = {'id': record.id, 'sequence': record.seq, 'solubility_known': not (solubility=='U')}
+                metadata = {'id': str(record.id),
+                            'sequence': str(record.seq),
+                            'solubility_known': 0 if solubility == 'U' else 1}
                 self.localization_solubility_metadata_list.append(
                     {'localization': localization, 'solubility': solubility, 'metadata': metadata})
 

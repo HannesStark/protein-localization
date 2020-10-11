@@ -25,7 +25,8 @@ class BaseSolver():
         else:
             self.start_epoch = 0
             self.writer = SummaryWriter(
-                'runs/{}_{}_{}'.format(args.model_type, args.experiment_name, datetime.now().strftime('%d-%m_%H-%M-%S')))
+                'runs/{}_{}_{}'.format(args.model_type, args.experiment_name,
+                                       datetime.now().strftime('%d-%m_%H-%M-%S')))
 
     def train(self, train_loader, val_loader):
         args = self.args
@@ -38,10 +39,10 @@ class BaseSolver():
             train_loss = 0
             for i, batch in enumerate(train_loader):
                 embedding, loc, sol, metadata = batch  # get localization and solubility label
-                embedding, loc, sol = embedding.to(self.device), loc.to(self.device), sol.to(self.device)
-
+                embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
+                                                 metadata['solubility_known'].to(self.device)
                 prediction = self.model(embedding)
-                loss = self.loss_func(prediction, loc, sol, args)
+                loss = self.loss_func(prediction, loc, sol, sol_known, args)
                 loss.backward()
                 self.optim.step()
                 self.optim.zero_grad()
@@ -61,11 +62,12 @@ class BaseSolver():
             val_loss = 0
             for i, batch in enumerate(val_loader):
                 embedding, loc, sol, metadata = batch  # get localization and solubility label
-                embedding, loc, sol = embedding.to(self.device), loc.to(self.device), sol.to(self.device)
+                embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
+                                                 metadata['solubility_known'].to(self.device)
                 with torch.no_grad():
                     prediction = self.model(embedding)
 
-                    loss = self.loss_func(prediction, loc, sol, args)
+                    loss = self.loss_func(prediction, loc, sol, sol_known, args)
                     prediction = torch.max(prediction[..., :10], dim=1)[
                         1]  # get indices of the highest value in the prediction
                     val_results.append(torch.stack((prediction, loc), dim=1).data.detach().cpu().numpy())
