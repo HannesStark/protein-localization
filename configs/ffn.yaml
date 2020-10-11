@@ -6,14 +6,14 @@ lrate: 1.0e-4
 #checkpoint: 'runs/max_avg_dropout05_27-09_08-49-02'
 
 # Paths to mean reduced
-#train_embeddings: 'data/embeddings/train_reduced.h5'
-#val_embeddings: 'data/embeddings/val_reduced.h5'
-#test_embeddings: 'data/embeddings/test_reduced.h5'
+train_embeddings: 'data/embeddings/train_reduced.h5'
+val_embeddings: 'data/embeddings/val_reduced.h5'
+test_embeddings: 'data/embeddings/test_reduced.h5'
 
 # Paths to mean_max reduced
-train_embeddings: 'data/embeddings/train_mean_max.h5'
-val_embeddings: 'data/embeddings/val_mean_max.h5'
-test_embeddings: 'data/embeddings/test_mean_max.h5'
+#train_embeddings: 'data/embeddings/train_mean_max.h5'
+#val_embeddings: 'data/embeddings/val_mean_max.h5'
+#test_embeddings: 'data/embeddings/test_mean_max.h5'
 
 train_remapping: 'data/embeddings/train_remapped.fasta'
 val_remapping: 'data/embeddings/val_remapped.fasta'
@@ -25,4 +25,4 @@ model_parameters:
   output_dim: 11
   hidden_dim: 32
   n_hidden_layers: 0
-  dropout: 0.5
+  dropout: 0.25

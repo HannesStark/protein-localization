@@ -37,7 +37,7 @@ class BaseSolver():
             train_results = []  # prediction and corresponding localization
             train_loss = 0
             for i, batch in enumerate(train_loader):
-                embedding, loc, sol = batch  # get localization and solubility label
+                embedding, loc, sol, metadata = batch  # get localization and solubility label
                 embedding, loc, sol = embedding.to(self.device), loc.to(self.device), sol.to(self.device)
 
                 prediction = self.model(embedding)
@@ -60,7 +60,7 @@ class BaseSolver():
             val_results = []  # prediction and corresponding loc
             val_loss = 0
             for i, batch in enumerate(val_loader):
-                embedding, loc, sol = batch  # get localization and solubility label
+                embedding, loc, sol, metadata = batch  # get localization and solubility label
                 embedding, loc, sol = embedding.to(self.device), loc.to(self.device), sol.to(self.device)
                 with torch.no_grad():
                     prediction = self.model(embedding)

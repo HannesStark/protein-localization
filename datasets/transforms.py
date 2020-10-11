@@ -56,7 +56,8 @@ class AvgMaxPool():
 
 class LabelToInt():
     """
-    Turn string localization of localization into an integer
+    Turn string localization of localization into an integer and  solubility into 0 for membrane bound OR UNKNOWN
+    or 1 for soluble
     """
 
     def __init__(self):
@@ -65,8 +66,10 @@ class LabelToInt():
     def __call__(self, sample: Tuple[np.ndarray, str, str]) -> Tuple[np.ndarray, int, int]:
         embedding, localization, solubility = sample
         localization = LOCALIZATION.index(localization)  # get localization as integer
-        # solubility = SOLUBILITY.index(solubility)  # get solubility as integer
-        solubility = 1 # quick hack because many proteins have unknown solubility
+        if solubility == 'U': # if solubility is unknown return 0 as well.
+            solubility = 0
+        else:
+            solubility = SOLUBILITY.index(solubility)  # get solubility as integer
         return embedding, localization, solubility
 
 

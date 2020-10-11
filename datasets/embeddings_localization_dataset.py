@@ -26,15 +26,16 @@ class EmbeddingsLocalizationDataset(Dataset):
         super().__init__()
         self.transform = transform
         self.embeddings_file = h5py.File(embeddings_path, 'r')
-        self.id_localization_solubility_list = []
+        self.localization_solubility_metadata_list = []
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
             localization = record.description.split(' ')[2].split('-')[0]
             solubility = record.description.split(' ')[2].split('-')[-1]
             if len(record.seq) <= max_length:
-                self.id_localization_solubility_list.append(
-                    {'id': record.id, 'localization': localization, 'solubility': solubility})
+                metadata = {'id': record.id, 'sequence': record.seq, 'solubility_known': not (solubility=='U')}
+                self.localization_solubility_metadata_list.append(
+                    {'localization': localization, 'solubility': solubility, 'metadata': metadata})
 
-    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]:
         """retrieve single sample from the dataset
 
         Args:
@@ -44,14 +45,16 @@ class EmbeddingsLocalizationDataset(Dataset):
             embedding: either a one dimensional Tensor [embedding_size] if the provided embeddings_path is of reduced
             embeddings or [length_of_sequence, embeddings_size] if the h5 file contains non reduced embeddings
             localization: localization in the format specified by the given transform.
+            solubility: solubility as specified by a transform.
         """
-        id_localization_solubility = self.id_localization_solubility_list[index]
-        embedding = self.embeddings_file[id_localization_solubility['id']][:]
+        localization_solubility_metadata = self.localization_solubility_metadata_list[index]
+        embedding = self.embeddings_file[localization_solubility_metadata['metadata']['id']][:]
 
         embedding, localization, solubility = self.transform(
-            (embedding, id_localization_solubility['localization'], id_localization_solubility['solubility']))
+            (embedding, localization_solubility_metadata['localization'],
+             localization_solubility_metadata['solubility']))
 
-        return embedding, localization, solubility
+        return embedding, localization, solubility, localization_solubility_metadata['metadata']
 
     def __len__(self) -> int:
-        return len(self.id_localization_solubility_list)
+        return len(self.localization_solubility_metadata_list)
