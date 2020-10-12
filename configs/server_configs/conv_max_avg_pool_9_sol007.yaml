@@ -1,4 +1,4 @@
-experiment_name: '9_solubility007'
+experiment_name: '9_sol007'
 
 num_epochs: 5000
 batch_size: 64

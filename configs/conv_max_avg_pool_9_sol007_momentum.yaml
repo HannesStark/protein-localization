@@ -1,13 +1,13 @@
-experiment_name: '9'
+experiment_name: '9sol007_Momentum'
 
 num_epochs: 5000
-batch_size: 3
-log_iterations: 5
-solubility_loss: 0
-optimizer: AdamW
+batch_size: 2
+log_iterations: 3
+solubility_loss: 0.07
+optimizer: SGD
 optimizer_parameters:
   lr: 1.0e-4
-  weight_decay: 0.01
+  momentum: 0.9
 
 # Paths to data
 train_embeddings: 'data/embeddings/train.h5'
