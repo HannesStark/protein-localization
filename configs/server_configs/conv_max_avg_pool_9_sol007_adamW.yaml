@@ -1,7 +1,7 @@
 experiment_name: '9sol007_adamW'
 
 num_epochs: 5000
-batch_size: 1024
+batch_size: 512
 log_iterations: 100
 solubility_loss: 0.07
 optimizer: AdamW
