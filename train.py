@@ -39,9 +39,8 @@ def parse_arguments():
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
-    p.add_argument('--lrate', type=float, default=1.0e-4, help='learning rate for training')
-    p.add_argument('--weight_decay', type=float, default=0, help='weight decay in training')
     p.add_argument('--optimizer', type=str, default='Adam', help='Class name of torch.optim like [Adam, SGD, AdamW]')
+    p.add_argument('--optimizer_parameters', type=dict, help='parameters with keywords of the chosen optimizer like lr')
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
     p.add_argument('--checkpoint', type=str, help='path to directory that contains a checkpoint')

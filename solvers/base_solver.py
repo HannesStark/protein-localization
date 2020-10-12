@@ -11,7 +11,7 @@ from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
 
 class BaseSolver():
     def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint):
-        self.optim = optim(list(model.parameters()), args.lrate, weight_decay=args.weight_decay)
+        self.optim = optim(list(model.parameters()), **args.optimizer_parameters)
         self.loss_func = loss_func
         self.args = args
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")

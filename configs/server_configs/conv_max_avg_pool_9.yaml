@@ -2,7 +2,8 @@ experiment_name: '9'
 
 num_epochs: 5000
 batch_size: 64
-lrate: 1.0e-4
+optimizer_parameters:
+  lr: 1.0e-4
 log_iterations: 100
 solubility_loss: 0
 

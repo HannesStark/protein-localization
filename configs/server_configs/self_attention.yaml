@@ -2,7 +2,8 @@ experiment_name: 'dropout05'
 
 num_epochs: 5000
 batch_size: 128
-lrate: 1.0e-4
+optimizer_parameters:
+  lr: 1.0e-4
 log_iterations: 50
 
 # Paths to Data
