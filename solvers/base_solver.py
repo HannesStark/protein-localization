@@ -36,30 +36,32 @@ class BaseSolver():
         for epoch in range(self.start_epoch, args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
             train_results = []  # prediction and corresponding localization
-            train_loss = 0
+            train_loc_loss = 0
+            train_sol_loss = 0
             for i, batch in enumerate(train_loader):
                 embedding, loc, sol, metadata = batch  # get localization and solubility label
                 embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
                                                  metadata['solubility_known'].to(self.device)
                 prediction = self.model(embedding)
-                loss = self.loss_func(prediction, loc, sol, sol_known, args)
+                loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
                 loss.backward()
                 self.optim.step()
                 self.optim.zero_grad()
 
-                prediction = torch.max(prediction[..., :10], dim=1)[
-                    1]  # get indices of the highest value in the prediction
+                prediction = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
                 train_results.append(torch.stack((prediction, loc), dim=1).detach().cpu().numpy())
-                loss_item = loss.item()
-                train_loss += loss_item
+                loc_loss_item = loc_loss.item()
+                train_loc_loss += loc_loss_item
+                train_sol_loss += sol_loss.item()
                 if i % args.log_iterations == args.log_iterations - 1:  # log every log_iterations
-                    print('[Epoch %d, Iter %5d/%5d] TRAIN loss: %.7f,TRAIN accuracy: %.4f%%' % (
-                        epoch + 1, i + 1, t_iters, loss_item,
+                    print('[Epoch %d, Iter %5d/%5d] TRAIN localization loss: %.7f,TRAIN accuracy: %.4f%%' % (
+                        epoch + 1, i + 1, t_iters, loc_loss_item,
                         100 * (prediction == loc).sum().item() / args.batch_size))
 
             self.model.eval()
             val_results = []  # prediction and corresponding loc
-            val_loss = 0
+            val_loc_loss = 0
+            val_sol_loss = 0
             for i, batch in enumerate(val_loader):
                 embedding, loc, sol, metadata = batch  # get localization and solubility label
                 embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
@@ -67,11 +69,11 @@ class BaseSolver():
                 with torch.no_grad():
                     prediction = self.model(embedding)
 
-                    loss = self.loss_func(prediction, loc, sol, sol_known, args)
-                    prediction = torch.max(prediction[..., :10], dim=1)[
-                        1]  # get indices of the highest value in the prediction
+                    loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
+                    prediction = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
                     val_results.append(torch.stack((prediction, loc), dim=1).data.detach().cpu().numpy())
-                    val_loss += loss.item()
+                    val_loc_loss += loc_loss.item()
+                    val_sol_loss += sol_loss.item()
 
             train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and loc
             val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and loc
@@ -82,8 +84,10 @@ class BaseSolver():
 
             # write to tensorboard
             tensorboard_confusion_matrix(train_results, val_results, self.writer, epoch + 1)
-            self.writer.add_scalars('Epoch Accuracy', {'train acc': train_acc, 'val acc': val_acc}, epoch + 1)
-            self.writer.add_scalars('Epoch Loss', {'train loss': train_loss / t_iters, 'val loss': val_loss / v_iters},
+            self.writer.add_scalars('Loc_Acc', {'train': train_acc, 'val': val_acc}, epoch + 1)
+            self.writer.add_scalars('Loc_Loss', {'train': train_loc_loss / t_iters, 'val': val_loc_loss / v_iters},
                                     epoch + 1)
+            if args.solubility_loss != 0:
+                self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
 
             experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args.config.name)

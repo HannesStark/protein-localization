@@ -1,0 +1,24 @@
+experiment_name: '9'
+
+num_epochs: 5000
+batch_size: 3
+log_iterations: 5
+solubility_loss: 0
+optimizer: AdamW
+optimizer_parameters:
+  lr: 1.0e-4
+  weight_decay: 0.01
+
+# Paths to mean reduced
+train_embeddings: 'data/embeddings/train.h5'
+val_embeddings: 'data/embeddings/val.h5'
+test_embeddings: 'data/embeddings/test.h5'
+train_remapping: 'data/embeddings/train_remapped.fasta'
+val_remapping: 'data/embeddings/val_remapped.fasta'
+test_remapping: 'data/embeddings/test_remapped.fasta'
+
+# Model parameters
+model_type: 'ConvMaxAvgPool'
+model_parameters:
+  dropout: 0.25
+  kernel_size: 9

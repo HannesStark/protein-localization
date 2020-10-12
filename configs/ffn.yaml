@@ -1,10 +1,10 @@
 experiment_name: ''
 
-num_epochs: 5000
+num_epochs: 10000
 batch_size: 2048
 optimizer_parameters:
   lr: 1.0e-4
-solubility_loss: 0.4
+solubility_loss: 0.3
 #checkpoint: 'runs/max_avg_dropout05_27-09_08-49-02'
 
 # Paths to mean reduced
