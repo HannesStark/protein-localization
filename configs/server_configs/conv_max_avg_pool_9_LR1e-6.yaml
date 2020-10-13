@@ -1,11 +1,11 @@
-experiment_name: '9_sol007_LR5e-6'
+experiment_name: '9_lr5e-6'
 
 num_epochs: 5000
 batch_size: 256
 log_iterations: 100
-solubility_loss: 0.07
+solubility_loss: 0
 optimizer_parameters:
-  lr: 5.0e-6
+  lr: 1.0e-6
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'

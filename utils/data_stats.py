@@ -4,7 +4,7 @@ from Bio import SeqIO
 import pandas as pd
 import matplotlib.pyplot as plt
 
-fasta_path = '../data/fasta_files/test_as_per_deeploc.fasta'
+fasta_path = '../data/fasta_files/train.fasta'
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
     color = 'orange'
@@ -14,11 +14,13 @@ else:
 identifiers = []
 labels = []
 sequences = []
+solubility = []
 for record in SeqIO.parse(fasta_path, "fasta"):
     identifiers.append(record.id)
     labels.append(record.description.split(' ')[1].split('-')[0])
     sequences.append(str(record.seq))
-df = pd.DataFrame(list(zip(identifiers, labels, sequences)), columns=['identifier', 'label', 'seq'])
+    solubility.append(record.description.split(' ')[1].split('-')[-1])
+df = pd.DataFrame(list(zip(identifiers, labels, solubility, sequences)), columns=['identifier', 'solubility', 'label', 'seq'])
 df['length'] = df['seq'].apply(lambda x: len(x))
 
 print(df.describe())
