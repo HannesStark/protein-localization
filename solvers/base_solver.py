@@ -54,7 +54,7 @@ class BaseSolver():
 
             if val_acc >= maximum_accuracy:  # save the model with the best accuracy
                 maximum_accuracy = val_acc
-                experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args.config.name)
+                experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args)
 
     def predict(self, data_loader: DataLoader, epoch: int = None, optim: torch.optim.Optimizer = None) -> \
             Tuple[float, float, np.ndarray]:

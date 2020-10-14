@@ -1,9 +1,11 @@
+import copy
 import inspect
 import os
 import shutil
 from typing import List, Tuple
 
 import numpy as np
+import pyaml
 import torch
 from sklearn.metrics import confusion_matrix
 from torch.nn.utils.rnn import pad_sequence
@@ -47,14 +49,14 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     writer.add_figure('Confusion Matrix ', fig, global_step=step)
 
 
-def experiment_checkpoint(run_directory: str, model, optimizer, epoch: int, config_path: str):
+def experiment_checkpoint(run_directory: str, model, optimizer, epoch: int, args):
     """
     Saves state dict of model and the used config file to the run_directory
     Args:
         run_directory: where to save
         model: pytorch nn.Module model
         optimizer:
-        config_path: path to the config file that was used for this run
+        args: namespace to be saved with the argumetns
 
     """
     torch.save({
@@ -62,7 +64,10 @@ def experiment_checkpoint(run_directory: str, model, optimizer, epoch: int, conf
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
     }, os.path.join(run_directory, 'checkpoint.pt'))
-    shutil.copyfile(config_path, os.path.join(run_directory, os.path.basename(config_path)))
+    train_args = copy.copy(args)
+    train_args.config = train_args.config.name
+    pyaml.dump(train_args.__dict__, open(os.path.join(run_directory, 'train_arguments.yaml'), 'w'))
+    shutil.copyfile(args.config.name, os.path.join(run_directory, os.path.basename(args.config.name)))
 
     # Sorry for this.
     # Get the class of the used model (works because of the "from models import *" calling the init.py in the models dir)
