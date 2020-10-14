@@ -24,14 +24,16 @@ def inference(args):
     # Needs "from models import *" to work
     model = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
 
-    # Needs "from torch.optim import *" to work
-    solver = BaseSolver(model, args, globals()[args.optimizer], cross_entropy_joint)
-    solver.train(train_loader, val_loader)
+    solver = BaseSolver(model, args, loss_func=cross_entropy_joint)
+    loc_loss, sol_loss, results = solver.predict(data_loader)
+
+
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/conv_max_avg_pool_9_sol007_momentum.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'),
+                   default='configs/conv_max_avg_pool_9_sol007_momentum.yaml')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')

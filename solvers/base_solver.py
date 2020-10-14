@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 
 import torch
 import numpy as np
@@ -40,9 +41,6 @@ class BaseSolver():
             with torch.no_grad():
                 val_loc_loss, val_sol_loss, val_results = self.predict(val_loader, epoch + 1)
 
-            train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and loc
-            val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and loc
-
             train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
             print('[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (epoch + 1, val_acc, train_acc))
@@ -58,7 +56,8 @@ class BaseSolver():
                 maximum_accuracy = val_acc
                 experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args.config.name)
 
-    def predict(self, data_loader: DataLoader, epoch: int = None, optim: torch.optim.Optimizer = None):
+    def predict(self, data_loader: DataLoader, epoch: int = None, optim: torch.optim.Optimizer = None) -> \
+            Tuple[float, float, np.ndarray]:
         """
         get predictions for data in dataloader and do backpropagation if an optimizer is provided
         Args:
@@ -69,7 +68,7 @@ class BaseSolver():
         Returns:
             loc_loss: the average of the localization loss accross all batches
             sol_loss: the average of the solubility loss across all batches
-            resutls: the localization predictions
+            results: localizations # [n_train_proteins, 2] predictions in first and loc in second position
         """
         args = self.args
         results = []  # prediction and corresponding localization
@@ -101,4 +100,4 @@ class BaseSolver():
 
         running_loc_loss /= len(data_loader)
         running_sol_loss /= len(data_loader)
-        return running_loc_loss, running_sol_loss, results
+        return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] prediction and loc
