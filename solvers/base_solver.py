@@ -2,6 +2,7 @@ import os
 
 import torch
 import numpy as np
+from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
@@ -30,51 +31,14 @@ class BaseSolver():
 
     def train(self, train_loader, val_loader):
         args = self.args
-        t_iters = len(train_loader)  # number of iterations in training loop
-        v_iters = (len(val_loader) or not len(val_loader))  # number of iterations in validation loop or 1 if it's empty
-
-        running_acc = 0 # running accuracy to decide whether or not a new model should be saved
+        maximum_accuracy = 0  # running accuracy to decide whether or not a new model should be saved
         for epoch in range(self.start_epoch, args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
-            train_results = []  # prediction and corresponding localization
-            train_loc_loss = 0
-            train_sol_loss = 0
-            for i, batch in enumerate(train_loader):
-                embedding, loc, sol, metadata = batch  # get localization and solubility label
-                embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
-                                                 metadata['solubility_known'].to(self.device)
-                prediction = self.model(embedding)
-                loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
-                loss.backward()
-                self.optim.step()
-                self.optim.zero_grad()
-
-                prediction = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
-                train_results.append(torch.stack((prediction, loc), dim=1).detach().cpu().numpy())
-                loc_loss_item = loc_loss.item()
-                train_loc_loss += loc_loss_item
-                train_sol_loss += sol_loss.item()
-                if i % args.log_iterations == args.log_iterations - 1:  # log every log_iterations
-                    print('[Epoch %d, Iter %5d/%5d] TRAIN localization loss: %.7f,TRAIN accuracy: %.4f%%' % (
-                        epoch + 1, i + 1, t_iters, loc_loss_item,
-                        100 * (prediction == loc).sum().item() / args.batch_size))
+            train_loc_loss, train_sol_loss, train_results = self.predict(train_loader, epoch + 1, optim=self.optim)
 
             self.model.eval()
-            val_results = []  # prediction and corresponding loc
-            val_loc_loss = 0
-            val_sol_loss = 0
-            for i, batch in enumerate(val_loader):
-                embedding, loc, sol, metadata = batch  # get localization and solubility label
-                embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
-                                                 metadata['solubility_known'].to(self.device)
-                with torch.no_grad():
-                    prediction = self.model(embedding)
-
-                    loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
-                    prediction = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
-                    val_results.append(torch.stack((prediction, loc), dim=1).data.detach().cpu().numpy())
-                    val_loc_loss += loc_loss.item()
-                    val_sol_loss += sol_loss.item()
+            with torch.no_grad():
+                val_loc_loss, val_sol_loss, val_results = self.predict(val_loader, epoch + 1)
 
             train_results = np.concatenate(train_results)  # [number_train_proteins, 2] prediction and loc
             val_results = np.concatenate(val_results)  # [number_val_proteins, 2] prediction and loc
@@ -86,11 +50,55 @@ class BaseSolver():
             # write to tensorboard
             tensorboard_confusion_matrix(train_results, val_results, self.writer, epoch + 1)
             self.writer.add_scalars('Loc_Acc', {'train': train_acc, 'val': val_acc}, epoch + 1)
-            self.writer.add_scalars('Loc_Loss', {'train': train_loc_loss / t_iters, 'val': val_loc_loss / v_iters},
-                                    epoch + 1)
+            self.writer.add_scalars('Loc_Loss', {'train': train_loc_loss, 'val': val_loc_loss}, epoch + 1)
             if args.solubility_loss != 0:
                 self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
 
-            if val_acc >= running_acc: # save the model with the best accuracy
-                running_acc = val_acc
+            if val_acc >= maximum_accuracy:  # save the model with the best accuracy
+                maximum_accuracy = val_acc
                 experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args.config.name)
+
+    def predict(self, data_loader: DataLoader, epoch: int = None, optim: torch.optim.Optimizer = None):
+        """
+        get predictions for data in dataloader and do backpropagation if an optimizer is provided
+        Args:
+            data_loader: pytorch dataloader from which the batches will be taken
+            epoch: optional parameter for logging
+            optim: pytorch optimiz. If this is none, no backpropagation is done
+
+        Returns:
+            loc_loss: the average of the localization loss accross all batches
+            sol_loss: the average of the solubility loss across all batches
+            resutls: the localization predictions
+        """
+        args = self.args
+        results = []  # prediction and corresponding localization
+        running_loc_loss = 0
+        running_sol_loss = 0
+        for i, batch in enumerate(data_loader):
+            embedding, loc, sol, metadata = batch  # get localization and solubility label
+            embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
+                                             metadata['solubility_known'].to(self.device)
+
+            prediction = self.model(embedding)
+            loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
+            if optim:  # run backpropagation if an optimizer is provided
+                loss.backward()
+                self.optim.step()
+                self.optim.zero_grad()
+
+            prediction = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
+            results.append(torch.stack((prediction, loc), dim=1).detach().cpu().numpy())
+            loc_loss_item = loc_loss.item()
+            running_loc_loss += loc_loss_item
+            running_sol_loss += sol_loss.item()
+            if i % args.log_iterations == args.log_iterations - 1:  # log every log_iterations
+                if epoch:
+                    print('Epoch %d ' % (epoch), end=' ')
+                print('[Iter %5d/%5d] %s: loc loss: %.7f, loc accuracy: %.4f%%' % (
+                    i + 1, len(data_loader), 'Train' if optim else 'Val', loc_loss_item,
+                    100 * (prediction == loc).sum().item() / args.batch_size))
+
+        running_loc_loss /= len(data_loader)
+        running_sol_loss /= len(data_loader)
+        return running_loc_loss, running_sol_loss, results

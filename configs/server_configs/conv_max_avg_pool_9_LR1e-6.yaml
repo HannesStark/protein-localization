@@ -1,4 +1,4 @@
-experiment_name: '9_lr5e-6'
+experiment_name: '9_lr1e-6'
 
 num_epochs: 5000
 batch_size: 256
