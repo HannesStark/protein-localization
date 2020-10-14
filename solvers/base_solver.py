@@ -33,6 +33,7 @@ class BaseSolver():
         t_iters = len(train_loader)  # number of iterations in training loop
         v_iters = (len(val_loader) or not len(val_loader))  # number of iterations in validation loop or 1 if it's empty
 
+        running_acc = 0 # running accuracy to decide whether or not a new model should be saved
         for epoch in range(self.start_epoch, args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
             train_results = []  # prediction and corresponding localization
@@ -90,4 +91,6 @@ class BaseSolver():
             if args.solubility_loss != 0:
                 self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
 
-            experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args.config.name)
+            if val_acc >= running_acc: # save the model with the best accuracy
+                running_acc = val_acc
+                experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args.config.name)
