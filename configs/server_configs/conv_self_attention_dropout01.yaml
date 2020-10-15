@@ -1,7 +1,7 @@
 experiment_name: '9_dropout01'
 
 num_epochs: 5000
-batch_size: 256
+batch_size: 150
 log_iterations: 50
 optimizer_parameters:
   lr: 5.0e-6
