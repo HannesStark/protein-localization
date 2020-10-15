@@ -1,4 +1,4 @@
-experiment_name: '9'
+experiment_name: '9_dropout01'
 
 num_epochs: 5000
 batch_size: 256
@@ -18,6 +18,6 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 model_type: 'ConvSelfAttention'
 model_parameters:
   dropout: 0.25
-  attention_dropout: 0.25
+  attention_dropout: 0.1
   n_heads: 1
   kernel_size: 9

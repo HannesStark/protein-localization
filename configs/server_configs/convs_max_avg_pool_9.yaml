@@ -1,8 +1,9 @@
-experiment_name: '9'
+experiment_name: 'convs'
 
 num_epochs: 5000
-batch_size: 256
-log_iterations: 50
+batch_size: 128
+log_iterations: 100
+solubility_loss: 0
 optimizer_parameters:
   lr: 5.0e-6
 
@@ -15,9 +16,7 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'ConvSelfAttention'
+model_type: 'ConvsMaxAvgPool'
 model_parameters:
   dropout: 0.25
-  attention_dropout: 0.25
-  n_heads: 1
-  kernel_size: 9
+

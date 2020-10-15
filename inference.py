@@ -1,6 +1,8 @@
 import glob
 import os
 
+from sklearn.metrics import matthews_corrcoef
+
 from models import *  # required dont remove this
 from torch.optim import *  # required dont remove this
 import argparse
@@ -26,6 +28,7 @@ def inference(args):
 
     # Needs "from models import *" to work
     model = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
+    model.eval()
 
     # Needs "from torch.optim import *" to work
     solver = BaseSolver(model, args, globals()[args.optimizer], cross_entropy_joint)
@@ -33,15 +36,20 @@ def inference(args):
     with torch.no_grad():
         loc_loss, sol_loss, results = solver.predict(data_loader)
 
+    accuracy = 100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results)
+    mcc = matthews_corrcoef(results[:, 1], results[:, 0])
+    print(mcc)
+    print(accuracy)
+
 
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/FFN__14-10_10-25-11',
+    p.add_argument('--checkpoint', type=str, default='runs/.ex9/ConvMaxAvgPool_9_lr5-e6_14-10_11-18-55',
                    help='path to directory that contains a checkpoint')
-    p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
+    p.add_argument('--batch_size', type=int, default=16, help='samples that will be processed in parallel')
     p.add_argument('--loops', type=int, default=1, help='how often to loop over the given data')
-    p.add_argument('--log_iterations', type=int, default=-1, help='log every log_iterations (-1 for no logging)')
+    p.add_argument('--log_iterations', type=int, default=10, help='log every log_iterations (-1 for no logging)')
 
     p.add_argument('--embeddings', type=str, default='data/embeddings/val.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')

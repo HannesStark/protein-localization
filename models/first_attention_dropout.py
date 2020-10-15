@@ -3,12 +3,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class FirstAttention(nn.Module):
+class FirstAttentionDropout(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size = 7):
-        super(FirstAttention, self).__init__()
+        super(FirstAttentionDropout, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size//2)
-        self.attend = nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1)
+        self.attend = nn.Sequential(nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1), nn.Dropout(dropout))
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),

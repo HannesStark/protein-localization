@@ -3,6 +3,7 @@ from typing import Tuple
 
 import torch
 import numpy as np
+from sklearn.metrics import matthews_corrcoef
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
@@ -43,11 +44,14 @@ class BaseSolver():
 
             train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
+            train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
+            val_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
             print('[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (epoch + 1, val_acc, train_acc))
 
             # write to tensorboard
             tensorboard_confusion_matrix(train_results, val_results, self.writer, epoch + 1)
             self.writer.add_scalars('Loc_Acc', {'train': train_acc, 'val': val_acc}, epoch + 1)
+            self.writer.add_scalars('Loc_MCC', {'train': train_mcc, 'val': val_mcc}, epoch + 1)
             self.writer.add_scalars('Loc_Loss', {'train': train_loc_loss, 'val': val_loc_loss}, epoch + 1)
             if args.solubility_loss != 0:
                 self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
