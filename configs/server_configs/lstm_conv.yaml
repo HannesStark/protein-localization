@@ -1,7 +1,7 @@
 experiment_name: '2layer_128'
 
 num_epochs: 10000
-batch_size: 128
+batch_size: 64
 log_iterations: 2
 solubility_loss: 0
 optimizer_parameters:
