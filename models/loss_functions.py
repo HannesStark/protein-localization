@@ -10,7 +10,7 @@ def cross_entropy_joint(prediction: torch.Tensor, localization: torch.Tensor,
     """
 
     Args:
-        prediction: output of the network with 11 logits where the last one is for the solubility
+        prediction: output of the network with 12 logits where the last two are for the solubility
         localization: true label for localization
         solubility: true label for
         solubility_known: tensor on device whether or not the solubility is known such that the solubility loss is set
@@ -24,6 +24,6 @@ def cross_entropy_joint(prediction: torch.Tensor, localization: torch.Tensor,
 
     """
     localization_loss = F.cross_entropy(prediction[..., :10], localization)
-    solubility_loss = F.binary_cross_entropy_with_logits(prediction[..., -1], solubility, reduction='none')
+    solubility_loss = F.cross_entropy(prediction[..., -2:], solubility, reduction='none')
     solubility_loss = (solubility_loss * solubility_known).mean() * args.solubility_loss
     return localization_loss + solubility_loss, localization_loss, solubility_loss

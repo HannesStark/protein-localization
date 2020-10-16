@@ -19,7 +19,7 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 # Model parameters
 model_type: 'LSTMConv'
 model_parameters:
-  output_dim: 11
+  output_dim: 12
   lstm_hidden_dim: 256
   n_layers: 2
   kernel_size: 9

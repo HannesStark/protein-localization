@@ -1,7 +1,7 @@
 experiment_name: ''
 
 num_epochs: 10000
-batch_size: 500
+batch_size: 2048
 log_iterations: 2
 solubility_loss: 0.3
 optimizer_parameters:
@@ -25,7 +25,7 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 # Model parameters
 model_type: 'FFN'
 model_parameters:
-  output_dim: 11
+  output_dim: 12
   hidden_dim: 32
   n_hidden_layers: 0
   dropout: 0.25

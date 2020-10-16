@@ -18,7 +18,7 @@ class ToTensor():
         embedding, localization, solubility = sample
         embedding = torch.from_numpy(embedding).float()
         localization = torch.tensor(localization).long()
-        solubility = torch.tensor(solubility).float()
+        solubility = torch.tensor(solubility).long()
         return embedding, localization, solubility
 
 
