@@ -105,11 +105,13 @@ from models import *
 # print(model)
 import pywt
 import numpy as np
-transform = transforms.Compose([LabelToInt(), ToTensor()])
+transform = transforms.Compose([LabelToInt()])
 dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', 6000, transform)
 
 embedding, localization, solubility, meta = dataset[0]
+print(type(embedding))
 
-coeffs = pywt.wavedec2(embedding, 'db1')
+coeffs = pywt.wavedec(embedding, 'db1', axis=0)
+print(coeffs[0].shape)
 print(np.array(coeffs).shape)
 print(embedding.shape)
