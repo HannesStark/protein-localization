@@ -2,41 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class Attention(torch.nn.Module):
-
-    def __init__(self, encoder_dim: int, decoder_dim: int):
-        super().__init__()
-        self.encoder_dim = encoder_dim
-        self.decoder_dim = decoder_dim
-
-    def forward(self,
-        query: torch.Tensor,  # [decoder_dim]
-        values: torch.Tensor, # [seq_length, encoder_dim]
-        ):
-        weights = self._get_weights(query, values) # [seq_length]
-        weights = torch.nn.functional.softmax(weights, dim=0)
-        return weights @ values  # [encoder_dim]
-
-class AdditiveAttention(Attention):
-
-    def __init__(self, encoder_dim, decoder_dim):
-        super().__init__(encoder_dim, decoder_dim)
-        self.v = torch.nn.Parameter(
-            torch.FloatTensor(self.decoder_dim).uniform_(-0.1, 0.1))
-        self.W_1 = torch.nn.Linear(self.decoder_dim, self.decoder_dim)
-        self.W_2 = torch.nn.Linear(self.encoder_dim, self.decoder_dim)
-
-    def _get_weights(self,
-        query: torch.Tensor,  # [decoder_dim]
-        values: torch.Tensor,  # [seq_length, encoder_dim]
-    ):
-        query = query.repeat(values.size(0), 1)  # [seq_length, decoder_dim]
-        weights = self.W_1(query) + self.W_2(values)  # [seq_length, decoder_dim]
-        return torch.tanh(weights) @ self.v  # [seq_length]
-
-class LSTM(nn.Module):
+class LSTMConvs(nn.Module):
     def __init__(self, embeddings_dim: int, output_dim, lstm_hidden_dim, n_layers, dropout):
-        super(LSTM, self).__init__()
+        super(LSTMConvs, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 21, stride=1, padding=21 // 2)
         self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, 15, stride=1, padding=15 // 2)
@@ -85,3 +53,4 @@ class LSTM(nn.Module):
             torch.cat((hidden_state[-2], hidden_state[-1]), dim=1))  # [batch size, lstm_hidden_dim * num directions]
 
         return self.output(hidden)  # [batch_size, output_dim]
+

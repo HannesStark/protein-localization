@@ -52,7 +52,7 @@ from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_sp
 
 # retrieve_by_id('data/split3_fasta_files/downloaded_without_annotations_model_homreduced.fasta', 'data/split3_fasta_files/model_sequences.fasta',
 #               'data/split3_fasta_files/model_homreduced.fasta')
-#sum_seqvec_embeddings(
+# sum_seqvec_embeddings(
 #    ['data/seqvec_embeddings/3train.h5', 'data/seqvec_embeddings/3val.h5', 'data/seqvec_embeddings/3test.h5'],
 #    'data/seqvec_embeddings', ['train.h5', 'val.h5', 'test.h5'])
 # reduce_embeddings(['data/embeddings/train.h5', 'data/embeddings/val.h5','data/embeddings/test.h5'], 'data/embeddings', ['train_mean_max.h5','val_mean_max.h5','test_mean_max.h5'])
@@ -103,4 +103,13 @@ from models import *
 # classname = type(instance).__name__
 # model = inspect.getsource(globals()[classname])
 # print(model)
+import pywt
+import numpy as np
+transform = transforms.Compose([LabelToInt(), ToTensor()])
+dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', 6000, transform)
 
+embedding, localization, solubility, meta = dataset[0]
+
+coeffs = pywt.wavedec2(embedding, 'db1')
+print(np.array(coeffs).shape)
+print(embedding.shape)
