@@ -103,15 +103,20 @@ from models import *
 # classname = type(instance).__name__
 # model = inspect.getsource(globals()[classname])
 # print(model)
-import pywt
+#import pywt
 import numpy as np
-transform = transforms.Compose([LabelToInt()])
-dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', 6000, transform)
+#transform = transforms.Compose([LabelToInt()])
+#dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', 6000, transform)
+#
+#embedding, localization, solubility, meta = dataset[0]
+#print(type(embedding))
+#
+#coeffs = pywt.wavedec(embedding, 'db1', axis=0)
+#print(coeffs[0].shape)
+#print(np.array(coeffs).shape)
+#print(embedding.shape)
 
-embedding, localization, solubility, meta = dataset[0]
-print(type(embedding))
+a = np.array([1/3,1/3,1/3]).mean()
 
-coeffs = pywt.wavedec(embedding, 'db1', axis=0)
-print(coeffs[0].shape)
-print(np.array(coeffs).shape)
-print(embedding.shape)
+string = 'str: {:.4f}'.format(a)
+print(string)

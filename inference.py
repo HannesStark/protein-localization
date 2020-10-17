@@ -2,12 +2,13 @@ import glob
 import os
 
 from sklearn.metrics import matthews_corrcoef
+from tqdm import tqdm
 
 from models import *  # required dont remove this
 from torch.optim import *  # required dont remove this
 import argparse
 import yaml
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, RandomSampler
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
@@ -24,7 +25,8 @@ def inference(args):
     else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
         collate_function = None
 
-    data_loader = DataLoader(data_set, batch_size=args.batch_size, collate_fn=collate_function)
+    sampler = RandomSampler(data_set, replacement=True)
+    data_loader = DataLoader(data_set, batch_size=args.batch_size, sampler=sampler, collate_fn=collate_function)
 
     # Needs "from models import *" to work
     model = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
@@ -33,25 +35,38 @@ def inference(args):
     # Needs "from torch.optim import *" to work
     solver = BaseSolver(model, args, globals()[args.optimizer], cross_entropy_joint)
 
-    with torch.no_grad():
-        loc_loss, sol_loss, results = solver.predict(data_loader)
+    mccs = []
+    accuracies = []
+    for i in tqdm(range(args.n_draws)):
+        with torch.no_grad():
+            loc_loss, sol_loss, results = solver.predict(data_loader)
+        accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
+        mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
 
-    accuracy = 100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results)
-    mcc = matthews_corrcoef(results[:, 1], results[:, 0])
-    print(mcc)
-    print(accuracy)
+    accuracy = np.mean(accuracies)
+    accuracy_stderr = np.std(accuracies)
+    mcc = np.mean(mccs)
+    mcc_stderr = np.std(mccs)
+    results_string = 'Accuracy: {:.2f}% \n' \
+                     'Accuracy stderr: {:.2f}\n' \
+                     'MCC: {:.4f}\n' \
+                     'MCC stderr: {:.4f}\n'.format(accuracy, accuracy_stderr, mcc, mcc_stderr)
+    with open(os.path.join(args.checkpoint, 'evaluation.txt'), 'w') as file:
+        file.write(results_string)
+    print(results_string)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/.ex9/ConvMaxAvgPool_9_lr5-e6_14-10_11-18-55',
+    p.add_argument('--checkpoint', type=str, default='runs/FFN__16-10_09-49-11',
                    help='path to directory that contains a checkpoint')
-    p.add_argument('--batch_size', type=int, default=16, help='samples that will be processed in parallel')
-    p.add_argument('--loops', type=int, default=1, help='how often to loop over the given data')
+    p.add_argument('--batch_size', type=int, default=2048, help='samples that will be processed in parallel')
+    p.add_argument('--n_draws', type=int, default=100,
+                   help='how often to bootstrap from the dataset for variance estimation')
     p.add_argument('--log_iterations', type=int, default=10, help='log every log_iterations (-1 for no logging)')
 
-    p.add_argument('--embeddings', type=str, default='data/embeddings/val.h5',
+    p.add_argument('--embeddings', type=str, default='data/embeddings/val_reduced.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')

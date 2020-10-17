@@ -13,19 +13,19 @@ from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
 
 
 class BaseSolver():
-    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint):
+    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint, eval=False):
         self.optim = optim(list(model.parameters()), **args.optimizer_parameters)
         self.loss_func = loss_func
         self.args = args
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
-        if args.checkpoint:
+        if args.checkpoint and not eval:
             checkpoint = torch.load(os.path.join(args.checkpoint, 'checkpoint.pt'), map_location=self.device)
             self.writer = SummaryWriter(args.checkpoint)
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.optim.load_state_dict(checkpoint['optimizer_state_dict'])
             self.start_epoch = checkpoint['epoch']
-        else:
+        elif not eval:
             self.start_epoch = 0
             self.writer = SummaryWriter(
                 'runs/{}_{}_{}'.format(args.model_type, args.experiment_name,
