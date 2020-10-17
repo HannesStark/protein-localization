@@ -60,14 +60,14 @@ def inference(args):
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/FFN__16-10_09-49-11',
+    p.add_argument('--checkpoint', type=str, default='runs/.ex9/ConvMaxAvgPool_9_lr5-e6_14-10_11-18-55',
                    help='path to directory that contains a checkpoint')
-    p.add_argument('--batch_size', type=int, default=2048, help='samples that will be processed in parallel')
+    p.add_argument('--batch_size', type=int, default=32, help='samples that will be processed in parallel')
     p.add_argument('--n_draws', type=int, default=100,
                    help='how often to bootstrap from the dataset for variance estimation')
     p.add_argument('--log_iterations', type=int, default=10, help='log every log_iterations (-1 for no logging)')
 
-    p.add_argument('--embeddings', type=str, default='data/embeddings/val_reduced.h5',
+    p.add_argument('--embeddings', type=str, default='data/embeddings/val.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')

@@ -91,7 +91,7 @@ def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.
     """
     embeddings = [item[0] for item in batch]
     localization = torch.tensor([item[1] for item in batch])
-    solubility = torch.tensor([item[2] for item in batch]).float()
+    solubility = torch.tensor([item[2] for item in batch])
     metadata = [item[3] for item in batch]
     metadata = torch.utils.data.dataloader.default_collate(metadata)
     embeddings = pad_sequence(embeddings, batch_first=True)

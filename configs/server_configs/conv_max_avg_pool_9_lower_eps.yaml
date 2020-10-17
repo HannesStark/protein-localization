@@ -1,4 +1,4 @@
-experiment_name: '9_conv_dropout035'
+experiment_name: '9_lower_eps'
 
 num_epochs: 5000
 batch_size: 256
@@ -6,6 +6,7 @@ log_iterations: 100
 solubility_loss: 0
 optimizer_parameters:
   lr: 5.0e-6
+  eps: 1.0e-10
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
@@ -19,5 +20,5 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 model_type: 'ConvMaxAvgPool'
 model_parameters:
   dropout: 0.25
-  conv_dropout: 0.35
+  conv_dropout: 0.25
   kernel_size: 9

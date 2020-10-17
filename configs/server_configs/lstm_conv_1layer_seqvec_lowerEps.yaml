@@ -1,0 +1,27 @@
+experiment_name: '1layer_seqvecData_lowerEps'
+
+num_epochs: 10000
+batch_size: 64
+log_iterations: 2
+solubility_loss: 0
+optimizer_parameters:
+  lr: 5.0e-5
+  eps: 1.0e-10
+#checkpoint: 'runs/max_avg_dropout05_27-09_08-49-02'
+
+# SeqVecData
+train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train_seqvec/embeddings/bert_embeddings/embeddings_file_summed.h5'
+train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train_seqvec/embeddings/remapped_sequences_file.fasta'
+val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val_seqvec/embeddings/bert_embeddings/embeddings_file_summed.h5'
+val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val_seqvec/embeddings/remapped_sequences_file.fasta'
+test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test_seqvec/embeddings/bert_embeddings/embeddings_file_summed.h5'
+test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test_seqvec/embeddings/remapped_sequences_file.fasta'
+
+# Model parameters
+model_type: 'LSTMConv'
+model_parameters:
+  output_dim: 12
+  lstm_hidden_dim: 128
+  n_layers: 1
+  kernel_size: 9
+  dropout: 0.2
