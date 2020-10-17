@@ -14,8 +14,10 @@ from utils.general import padded_permuted_collate
 
 def train(args):
     transform = transforms.Compose([LabelToInt(), ToTensor()])
-    train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.max_length, transform)
-    val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, transform=transform)
+    train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
+                                              args.max_length, transform)
+    val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
+                                            transform=transform)
 
     if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional lenght dim
         collate_function = padded_permuted_collate
@@ -36,7 +38,7 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/convs_max_avg_pool_9.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
@@ -50,6 +52,8 @@ def parse_arguments():
     p.add_argument('--model_parameters', type=dict, help='dictionary of model parameters')
     p.add_argument('--solubility_loss', type=float, default=0,
                    help='how much the loss of the solubility will be weighted')
+    p.add_argument('--unknown_solubility', type=bool, default=True,
+                   help='whether or not to include sequences with unknown solubility in the dataset')
     p.add_argument('--max_length', type=int, default=6000, help='maximum lenght of sequences that will be used for '
                                                                 'training when using embedddings of variable length')
 

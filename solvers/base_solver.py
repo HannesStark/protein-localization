@@ -46,6 +46,12 @@ class BaseSolver():
             val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
             train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
             val_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
+
+            sol_preds_train = np.equal(train_results[:, 2], train_results[:, 3]) * train_results[:, 4]
+            sol_train_acc = 100 * sol_preds_train.sum() / train_results[:, 4].sum()
+            sol_preds_val = np.equal(val_results[:, 2], val_results[:, 3]) * val_results[:, 4]
+            sol_val_acc = 100 * sol_preds_val.sum() / val_results[:, 4].sum()
+
             print('[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (epoch + 1, val_acc, train_acc))
 
             # write to tensorboard
@@ -55,6 +61,7 @@ class BaseSolver():
             self.writer.add_scalars('Loc_Loss', {'train': train_loc_loss, 'val': val_loc_loss}, epoch + 1)
             if args.solubility_loss != 0:
                 self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
+                self.writer.add_scalars('Sol_Acc', {'train': sol_train_acc, 'val': sol_val_acc}, epoch + 1)
 
             if val_acc >= maximum_accuracy:  # save the model with the best accuracy
                 maximum_accuracy = val_acc
@@ -90,8 +97,10 @@ class BaseSolver():
                 self.optim.step()
                 self.optim.zero_grad()
 
-            prediction = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
-            results.append(torch.stack((prediction, loc), dim=1).detach().cpu().numpy())
+            loc_pred = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
+            sol_pred = torch.max(prediction[..., -2:], dim=1)[1]  # get indices of the highest value for sol
+            results.append(
+                torch.stack((loc_pred, loc, sol_pred, sol, sol_known), dim=1).detach().cpu().numpy())
             loc_loss_item = loc_loss.item()
             running_loc_loss += loc_loss_item
             running_sol_loss += sol_loss.item()
@@ -100,8 +109,8 @@ class BaseSolver():
                     print('Epoch %d ' % (epoch), end=' ')
                 print('[Iter %5d/%5d] %s: loc loss: %.7f, loc accuracy: %.4f%%' % (
                     i + 1, len(data_loader), 'Train' if optim else 'Val', loc_loss_item,
-                    100 * (prediction == loc).sum().item() / args.batch_size))
+                    100 * (loc_pred == loc).sum().item() / args.batch_size))
 
         running_loc_loss /= len(data_loader)
         running_sol_loss /= len(data_loader)
-        return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] prediction and loc
+        return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
