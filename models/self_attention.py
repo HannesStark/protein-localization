@@ -6,7 +6,7 @@ from models.multi_head_attention import MultiHeadAttention
 
 
 class SelfAttention(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, dropout=0.25, attention_dropout=0.25, n_heads=8):
+    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12 , dropout=0.25, attention_dropout=0.25, n_heads=8):
         super(SelfAttention, self).__init__()
 
         self.multi_head_attention = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads, skip_last_linear=True)
@@ -17,7 +17,7 @@ class SelfAttention(nn.Module):
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
-        self.output = nn.Linear(32, 11)
+        self.output = nn.Linear(32, output_dim)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """

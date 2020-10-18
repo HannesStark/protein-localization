@@ -6,7 +6,7 @@ from models.multi_head_attention import MultiHeadAttention
 
 
 class ConvSelfAttention(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, dropout=0.25, kernel_size=7, attention_dropout=0.25, n_heads=8):
+    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12 , dropout=0.25, kernel_size=7, attention_dropout: float=0.25, n_heads=8):
         super(ConvSelfAttention, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
@@ -20,7 +20,7 @@ class ConvSelfAttention(nn.Module):
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
-        self.output = nn.Linear(32, 11)
+        self.output = nn.Linear(32, output_dim)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """

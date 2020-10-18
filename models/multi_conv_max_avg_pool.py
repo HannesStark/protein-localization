@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class MultiConvMaxAvgPool(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, dropout=0.25, kernel_size=7):
+    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12 , dropout=0.25, kernel_size=7):
         super(MultiConvMaxAvgPool, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
@@ -19,7 +19,7 @@ class MultiConvMaxAvgPool(nn.Module):
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
-        self.output = nn.Linear(32, 11)
+        self.output = nn.Linear(32, output_dim)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """

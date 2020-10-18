@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
-from models.loss_functions import cross_entropy_joint
+
 from solvers.base_solver import BaseSolver
 from utils.general import padded_permuted_collate
 
@@ -31,8 +31,8 @@ def train(args):
     model = globals()[args.model_type](embeddings_dim=train_set[0][0].shape[-1], **args.model_parameters)
     print('trainable params: ', sum(p.numel() for p in model.parameters() if p.requires_grad))
 
-    # Needs "from torch.optim import *" to work
-    solver = BaseSolver(model, args, globals()[args.optimizer], cross_entropy_joint)
+    # Needs "from torch.optim import *" and "from models import *" to work
+    solver = BaseSolver(model, args, globals()[args.optimizer], JointCrossEntropy)
     solver.train(train_loader, val_loader)
 
 

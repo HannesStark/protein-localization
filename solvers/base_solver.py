@@ -8,14 +8,14 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
-from models.loss_functions import cross_entropy_joint
+from models.loss_functions import JointCrossEntropy
 from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
 
 
 class BaseSolver():
-    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=cross_entropy_joint, eval=False):
+    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=JointCrossEntropy, eval=False):
         self.optim = optim(list(model.parameters()), **args.optimizer_parameters)
-        self.loss_func = loss_func
+        self.loss_func = loss_func()
         self.args = args
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)

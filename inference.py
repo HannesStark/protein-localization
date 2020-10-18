@@ -61,7 +61,7 @@ def inference(args):
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/FFN_knwon_only_sol1_17-10_13-04-54',
+    p.add_argument('--checkpoint', type=str, default='runs/FFN_knwon_only_sol3_17-10_17-01-36',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--batch_size', type=int, default=2048, help='samples that will be processed in parallel')
     p.add_argument('--n_draws', type=int, default=100,

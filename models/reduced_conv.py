@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class ReducedConv(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, hidden_dim: int = 32, output_dim: int = 11, dropout: float = 0.25):
+    def __init__(self, embeddings_dim: int = 1024, hidden_dim: int = 32, output_dim: int = 12, dropout: float = 0.25):
         """
         Simple Feed forward model with default parameters like the network tha is ued in the SeqVec paper.
         Args:

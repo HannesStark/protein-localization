@@ -4,11 +4,13 @@ import torch.nn.functional as F
 
 
 class ConvAvgPool(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, dropout=0.25, kernel_size=7):
+    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12, conv_dropout=0.25, dropout=0.25,
+                 kernel_size=7):
         super(ConvAvgPool, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
                                padding=0)
+        self.dropout = nn.Dropout(conv_dropout)
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),
@@ -16,7 +18,7 @@ class ConvAvgPool(nn.Module):
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
-        self.output = nn.Linear(32, 11)
+        self.output = nn.Linear(32, output_dim)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -27,6 +29,7 @@ class ConvAvgPool(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         o = F.relu(self.conv1(x))
+        o = self.dropout(o)
         o = torch.mean(o, dim=-1)
         o = self.linear(o)
         return self.output(o)
