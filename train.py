@@ -24,7 +24,7 @@ def train(args):
     else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
         collate_function = None
 
-    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=False, collate_fn=collate_function)
+    train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, collate_fn=collate_function)
     val_loader = DataLoader(val_set, batch_size=args.batch_size, collate_fn=collate_function)
 
     # Needs "from models import *" to work
@@ -38,7 +38,7 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/conv_max_pool9.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
