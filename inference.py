@@ -50,7 +50,7 @@ def inference(args):
     mcc = np.mean(mccs)
     mcc_stderr = np.std(mccs)
     results_string = 'Accuracy: {:.2f}% \n' \
-                     'Accuracy stderr: {:.2f}\n' \
+                     'Accuracy stderr: {:.2f}%\n' \
                      'MCC: {:.4f}\n' \
                      'MCC stderr: {:.4f}\n'.format(accuracy, accuracy_stderr, mcc, mcc_stderr)
     with open(os.path.join(args.checkpoint, 'evaluation.txt'), 'w') as file:
