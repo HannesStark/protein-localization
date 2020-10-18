@@ -35,6 +35,7 @@ class EmbeddingsLocalizationDataset(Dataset):
             if len(record.seq) <= max_length:
                 metadata = {'id': str(record.id),
                             'sequence': str(record.seq),
+                            'length': len(record.seq),
                             'solubility_known': not (solubility == 'U')}
 
                 # if unknown solubility is false only the sequences with known solubility are included

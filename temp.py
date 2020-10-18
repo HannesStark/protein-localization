@@ -5,6 +5,7 @@ from typing import List, Tuple
 import h5py
 import torch
 from Bio import SeqIO
+from torch import Tensor
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
@@ -103,20 +104,28 @@ from models import *
 # classname = type(instance).__name__
 # model = inspect.getsource(globals()[classname])
 # print(model)
-#import pywt
+# import pywt
 import numpy as np
-#transform = transforms.Compose([LabelToInt()])
-#dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', 6000, transform)
-#
-#embedding, localization, solubility, meta = dataset[0]
-#print(type(embedding))
-#
-#coeffs = pywt.wavedec(embedding, 'db1', axis=0)
-#print(coeffs[0].shape)
-#print(np.array(coeffs).shape)
-#print(embedding.shape)
+import matplotlib.pyplot as plt
 
-a = np.array([1/3,1/3,1/3]).mean()
+# transform = transforms.Compose([LabelToInt()])
+# dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', 6000, transform)
+#
+# embedding, localization, solubility, meta = dataset[0]
+# print(type(embedding))
+#
+# coeffs = pywt.wavedec(embedding, 'db1', axis=0)
+# print(coeffs[0].shape)
+# print(np.array(coeffs).shape)
+# print(embedding.shape)
 
-string = 'str: {:.4f}'.format(a)
-print(string)
+a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+b = np.ones(10)
+
+
+x_t, y_t = tf.meshgrid(tf.linspace(0.0,   _width_f - 1.0,  _width),
+                       tf.linspace(0.0 , _height_f - 1.0 , _height))
+
+print(weight(20).sum())
+plt.plot(weight(10).numpy())
+plt.show()
