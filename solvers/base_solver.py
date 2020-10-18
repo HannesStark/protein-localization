@@ -45,7 +45,7 @@ class BaseSolver():
             train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
             train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
-            val_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
+            val_mcc = matthews_corrcoef(val_results[:, 1], val_results[:, 0])
 
             sol_preds_train = np.equal(train_results[:, 2], train_results[:, 3]) * train_results[:, 4]
             sol_train_acc = 100 * sol_preds_train.sum() / train_results[:, 4].sum()

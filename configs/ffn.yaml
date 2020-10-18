@@ -1,4 +1,4 @@
-experiment_name: 'knwon_only_sol3'
+experiment_name: 'output11'
 
 num_epochs: 10000
 batch_size: 2048
