@@ -3,10 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class ConvMaxAvgPool(nn.Module):
+class ConvMaxAvgPoolNoBatchnorm(nn.Module):
     def __init__(self, embeddings_dim: int = 1024, output_dim: int = 10, dropout: float = 0.25, kernel_size: int = 7,
                  conv_dropout: float = 0.25):
-        super(ConvMaxAvgPool, self).__init__()
+        super(ConvMaxAvgPoolNoBatchnorm, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
                                padding=0)
@@ -15,8 +15,7 @@ class ConvMaxAvgPool(nn.Module):
         self.linear = nn.Sequential(
             nn.Linear(2 * embeddings_dim, 32),
             nn.Dropout(dropout),
-            nn.ReLU(),
-            nn.BatchNorm1d(32)
+            nn.ReLU()
         )
         self.output = nn.Linear(32, output_dim)
 

@@ -1,4 +1,4 @@
-experiment_name: '9_Lr3e-5'
+experiment_name: '9'
 
 num_epochs: 5000
 batch_size: 256
@@ -16,7 +16,7 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'ConvMaxAvgPool'
+model_type: 'ConvMaxAvgPoolNoBatchnorm'
 model_parameters:
   output_dim: 10
   dropout: 0.25

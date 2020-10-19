@@ -9,13 +9,44 @@ from torch.optim import *  # required dont remove this
 from adabelief_pytorch import AdaBelief
 import argparse
 import yaml
+import torch.nn as nn
 from torch.utils.data import DataLoader, RandomSampler
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
 from solvers.base_solver import BaseSolver
 from utils.general import padded_permuted_collate
+import matplotlib.pyplot as plt
 
+def normalize(arr):
+    arr = arr - arr.min()
+    arr = arr / arr.max()
+    return arr
+
+def visualize_activation(self, input, output):
+    print('Inside ' + self.__class__.__name__ + ' forward')
+    print('')
+    print('input: ', type(input))
+    print('input[0]: ', type(input[0]))
+    print('output: ', type(output))
+    print('')
+    print('input size:', input[0].size())
+    print('output size:', output.data.size())
+    print('output norm:', output.data.norm())
+    plt.rcParams['figure.dpi'] = 300
+    plt.rcParams["image.cmap"] = 'viridis'
+    inp = normalize(input[0].squeeze())
+    out = normalize(output.data.squeeze())
+    out_avg = torch.mean(out, dim=0)
+    out_max = torch.max(out, dim=0)[0]
+    plt.imshow(out_max[None,:].expand(50,-1))
+    plt.show()
+    plt.imshow(out_avg[None,:].expand(50,-1))
+    plt.show()
+    plt.imshow(out)
+    plt.show()
+    plt.imshow(inp)
+    plt.show()
 
 def inference(args):
     transform = transforms.Compose([LabelToInt(), ToTensor()])
@@ -30,8 +61,13 @@ def inference(args):
     data_loader = DataLoader(data_set, batch_size=args.batch_size, sampler=sampler, collate_fn=collate_function)
 
     # Needs "from models import *" to work
-    model = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
+    model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
     model.eval()
+
+    model.conv1.register_forward_hook(visualize_activation)
+    output = model(data_set[100][0].T.unsqueeze(0))
+
+    return
 
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])
@@ -60,7 +96,7 @@ def inference(args):
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/.ex13\ConvMaxAvgPool_9_Lr5e-5_18-10_20-10-28',
+    p.add_argument('--checkpoint', type=str, default='runs/.ex9\ConvMaxAvgPool_9_lr5-e6_14-10_11-18-55',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--batch_size', type=int, default=16, help='samples that will be processed in parallel')
     p.add_argument('--n_draws', type=int, default=100,

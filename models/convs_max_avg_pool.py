@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class ConvsMaxAvgPool(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12, dropout=0.25, conv_dropout: float = 0.25):
+    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 10, dropout=0.25, conv_dropout: float = 0.25):
         super(ConvsMaxAvgPool, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, 3, stride=1)

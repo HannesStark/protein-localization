@@ -11,11 +11,24 @@ transform = transforms.Compose([LabelToInt()])
 dataset = EmbeddingsLocalizationDataset('../data/embeddings/val.h5', '../data/embeddings/val_remapped.fasta', True,
                                         6000,
                                         transform)
-embedding, localization, solubility, meta = dataset[0]
+embedding, localization, solubility, meta = dataset[100]
 
 emb = pd.DataFrame(embedding)
 
-ones = np.ones([200,200])*0.5
-cv2.imshow('embedding', ones)
-plt.hist(embedding, bins=20, histtype='bar', facecolor='blue')
+image = embedding *2
+image = image + 0.5
+image /= 1
+
+plt.plot(np.mean(embedding,axis=1))
 plt.show()
+
+plt.plot(np.max(embedding,axis=1))
+plt.show()
+
+plt.rcParams['figure.dpi'] = 600
+plt.imshow(image.T)
+plt.show()
+
+print('done')
+#plt.hist(embedding, bins=20, histtype='bar', facecolor='blue')
+#plt.show()
