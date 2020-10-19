@@ -1,7 +1,7 @@
 experiment_name: '9_Lr3e-5'
 
 num_epochs: 5000
-batch_size: 200
+batch_size: 128
 log_iterations: 100
 solubility_loss: 0
 optimizer_parameters:
