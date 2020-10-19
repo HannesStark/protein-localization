@@ -1,9 +1,10 @@
-experiment_name: '9'
+experiment_name: '9_outputdim12_debug'
 
 num_epochs: 5000
-batch_size: 4
+batch_size: 2
 log_iterations: 100
 solubility_loss: 0
+loss_func: 'JointCrossEntropy'
 optimizer_parameters:
   lr: 3.0e-5
 
@@ -16,9 +17,9 @@ val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'ConvMaxAvgSkipPool'
+model_type: 'ConvMaxAvgPool'
 model_parameters:
-  output_dim: 10
+  output_dim: 12
   dropout: 0.25
   conv_dropout: 0.25
   kernel_size: 9

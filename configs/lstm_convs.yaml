@@ -19,7 +19,7 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 # Model parameters
 model_type: 'LSTMConvs'
 model_parameters:
-  output_dim: 12
+  output_dim: 10
   lstm_hidden_dim: 32
   n_layers: 2
   dropout: 0.25

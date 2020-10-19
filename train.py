@@ -32,13 +32,13 @@ def train(args):
     print('trainable params: ', sum(p.numel() for p in model.parameters() if p.requires_grad))
 
     # Needs "from torch.optim import *" and "from models import *" to work
-    solver = BaseSolver(model, args, globals()[args.optimizer], JointCrossEntropy)
+    solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])
     solver.train(train_loader, val_loader)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/conv_max_avg_pool_9_debugOutputDim.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=50, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
@@ -50,6 +50,8 @@ def parse_arguments():
 
     p.add_argument('--model_type', type=str, default='FFN', help='Classname of one of the models in the models dir')
     p.add_argument('--model_parameters', type=dict, help='dictionary of model parameters')
+    p.add_argument('--loss_function', type=str, default='LocCrossEntropy',
+                   help='Classname of one of the loss functions models/loss_functions.py')
     p.add_argument('--solubility_loss', type=float, default=0,
                    help='how much the loss of the solubility will be weighted')
     p.add_argument('--unknown_solubility', type=bool, default=True,

@@ -37,7 +37,8 @@ class LocCrossEntropy(nn.Module):
     def __init__(self) -> None:
         super(LocCrossEntropy, self).__init__()
 
-    def forward(self, prediction: Tensor, localization: Tensor) -> Tensor:
+    def forward(self, prediction: Tensor, localization: Tensor,
+                solubility: Tensor, solubility_known: bool, args) -> Tuple[Tensor, Tensor, Tensor]:
         """
 
             Args:
@@ -50,4 +51,4 @@ class LocCrossEntropy(nn.Module):
 
             """
         localization_loss = F.cross_entropy(prediction[..., :10], localization)
-        return localization_loss
+        return localization_loss, localization_loss, torch.tensor([0])

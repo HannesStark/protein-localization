@@ -107,11 +107,13 @@ from models import *
 # import pywt
 import numpy as np
 import matplotlib.pyplot as plt
+import cv2
 
-# transform = transforms.Compose([LabelToInt()])
-# dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', 6000, transform)
+transform = transforms.Compose([LabelToInt()])
+dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', True, 6000,
+                                        transform)
 #
-# embedding, localization, solubility, meta = dataset[0]
+embedding, localization, solubility, meta = dataset[0]
 # print(type(embedding))
 #
 # coeffs = pywt.wavedec(embedding, 'db1', axis=0)
@@ -119,13 +121,7 @@ import matplotlib.pyplot as plt
 # print(np.array(coeffs).shape)
 # print(embedding.shape)
 
-a = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
-b = np.ones(10)
-
-
-x_t, y_t = tf.meshgrid(tf.linspace(0.0,   _width_f - 1.0,  _width),
-                       tf.linspace(0.0 , _height_f - 1.0 , _height))
-
-print(weight(20).sum())
-plt.plot(weight(10).numpy())
+print(embedding.shape)
+print(embedding.min)
+plt.hist(embedding, bins=20, histtype = 'bar', facecolor = 'blue')
 plt.show()

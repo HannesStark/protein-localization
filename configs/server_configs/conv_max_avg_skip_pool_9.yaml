@@ -5,7 +5,7 @@ batch_size: 256
 log_iterations: 100
 solubility_loss: 0
 optimizer_parameters:
-  lr: 5.0e-5
+  lr: 3.0e-5
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
@@ -18,7 +18,7 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 # Model parameters
 model_type: 'ConvMaxAvgSkipPool'
 model_parameters:
-  output_dim: 12
+  output_dim: 10
   dropout: 0.25
   conv_dropout: 0.25
   kernel_size: 9

@@ -1,4 +1,4 @@
-experiment_name: '9'
+experiment_name: '9_Lr3e-5'
 
 num_epochs: 5000
 batch_size: 4
@@ -16,9 +16,8 @@ val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'ConvMaxAvgSkipPool'
+model_type: 'ConvMaxAvgPoolConv'
 model_parameters:
-  output_dim: 10
   dropout: 0.25
   conv_dropout: 0.25
   kernel_size: 9

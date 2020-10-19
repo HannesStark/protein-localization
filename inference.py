@@ -13,7 +13,6 @@ from torch.utils.data import DataLoader, RandomSampler
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
-from models.loss_functions import cross_entropy_joint
 from solvers.base_solver import BaseSolver
 from utils.general import padded_permuted_collate
 
@@ -22,7 +21,7 @@ def inference(args):
     transform = transforms.Compose([LabelToInt(), ToTensor()])
     data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping, unknown_solubility=False,
                                              transform=transform)
-    if len(data_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional lenght dim
+    if len(data_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
         collate_function = padded_permuted_collate
     else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
         collate_function = None
@@ -34,8 +33,8 @@ def inference(args):
     model = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
     model.eval()
 
-    # Needs "from torch.optim import *" to work
-    solver = BaseSolver(model, args, globals()[args.optimizer], cross_entropy_joint)
+    # Needs "from torch.optim import *" and "from models import *" to work
+    solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])
 
     mccs = []
     accuracies = []
@@ -61,14 +60,16 @@ def inference(args):
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/FFN_knwon_only_sol3_17-10_17-01-36',
+    p.add_argument('--checkpoint', type=str, default='runs/.ex13\ConvMaxAvgPool_9_Lr5e-5_18-10_20-10-28',
                    help='path to directory that contains a checkpoint')
-    p.add_argument('--batch_size', type=int, default=2048, help='samples that will be processed in parallel')
+    p.add_argument('--batch_size', type=int, default=16, help='samples that will be processed in parallel')
     p.add_argument('--n_draws', type=int, default=100,
                    help='how often to bootstrap from the dataset for variance estimation')
     p.add_argument('--log_iterations', type=int, default=10, help='log every log_iterations (-1 for no logging)')
+    p.add_argument('--loss_function', type=str, default='JointCrossEntropy',
+                   help='Classname of one of the loss functions models/loss_functions.py')
 
-    p.add_argument('--embeddings', type=str, default='data/embeddings/val_reduced.h5',
+    p.add_argument('--embeddings', type=str, default='data/embeddings/val.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
@@ -85,7 +86,8 @@ def parse_arguments():
     # get the arguments from the yaml config file that is saved in the runs checkpoint
     data = yaml.load(open(os.path.join(args.checkpoint, 'train_arguments.yaml'), 'r'), Loader=yaml.FullLoader)
     for key, value in data.items():
-        if key not in args.__dict__.keys():
+        # add the or because my old runs did not have the loss function parameter yet so there is a default value here but I want the default value to be overwritten in case I am reading from a new run
+        if key not in args.__dict__.keys() or key == 'loss_function':
             if isinstance(value, list):
                 for v in value:
                     arg_dict[key].append(v)

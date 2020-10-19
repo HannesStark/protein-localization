@@ -5,7 +5,7 @@ batch_size: 64
 log_iterations: 2
 solubility_loss: 0
 optimizer_parameters:
-  lr: 5.0e-5
+  lr: 3.0e-5
 #checkpoint: 'runs/max_avg_dropout05_27-09_08-49-02'
 
 # Paths to Data
@@ -19,7 +19,7 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 # Model parameters
 model_type: 'LSTMConv'
 model_parameters:
-  output_dim: 12
+  output_dim: 10
   lstm_hidden_dim: 256
   n_layers: 1
   kernel_size: 9
