@@ -1,0 +1,3 @@
+log_iterations: 10
+checkpoint: 'runs/ConvMaxAvgPoolConv_9_Lr3e-5_19-10_11-54-50'
+batch_size: 256
