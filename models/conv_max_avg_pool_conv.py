@@ -16,8 +16,7 @@ class ConvMaxAvgPoolConv(nn.Module):
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),
             nn.Dropout(dropout),
-            nn.ReLU(),
-            nn.BatchNorm1d(32)
+            nn.ReLU()
         )
         self.output = nn.Linear(32, output_dim)
 
