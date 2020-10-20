@@ -1,4 +1,5 @@
 log_iterations: 10
 checkpoint: 'runs/ConvMaxAvgPoolConv_9_outdim10_19-10_22-40-39'
-
 batch_size: 256
+embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
+remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
