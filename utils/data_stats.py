@@ -4,7 +4,7 @@ from Bio import SeqIO
 import pandas as pd
 import matplotlib.pyplot as plt
 
-fasta_path = '../data/fasta_files/train.fasta'
+fasta_path = '../data/fasta_files/val_homreduced.fasta'
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
     color = 'orange'
@@ -20,14 +20,18 @@ for record in SeqIO.parse(fasta_path, "fasta"):
     labels.append(record.description.split(' ')[1].split('-')[0])
     sequences.append(str(record.seq))
     solubility.append(record.description.split(' ')[1].split('-')[-1])
-df = pd.DataFrame(list(zip(identifiers, labels, solubility, sequences)), columns=['identifier', 'solubility', 'label', 'seq'])
+df = pd.DataFrame(list(zip(identifiers, labels, solubility, sequences)),
+                  columns=['identifier', 'label', 'solubility', 'seq'])
 df['length'] = df['seq'].apply(lambda x: len(x))
 
-print(df.describe())
+fig, ax = plt.subplots()
+
+df['label'].value_counts().plot(ax=ax, kind='bar')
+plt.show()
 
 print(df['label'].value_counts())
 
-print('percentage of sequences larger than threshold AAs: {}'.format(100*len(df[df['length'] > 1000])/len(df)))
+print('percentage of sequences larger than threshold AAs: {}'.format(100 * len(df[df['length'] > 1000]) / len(df)))
 print(df[df['length'] > 6000])
 
 cut_off = 2000

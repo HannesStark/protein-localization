@@ -121,7 +121,7 @@ embedding, localization, solubility, meta = dataset[0]
 # print(np.array(coeffs).shape)
 # print(embedding.shape)
 
-print(embedding.shape)
-print(embedding.min)
-plt.hist(embedding, bins=20, histtype = 'bar', facecolor = 'blue')
-plt.show()
+from sklearn.metrics import confusion_matrix
+y_true = [2, 0, 2, 2, 0, 1]
+y_pred = [0, 0, 2, 2, 0, 2]
+print(confusion_matrix(y_true, y_pred))
