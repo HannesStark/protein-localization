@@ -39,9 +39,9 @@ def visualize_activation(self, input, output):
     out = normalize(output.data.squeeze())
     out_avg = torch.mean(out, dim=0)
     out_max = torch.max(out, dim=0)[0]
-    plt.imshow(out_max[None,:].expand(50,-1))
+    plt.plot(torch.max(inp, dim=0)[0])
     plt.show()
-    plt.imshow(out_avg[None,:].expand(50,-1))
+    plt.plot(out_max)
     plt.show()
     plt.imshow(out)
     plt.show()
@@ -64,10 +64,10 @@ def inference(args):
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
     model.eval()
 
-    #model.conv1.register_forward_hook(visualize_activation)
-    #output = model(data_set[100][0].T.unsqueeze(0))
+    model.conv1.register_forward_hook(visualize_activation)
+    output = model(data_set[100][0].T.unsqueeze(0))
 
-    #return
+    return
 
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])

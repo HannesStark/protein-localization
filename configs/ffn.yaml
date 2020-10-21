@@ -1,10 +1,10 @@
-experiment_name: 'sol0'
+experiment_name: 'sol1_all'
 
 num_epochs: 10000
 batch_size: 2048
 log_iterations: 2
 solubility_loss: 0
-unknown_solubility: False
+unknown_solubility: True
 loss: 'LocCrossEntropy'
 optimizer_parameters:
   lr: 3.0e-4
