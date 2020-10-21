@@ -6,7 +6,7 @@ import h5py
 import torch
 from Bio import SeqIO
 from torch import Tensor
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, RandomSampler
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import ToTensor, LabelToInt
@@ -110,7 +110,7 @@ import matplotlib.pyplot as plt
 import cv2
 
 transform = transforms.Compose([LabelToInt()])
-dataset = EmbeddingsLocalizationDataset('data/embeddings/val.h5', 'data/embeddings/val_remapped.fasta', True, 6000,
+dataset = EmbeddingsLocalizationDataset('data/embeddings/val_reduced.h5', 'data/embeddings/val_remapped.fasta', True, 6000,
                                         transform)
 #
 embedding, localization, solubility, meta = dataset[0]
@@ -121,7 +121,3 @@ embedding, localization, solubility, meta = dataset[0]
 # print(np.array(coeffs).shape)
 # print(embedding.shape)
 
-from sklearn.metrics import confusion_matrix
-y_true = [2, 0, 2, 2, 0, 1]
-y_pred = [0, 0, 2, 2, 0, 2]
-print(confusion_matrix(y_true, y_pred))

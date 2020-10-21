@@ -32,3 +32,8 @@ plt.show()
 print('done')
 #plt.hist(embedding, bins=20, histtype='bar', facecolor='blue')
 #plt.show()
+
+    #model.conv1.register_forward_hook(visualize_activation)
+    #output = model(data_set[100][0].T.unsqueeze(0))
+#
+    #return

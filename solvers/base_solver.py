@@ -4,12 +4,14 @@ from typing import Tuple
 import torch
 import numpy as np
 from sklearn.metrics import matthews_corrcoef
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, RandomSampler, Dataset
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
+from tqdm import tqdm
+
 from models.loss_functions import JointCrossEntropy
-from utils.general import tensorboard_confusion_matrix, experiment_checkpoint
+from utils.general import tensorboard_confusion_matrix, experiment_checkpoint, padded_permuted_collate
 
 
 class BaseSolver():
@@ -31,8 +33,19 @@ class BaseSolver():
                 'runs/{}_{}_{}'.format(args.model_type, args.experiment_name,
                                        datetime.now().strftime('%d-%m_%H-%M-%S')))
 
-    def train(self, train_loader, val_loader):
+    def train(self, train_loader: DataLoader, val_loader: DataLoader, eval_data=None):
+        """
+        Train and simultaneosly evaluate on the val_loader and then estimate the stderr on eval_data if it is provided
+        Args:
+            train_loader: For training
+            val_loader: For validation during training
+            eval_data: For evaluation and estimating stderr after training
+
+        Returns:
+
+        """
         args = self.args
+        epochs_no_improve = 0  # counts every epoch that the validation accuracy did not improve for early stopping
         maximum_accuracy = 0  # running accuracy to decide whether or not a new model should be saved
         for epoch in range(self.start_epoch, args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
@@ -64,8 +77,20 @@ class BaseSolver():
                 self.writer.add_scalars('Sol_Acc', {'train': sol_train_acc, 'val': sol_val_acc}, epoch + 1)
 
             if val_acc >= maximum_accuracy:  # save the model with the best accuracy
+                epochs_no_improve = 0
                 maximum_accuracy = val_acc
                 experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args)
+            else:
+                epochs_no_improve += 1
+
+            if epochs_no_improve >= args.patience:
+                break
+
+        if eval_data:  # do evaluation on the test data if a eval_data is provided
+            # load checkpoint of best model to do evaluation
+            checkpoint = torch.load(os.path.join(self.writer.log_dir, 'checkpoint.pt'), map_location=self.device)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.evaluation(eval_data)
 
     def predict(self, data_loader: DataLoader, epoch: int = None, optim: torch.optim.Optimizer = None) -> \
             Tuple[float, float, np.ndarray]:
@@ -114,3 +139,32 @@ class BaseSolver():
         running_loc_loss /= len(data_loader)
         running_sol_loss /= len(data_loader)
         return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
+
+    def evaluation(self, dataset: Dataset):
+        self.model.eval()
+        if len(dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
+            collate_function = padded_permuted_collate
+        else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
+            collate_function = None
+
+        sampler = RandomSampler(dataset, replacement=True)
+        data_loader = DataLoader(dataset, batch_size=self.args.batch_size, sampler=sampler, collate_fn=collate_function)
+        mccs = []
+        accuracies = []
+        with torch.no_grad():
+            for i in tqdm(range(self.args.n_draws)):
+                loc_loss, sol_loss, results = self.predict(data_loader)
+                accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
+                mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
+
+        accuracy = np.mean(accuracies)
+        accuracy_stderr = np.std(accuracies)
+        mcc = np.mean(mccs)
+        mcc_stderr = np.std(mccs)
+        results_string = 'Accuracy: {:.2f}% \n' \
+                         'Accuracy stderr: {:.2f}%\n' \
+                         'MCC: {:.4f}\n' \
+                         'MCC stderr: {:.4f}\n'.format(accuracy, accuracy_stderr, mcc, mcc_stderr)
+        with open(os.path.join(self.writer.log_dir, 'evaluation.txt'), 'w') as file:
+            file.write(results_string)
+        print(results_string)
