@@ -47,7 +47,7 @@ from torch.optim import *
 # print(df[ids.isin(ids[ids.duplicated()])].sort_values(by="seq"))
 #
 from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
-    sum_seqvec_embeddings
+    sum_seqvec_embeddings, combine_embeddings
 
 # train_val_split('data/split3_fasta_files/model_homreduced.fasta','data/split3_fasta_files',train_size=0.85)
 
@@ -109,11 +109,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 
-transform = transforms.Compose([LabelToInt()])
-dataset = EmbeddingsLocalizationDataset('data/embeddings/val_reduced.h5', 'data/embeddings/val_remapped.fasta', True, 6000,
-                                        transform)
-#
-embedding, localization, solubility, meta = dataset[0]
+#transform = transforms.Compose([LabelToInt()])
+#dataset = EmbeddingsLocalizationDataset('data/embeddings/val_reduced.h5', 'data/embeddings/val_remapped.fasta', True, 6000,
+#                                        transform)
+##
+#embedding, localization, solubility, meta = dataset[0]
 # print(type(embedding))
 #
 # coeffs = pywt.wavedec(embedding, 'db1', axis=0)
@@ -121,3 +121,6 @@ embedding, localization, solubility, meta = dataset[0]
 # print(np.array(coeffs).shape)
 # print(embedding.shape)
 
+for type in ['cat', 'sum', 'avg', 'max']:
+    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
+        combine_embeddings('data/embeddings/train.h5','data/seqvec_embeddings/train.h5', type='cat')

@@ -15,6 +15,8 @@ train_remapping: 'data/embeddings/train_remapped.fasta'
 val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
+#combined Data
+
 # Model parameters
 model_type: 'ConvsMaxAvgPool'
 model_parameters:

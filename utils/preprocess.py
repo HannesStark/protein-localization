@@ -33,6 +33,42 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
             reduced_embeddings.create_dataset(key, data=reduced)
 
 
+def combine_embeddings(file_1: str, file_2: str, output_dir: str = 'data/combined_embeddings', type: str = 'sum'):
+    """
+    Combine embeddings of the same size and save them to a file with the name of file1 and the combination type
+     into the output_dir
+    Args:
+        file_1: string to .h5 file of first embeddings
+        file_2: string to .h5 file of other embeddings
+        output_dir: string to ouput_directory
+        type: how to combine the embeddigns [cat, sum, avg, max]
+
+    Returns:
+
+    """
+    output_path = os.path.join(output_dir, type + '_' + os.path.basename(file_1))
+    embeddings_1 = h5py.File(file_1, 'r')
+    embeddings_2 = h5py.File(file_2, 'r')
+    combined_embeddings = h5py.File(output_path, 'w')
+    print('combining ', file_1, ' with ', file_2, ' into ', output_path)
+    for key in tqdm(embeddings_1.keys()):
+        embedding1 = embeddings_1[key][:]
+        embedding2 = embeddings_2[key][:]
+
+        if type == 'cat':
+            combined_embedding = np.concatenate([embedding1, embedding2], axis=-1)
+        elif type == 'sum':
+            combined_embedding = embedding1 + embedding2
+        elif type == 'avg':
+            combined_embedding = embedding1 + embedding2
+            combined_embeddings /= 2
+        elif type == 'max':
+            combined_embedding = np.maximum(embedding1, embedding2)
+        else:
+            raise ValueError('Specified type does not exist')
+        combined_embeddings.create_dataset(key, data=combined_embedding)
+
+
 def sum_seqvec_embeddings(input_paths: List[str], output_dir: str, output_filenames: List[str]):
     """
     sums the layers of the seqvec embeddings and saves the resulting embeddings
