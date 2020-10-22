@@ -33,7 +33,7 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
             reduced_embeddings.create_dataset(key, data=reduced)
 
 
-def combine_embeddings(file_1: str, file_2: str, output_dir: str = 'data/combined_embeddings', type: str = 'sum'):
+def combine_embeddings(file_1: str, file_2: str, output_path: str , type: str = 'sum'):
     """
     Combine embeddings of the same size and save them to a file with the name of file1 and the combination type
      into the output_dir
@@ -46,7 +46,6 @@ def combine_embeddings(file_1: str, file_2: str, output_dir: str = 'data/combine
     Returns:
 
     """
-    output_path = os.path.join(output_dir, type + '_' + os.path.basename(file_1))
     embeddings_1 = h5py.File(file_1, 'r')
     embeddings_2 = h5py.File(file_2, 'r')
     combined_embeddings = h5py.File(output_path, 'w')
@@ -61,7 +60,7 @@ def combine_embeddings(file_1: str, file_2: str, output_dir: str = 'data/combine
             combined_embedding = embedding1 + embedding2
         elif type == 'avg':
             combined_embedding = embedding1 + embedding2
-            combined_embeddings /= 2
+            combined_embedding /= 2
         elif type == 'max':
             combined_embedding = np.maximum(embedding1, embedding2)
         else:

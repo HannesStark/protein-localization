@@ -1,24 +1,21 @@
-experiment_name: 'sol1_known'
+experiment_name: 'BERT'
 
 num_epochs: 10000
 batch_size: 2048
 log_iterations: 10
-solubility_loss: 1
-unknown_solubility: False
-loss_function: 'JointCrossEntropy'
+patience: 400
 optimizer_parameters:
-  lr: 3.0e-4
-#checkpoint: 'runs/max_avg_dropout05_27-09_08-49-02'
+  lr: 1.0e-4
 
-# Paths to mean reduced
+# Paths to BERT
 train_embeddings: 'data/embeddings/train_reduced.h5'
 val_embeddings: 'data/embeddings/val_reduced.h5'
 test_embeddings: 'data/embeddings/test_reduced.h5'
 
-# Paths to mean_max reduced
-#train_embeddings: 'data/embeddings/train_mean_max.h5'
-#val_embeddings: 'data/embeddings/val_mean_max.h5'
-#test_embeddings: 'data/embeddings/test_mean_max.h5'
+## Paths to combined
+#train_embeddings: 'data/combined_embeddings/cat_train_reduced.h5'
+#val_embeddings: 'data/combined_embeddings/cat_val_reduced.h5'
+#test_embeddings: 'data/combined_embeddings/cat_test_reduced.h5'
 
 train_remapping: 'data/embeddings/train_remapped.fasta'
 val_remapping: 'data/embeddings/val_remapped.fasta'
@@ -27,7 +24,7 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 # Model parameters
 model_type: 'FFN'
 model_parameters:
-  output_dim: 12
+  output_dim: 10
   hidden_dim: 32
   n_hidden_layers: 0
   dropout: 0.25

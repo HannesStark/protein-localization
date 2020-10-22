@@ -121,6 +121,10 @@ import cv2
 # print(np.array(coeffs).shape)
 # print(embedding.shape)
 
-for type in ['cat', 'sum', 'avg', 'max']:
-    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
-        combine_embeddings('data/embeddings/train.h5','data/seqvec_embeddings/train.h5', type='cat')
+#for type in ['cat', 'sum', 'avg', 'max']:
+#    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
+#        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
+
+for type in ['cat']:
+    for file in ['val.h5']:
+        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
