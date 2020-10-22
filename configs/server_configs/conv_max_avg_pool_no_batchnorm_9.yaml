@@ -6,6 +6,12 @@ log_iterations: 100
 optimizer_parameters:
   lr: 5.0e-6
 
+
+
+checkpoint: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/ConvMaxAvgPoolNoBatchnorm_9_22-10_09-57-04'
+
+
+
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
 train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'

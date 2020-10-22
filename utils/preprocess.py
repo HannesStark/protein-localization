@@ -48,9 +48,9 @@ def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = '
     """
     embeddings_1 = h5py.File(file_1, 'r')
     embeddings_2 = h5py.File(file_2, 'r')
-    combined_embeddings = h5py.File(output_path, 'w')
     if not os.path.exists(os.path.dirname(output_path)):
         os.mkdir(os.path.dirname(output_path))
+    combined_embeddings = h5py.File(output_path, 'w')
     print('combining ', file_1, ' with ', file_2, ' into ', output_path)
     for key in tqdm(embeddings_1.keys()):
         embedding1 = embeddings_1[key][:]
