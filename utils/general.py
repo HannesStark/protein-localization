@@ -114,3 +114,9 @@ def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Te
     solubility = torch.tensor([item[1] for item in batch]).float()
     embeddings = pad_sequence(embeddings, batch_first=True)
     return embeddings.permute(0, 2, 1), localization, solubility
+
+def normalize(arr):
+    arr = arr - arr.min()
+    arr = arr / arr.max()
+    return arr
+

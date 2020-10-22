@@ -1,52 +1,15 @@
-import glob
 import os
-
-from sklearn.metrics import matthews_corrcoef
-from tqdm import tqdm
-
 from models import *  # required dont remove this
 from torch.optim import *  # required dont remove this
 from adabelief_pytorch import AdaBelief
 import argparse
 import yaml
 import torch.nn as nn
-from torch.utils.data import DataLoader, RandomSampler
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
 from solvers.base_solver import BaseSolver
-from utils.general import padded_permuted_collate
-import matplotlib.pyplot as plt
 
-def normalize(arr):
-    arr = arr - arr.min()
-    arr = arr / arr.max()
-    return arr
-
-def visualize_activation(self, input, output):
-    print('Inside ' + self.__class__.__name__ + ' forward')
-    print('')
-    print('input: ', type(input))
-    print('input[0]: ', type(input[0]))
-    print('output: ', type(output))
-    print('')
-    print('input size:', input[0].size())
-    print('output size:', output.data.size())
-    print('output norm:', output.data.norm())
-    plt.rcParams['figure.dpi'] = 300
-    plt.rcParams["image.cmap"] = 'viridis'
-    inp = normalize(input[0].squeeze())
-    out = normalize(output.data.squeeze())
-    out_avg = torch.mean(out, dim=0)
-    out_max = torch.max(out, dim=0)[0]
-    plt.plot(torch.max(inp, dim=0)[0])
-    plt.show()
-    plt.plot(out_max)
-    plt.show()
-    plt.imshow(out)
-    plt.show()
-    plt.imshow(inp)
-    plt.show()
 
 def inference(args):
     transform = transforms.Compose([LabelToInt(), ToTensor()])

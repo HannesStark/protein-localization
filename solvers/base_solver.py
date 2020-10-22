@@ -35,7 +35,7 @@ class BaseSolver():
 
     def train(self, train_loader: DataLoader, val_loader: DataLoader, eval_data=None):
         """
-        Train and simultaneosly evaluate on the val_loader and then estimate the stderr on eval_data if it is provided
+        Train and simultaneously evaluate on the val_loader and then estimate the stderr on eval_data if it is provided
         Args:
             train_loader: For training
             val_loader: For validation during training
@@ -67,7 +67,6 @@ class BaseSolver():
 
             print('[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (epoch + 1, val_acc, train_acc))
 
-            # write to tensorboard
             tensorboard_confusion_matrix(train_results, val_results, self.writer, epoch + 1)
             self.writer.add_scalars('Loc_Acc', {'train': train_acc, 'val': val_acc}, epoch + 1)
             self.writer.add_scalars('Loc_MCC', {'train': train_mcc, 'val': val_mcc}, epoch + 1)
@@ -83,7 +82,7 @@ class BaseSolver():
             else:
                 epochs_no_improve += 1
 
-            if epochs_no_improve >= args.patience:
+            if epochs_no_improve >= args.patience:  # stop if there was no improvement for patience  many epochs
                 break
 
         if eval_data:  # do evaluation on the test data if a eval_data is provided
@@ -141,6 +140,14 @@ class BaseSolver():
         return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
 
     def evaluation(self, dataset: Dataset):
+        """
+        Estimate the standard error on the provided dataset and write it to evaluation.txt in the run directory
+        Args:
+            dataset: the dataset for which to estimate the stderr
+
+        Returns:
+
+        """
         self.model.eval()
         if len(dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
             collate_function = padded_permuted_collate
