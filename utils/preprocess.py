@@ -33,7 +33,7 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
             reduced_embeddings.create_dataset(key, data=reduced)
 
 
-def combine_embeddings(file_1: str, file_2: str, output_path: str , type: str = 'sum'):
+def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = 'sum'):
     """
     Combine embeddings of the same size and save them to a file with the name of file1 and the combination type
      into the output_dir
@@ -49,6 +49,8 @@ def combine_embeddings(file_1: str, file_2: str, output_path: str , type: str = 
     embeddings_1 = h5py.File(file_1, 'r')
     embeddings_2 = h5py.File(file_2, 'r')
     combined_embeddings = h5py.File(output_path, 'w')
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.mkdir(os.path.dirname(output_path))
     print('combining ', file_1, ' with ', file_2, ' into ', output_path)
     for key in tqdm(embeddings_1.keys()):
         embedding1 = embeddings_1[key][:]
