@@ -109,11 +109,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 
-#transform = transforms.Compose([LabelToInt()])
-#dataset = EmbeddingsLocalizationDataset('data/embeddings/val_reduced.h5', 'data/embeddings/val_remapped.fasta', True, 6000,
+# transform = transforms.Compose([LabelToInt()])
+# dataset = EmbeddingsLocalizationDataset('data/embeddings/val_reduced.h5', 'data/embeddings/val_remapped.fasta', True, 6000,
 #                                        transform)
 ##
-#embedding, localization, solubility, meta = dataset[0]
+# embedding, localization, solubility, meta = dataset[0]
 # print(type(embedding))
 #
 # coeffs = pywt.wavedec(embedding, 'db1', axis=0)
@@ -121,10 +121,11 @@ import cv2
 # print(np.array(coeffs).shape)
 # print(embedding.shape)
 
-#for type in ['cat', 'sum', 'avg', 'max']:
+# for type in ['cat', 'sum', 'avg', 'max']:
 #    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
 #        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
 
 for type in ['cat']:
     for file in ['val.h5']:
-        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
+        combine_embeddings('data/embeddings/' + file, 'data/seqvec_embeddings/' + file,
+                           output_path='data/combined_embeddings/' + file, type=type)
