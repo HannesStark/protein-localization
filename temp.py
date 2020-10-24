@@ -46,8 +46,7 @@ from torch.optim import *
 # ids = df["seq"]
 # print(df[ids.isin(ids[ids.duplicated()])].sort_values(by="seq"))
 #
-from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
-    sum_seqvec_embeddings, combine_embeddings, cls_token_embeddings
+
 
 # train_val_split('data/split3_fasta_files/model_homreduced.fasta','data/split3_fasta_files',train_size=0.85)
 
@@ -125,6 +124,9 @@ import cv2
 #    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
 #        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
 
+from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
+    sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
 
 for file in ['train.h5', 'val.h5', 'test.h5']:
-    cls_token_embeddings('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_' + file)
+    position_cat_reduced('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_cat_reduced_' + file,
+                         position=0)

@@ -1,0 +1,30 @@
+experiment_name: 'cls_cat_reduced'
+
+num_epochs: 10000
+batch_size: 2048
+log_iterations: 10
+patience: 400
+optimizer_parameters:
+  lr: 1.0e-4
+
+## Paths to BERT
+#train_embeddings: 'data/embeddings/train_reduced.h5'
+#val_embeddings: 'data/embeddings/val_reduced.h5'
+#test_embeddings: 'data/embeddings/test_reduced.h5'
+
+# Paths to combined
+train_embeddings: 'data/combined_embeddings/cls_cat_reduced_train.h5'
+val_embeddings: 'data/combined_embeddings/cls_cat_reduced_val.h5'
+test_embeddings: 'data/combined_embeddings/cls_cat_reduced_test.h5'
+
+train_remapping: 'data/embeddings/train_remapped.fasta'
+val_remapping: 'data/embeddings/val_remapped.fasta'
+test_remapping: 'data/embeddings/test_remapped.fasta'
+
+# Model parameters
+model_type: 'FFN'
+model_parameters:
+  output_dim: 10
+  hidden_dim: 32
+  n_hidden_layers: 0
+  dropout: 0.25

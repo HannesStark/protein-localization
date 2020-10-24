@@ -69,12 +69,13 @@ def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = '
             raise ValueError('Specified type does not exist')
         combined_embeddings.create_dataset(key, data=combined_embedding)
 
-def cls_token_embeddings(file: str, output_path: str):
+def position_token_embeddings(file: str, output_path: str, position: int = 0):
     """
-    get the first token of the BERT embeddings
+    get the  token at position of embeddings and save them to a new file
     Args:
         file: h5 file with bert embeddings
-        output_path: file path to save the cls token.
+        output_path: file path to save the new embeddings.
+        position: which token to fetch
 
     Returns:
 
@@ -85,7 +86,26 @@ def cls_token_embeddings(file: str, output_path: str):
     embeddings = h5py.File(output_path, 'w')
     for key in tqdm(loaded_embeddings.keys()):
         embedding = loaded_embeddings[key][:]
-        embeddings.create_dataset(key, data=embedding[0])
+        embeddings.create_dataset(key, data=embedding[position])
+
+def position_cat_reduced(file: str, output_path: str, position: int = 0):
+    """
+    get the  token at position of the BERT embeddings and concatenate it with the avg over the length
+    Args:
+        file: h5 file with bert embeddings
+        output_path: file path to save the cls token.
+        position: which token to fetch
+
+    Returns:
+
+    """
+    loaded_embeddings = h5py.File(file, 'r')
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.mkdir(os.path.dirname(output_path))
+    embeddings = h5py.File(output_path, 'w')
+    for key in tqdm(loaded_embeddings.keys()):
+        embedding = loaded_embeddings[key][:]
+        embeddings.create_dataset(key, data=np.concatenate([np.mean(embedding,axis=0), embedding[position]], axis=-1))
 
 
 def sum_seqvec_embeddings(input_paths: List[str], output_dir: str, output_filenames: List[str]):

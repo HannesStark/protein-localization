@@ -23,10 +23,15 @@ def explore_embeddings(args):
     # Needs "from models import *" to work
     model = globals()[args.model_type](embeddings_dim=dataset[0][0].shape[-1], **args.model_parameters)
 
+    embedding, localization, solubility, metadata = dataset[100]
+
     # register defined hooks and run trough some example in the dataset
     model.conv1.register_forward_hook(visualize_activation_hook)
-    model(dataset[100][0].T.unsqueeze(0))
+    model(embedding.T.unsqueeze(0))
 
+
+    plt.plot(embedding[355])
+    plt.show()
 
 def visualize_activation_hook(self, input, output):
     print('Inside ' + self.__class__.__name__ + ' forward')
@@ -40,7 +45,7 @@ def visualize_activation_hook(self, input, output):
     out = normalize(output.data.squeeze())
     out_avg = torch.mean(out, dim=0)
     out_max = torch.max(out, dim=0)[0]
-    plt.plot(torch.max(inp, dim=0)[0])
+    plt.plot(out_avg)
     plt.show()
     plt.plot(out_max)
     plt.show()
