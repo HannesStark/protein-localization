@@ -69,6 +69,24 @@ def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = '
             raise ValueError('Specified type does not exist')
         combined_embeddings.create_dataset(key, data=combined_embedding)
 
+def cls_token_embeddings(file: str, output_path: str):
+    """
+    get the first token of the BERT embeddings
+    Args:
+        file: h5 file with bert embeddings
+        output_path: file path to save the cls token.
+
+    Returns:
+
+    """
+    loaded_embeddings = h5py.File(file, 'r')
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.mkdir(os.path.dirname(output_path))
+    embeddings = h5py.File(output_path, 'w')
+    for key in tqdm(loaded_embeddings.keys()):
+        embedding = loaded_embeddings[key][:]
+        embeddings.create_dataset(key, data=embedding[0])
+
 
 def sum_seqvec_embeddings(input_paths: List[str], output_dir: str, output_filenames: List[str]):
     """
