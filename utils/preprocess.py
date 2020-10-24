@@ -105,7 +105,9 @@ def position_cat_reduced(file: str, output_path: str, position: int = 0):
     embeddings = h5py.File(output_path, 'w')
     for key in tqdm(loaded_embeddings.keys()):
         embedding = loaded_embeddings[key][:]
-        embeddings.create_dataset(key, data=np.concatenate([np.mean(embedding,axis=0), embedding[position]], axis=-1))
+        embedding = np.concatenate([np.mean(embedding,axis=0), embedding[position]], axis=-1)
+        embeddings.create_dataset(key, data=embedding)
+        print(embedding.shape)
 
 
 def sum_seqvec_embeddings(input_paths: List[str], output_dir: str, output_filenames: List[str]):

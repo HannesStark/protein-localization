@@ -1,26 +1,24 @@
-experiment_name: '1layer_256'
+experiment_name: ''
 
-num_epochs: 10000
-batch_size: 64
-log_iterations: 2
-solubility_loss: 0
+num_epochs: 2500
+batch_size: 256
+log_iterations: 100
 optimizer_parameters:
-  lr: 3.0e-5
-#checkpoint: 'runs/max_avg_dropout05_27-09_08-49-02'
+  lr: 5.0e-5
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
-train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
 val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
-val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
 test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
+
+train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
+val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'LSTMConv'
+model_type: 'ConvMaxAvgPoolCls'
 model_parameters:
   output_dim: 10
-  lstm_hidden_dim: 256
-  n_layers: 1
+  dropout: 0.25
+  conv_dropout: 0.25
   kernel_size: 9
-  dropout: 0.2
