@@ -2,6 +2,7 @@ experiment_name: '9'
 
 num_epochs: 2500
 batch_size: 256
+patience: 1
 log_iterations: 100
 optimizer_parameters:
   lr: 5.0e-6
