@@ -49,34 +49,6 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     writer.add_figure('Confusion Matrix ', fig, global_step=step)
 
 
-def experiment_checkpoint(run_directory: str, model, optimizer, epoch: int, args):
-    """
-    Saves state dict of model and the used config file to the run_directory
-    Args:
-        run_directory: where to save
-        model: pytorch nn.Module model
-        optimizer:
-        args: namespace to be saved with the argumetns
-
-    """
-    torch.save({
-        'epoch': epoch,
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-    }, os.path.join(run_directory, 'checkpoint.pt'))
-    train_args = copy.copy(args)
-    train_args.config = train_args.config.name
-    pyaml.dump(train_args.__dict__, open(os.path.join(run_directory, 'train_arguments.yaml'), 'w'))
-    shutil.copyfile(args.config.name, os.path.join(run_directory, os.path.basename(args.config.name)))
-
-    # Sorry for this.
-    # Get the class of the used model (works because of the "from models import *" calling the init.py in the models dir)
-    model_class = globals()[type(model).__name__]
-    source_code = inspect.getsource(model_class)  # Get the sourcecode of the class of the model.
-    file_name = os.path.basename(inspect.getfile(model_class))
-    with open(os.path.join(run_directory, file_name), "w") as f:
-        f.write(source_code)
-
 
 def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]]) -> Tuple[
     torch.Tensor, torch.Tensor, torch.Tensor, dict]:

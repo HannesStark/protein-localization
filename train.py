@@ -34,16 +34,17 @@ def train(args):
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])
     solver.train(train_loader, val_loader, eval_data=val_set)
+    print('exit')
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/conv_max_avg_pool_small.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=2500, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
-    p.add_argument('--patience', type=int, default=150, help='stop training after no improvement in this many epochs')
-    p.add_argument('--n_draws', type=int, default=100, help='number of times to sample for estimation of stderr')
+    p.add_argument('--patience', type=int, default=80, help='stop training after no improvement in this many epochs')
+    p.add_argument('--n_draws', type=int, default=200, help='number of times to sample for estimation of stderr')
     p.add_argument('--optimizer', type=str, default='Adam', help='Class name of torch.optim like [Adam, SGD, AdamW]')
     p.add_argument('--optimizer_parameters', type=dict, help='parameters with keywords of the chosen optimizer like lr')
     p.add_argument('--log_iterations', type=int, default=-1,

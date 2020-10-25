@@ -1,8 +1,13 @@
+import copy
+import inspect
 import os
+import shutil
 from typing import Tuple
 
+import pyaml
 import torch
 import numpy as np
+from models import *
 from sklearn.metrics import matthews_corrcoef
 from torch.utils.data import DataLoader, RandomSampler, Dataset
 from torch.utils.tensorboard import SummaryWriter
@@ -11,7 +16,7 @@ from datetime import datetime
 from tqdm import tqdm
 
 from models.loss_functions import JointCrossEntropy
-from utils.general import tensorboard_confusion_matrix, experiment_checkpoint, padded_permuted_collate
+from utils.general import tensorboard_confusion_matrix, padded_permuted_collate
 
 
 class BaseSolver():
@@ -19,6 +24,7 @@ class BaseSolver():
         self.optim = optim(list(model.parameters()), **args.optimizer_parameters)
         self.loss_func = loss_func()
         self.args = args
+
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
         if args.checkpoint and not eval:
@@ -26,9 +32,12 @@ class BaseSolver():
             self.writer = SummaryWriter(args.checkpoint)
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.optim.load_state_dict(checkpoint['optimizer_state_dict'])
-            self.start_epoch = checkpoint['epoch']
+            with open(os.path.join(self.writer.log_dir, 'epoch.txt'), "r") as f:  # last epoch not the best epoch
+                self.start_epoch = int(f.read()) + 1
+            self.maximum_accuracy = checkpoint['maximum_accuracy']
         elif not eval:
             self.start_epoch = 0
+            self.maximum_accuracy = 0  # running accuracy to decide whether or not a new model should be saved
             self.writer = SummaryWriter(
                 'runs/{}_{}_{}'.format(args.model_type, args.experiment_name,
                                        datetime.now().strftime('%d-%m_%H-%M-%S')))
@@ -46,7 +55,6 @@ class BaseSolver():
         """
         args = self.args
         epochs_no_improve = 0  # counts every epoch that the validation accuracy did not improve for early stopping
-        maximum_accuracy = 0  # running accuracy to decide whether or not a new model should be saved
         for epoch in range(self.start_epoch, args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
             train_loc_loss, train_sol_loss, train_results = self.predict(train_loader, epoch + 1, optim=self.optim)
@@ -75,12 +83,15 @@ class BaseSolver():
                 self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
                 self.writer.add_scalars('Sol_Acc', {'train': sol_train_acc, 'val': sol_val_acc}, epoch + 1)
 
-            if val_acc >= maximum_accuracy:  # save the model with the best accuracy
+            if val_acc >= self.maximum_accuracy:  # save the model with the best accuracy
                 epochs_no_improve = 0
-                maximum_accuracy = val_acc
-                experiment_checkpoint(self.writer.log_dir, self.model, self.optim, epoch + 1, args)
+                self.maximum_accuracy = val_acc
+                self.save_checkpoint(epoch + 1)
             else:
                 epochs_no_improve += 1
+
+            with open(os.path.join(self.writer.log_dir, 'epoch.txt'), 'w') as file:  # save what the last epoch is
+                file.write(str(epoch))
 
             if epochs_no_improve >= args.patience:  # stop if there was no improvement for patience  many epochs
                 break
@@ -175,3 +186,32 @@ class BaseSolver():
         with open(os.path.join(self.writer.log_dir, 'evaluation.txt'), 'w') as file:
             file.write(results_string)
         print(results_string)
+
+    def save_checkpoint(self, epoch: int):
+        """
+        Saves checkpoint of model in the logdir of the summarywriter/ in the used rundir
+        Args:
+            epoch: current epoch from which the run will be continued if it is loaded
+
+        Returns:
+
+        """
+        run_dir = self.writer.log_dir
+        torch.save({
+            'epoch': epoch,
+            'maximum_accuracy': self.maximum_accuracy,
+            'model_state_dict': self.model.state_dict(),
+            'optimizer_state_dict': self.optim.state_dict(),
+        }, os.path.join(run_dir, 'checkpoint.pt'))
+        train_args = copy.copy(self.args)
+        train_args.config = train_args.config.name
+        pyaml.dump(train_args.__dict__, open(os.path.join(run_dir, 'train_arguments.yaml'), 'w'))
+        shutil.copyfile(self.args.config.name, os.path.join(run_dir, os.path.basename(self.args.config.name)))
+
+        # Sorry for this.
+        # Get the class of the used model (works because of the "from models import *" calling the init.py in the models dir)
+        model_class = globals()[type(self.model).__name__]
+        source_code = inspect.getsource(model_class)  # Get the sourcecode of the class of the model.
+        file_name = os.path.basename(inspect.getfile(model_class))
+        with open(os.path.join(run_dir, file_name), "w") as f:
+            f.write(source_code)

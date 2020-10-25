@@ -127,6 +127,8 @@ import cv2
 from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
     sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
 
-for file in ['train.h5', 'val.h5', 'test.h5']:
-    position_cat_reduced('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_cat_reduced_' + file,
-                         position=0)
+#for file in ['train.h5', 'val.h5', 'test.h5']:
+#    position_cat_reduced('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_cat_reduced_' + file,
+#                         position=0)
+
+print('test')
