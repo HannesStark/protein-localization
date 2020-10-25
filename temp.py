@@ -9,11 +9,9 @@ from torch import Tensor
 from torch.utils.data import DataLoader, RandomSampler
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
-from datasets.transforms import ToTensor, LabelToInt
 from torchvision.transforms import transforms
 from torch.nn.utils.rnn import pad_sequence
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
-from datasets.transforms import ToTensor, LabelToInt
 import pandas as pd
 import torch
 from torch.optim import *
@@ -131,4 +129,6 @@ from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_sp
 #    position_cat_reduced('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_cat_reduced_' + file,
 #                         position=0)
 
-print('test')
+plt.plot(np.array([0.0953, 0.1959, 0.0625, 0.0250, 0.0225, 0.1055, 0.2896, 0.0106, 0.0538,
+        0.1391]))
+plt.show()

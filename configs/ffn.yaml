@@ -1,13 +1,12 @@
-experiment_name: 'BERT'
+experiment_name: 'BERT_balanced'
 
 num_epochs: 10000
 batch_size: 2048
 log_iterations: 10
-patience: 2
+patience: 400
+balanced_loss: True
 optimizer_parameters:
   lr: 1.0e-4
-
-checkpoint: 'runs/FFN_BERT_25-10_08-08-20'
 
 # Paths to BERT
 train_embeddings: 'data/embeddings/train_reduced.h5'

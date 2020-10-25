@@ -5,6 +5,8 @@ import torch
 from Bio import SeqIO
 from torch.utils.data import Dataset
 
+from utils.general import LOCALIZATION
+
 
 class EmbeddingsLocalizationDataset(Dataset):
     """
@@ -29,8 +31,10 @@ class EmbeddingsLocalizationDataset(Dataset):
         self.transform = transform
         self.embeddings_file = h5py.File(embeddings_path, 'r')
         self.localization_solubility_metadata_list = []
+        self.class_weights = torch.zeros(10)
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
             localization = record.description.split(' ')[2].split('-')[0]
+            localization = LOCALIZATION.index(localization)  # get localization as integer
             solubility = record.description.split(' ')[2].split('-')[-1]
             if len(record.seq) <= max_length:
                 metadata = {'id': str(record.id),
@@ -42,6 +46,8 @@ class EmbeddingsLocalizationDataset(Dataset):
                 if unknown_solubility or not (solubility == 'U'):
                     self.localization_solubility_metadata_list.append(
                         {'localization': localization, 'solubility': solubility, 'metadata': metadata})
+            self.class_weights[localization] +=1
+        self.class_weights /= self.class_weights.sum()
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]:
         """retrieve single sample from the dataset

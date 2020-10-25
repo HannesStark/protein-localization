@@ -20,11 +20,9 @@ from utils.general import tensorboard_confusion_matrix, padded_permuted_collate
 
 
 class BaseSolver():
-    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=JointCrossEntropy, eval=False):
+    def __init__(self, model, args, optim=torch.optim.Adam, loss_func=JointCrossEntropy, weight=None, eval=False):
         self.optim = optim(list(model.parameters()), **args.optimizer_parameters)
-        self.loss_func = loss_func()
         self.args = args
-
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
         if args.checkpoint and not eval:
@@ -35,12 +33,19 @@ class BaseSolver():
             with open(os.path.join(self.writer.log_dir, 'epoch.txt'), "r") as f:  # last epoch not the best epoch
                 self.start_epoch = int(f.read()) + 1
             self.maximum_accuracy = checkpoint['maximum_accuracy']
+            self.weight = checkpoint['weight'].to(self.device)
         elif not eval:
             self.start_epoch = 0
             self.maximum_accuracy = 0  # running accuracy to decide whether or not a new model should be saved
             self.writer = SummaryWriter(
                 'runs/{}_{}_{}'.format(args.model_type, args.experiment_name,
                                        datetime.now().strftime('%d-%m_%H-%M-%S')))
+            self.weight = weight.to(self.device)
+
+        if args.balanced_loss:
+            self.loss_func = loss_func(self.weight)
+        else:
+            self.loss_func = loss_func()
 
     def train(self, train_loader: DataLoader, val_loader: DataLoader, eval_data=None):
         """
@@ -199,6 +204,7 @@ class BaseSolver():
         run_dir = self.writer.log_dir
         torch.save({
             'epoch': epoch,
+            'weight': self.weight,
             'maximum_accuracy': self.maximum_accuracy,
             'model_state_dict': self.model.state_dict(),
             'optimizer_state_dict': self.optim.state_dict(),

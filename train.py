@@ -13,7 +13,7 @@ from utils.general import padded_permuted_collate
 
 
 def train(args):
-    transform = transforms.Compose([LabelToInt(), ToTensor()])
+    transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
                                               args.max_length, transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
@@ -32,7 +32,8 @@ def train(args):
     print('trainable params: ', sum(p.numel() for p in model.parameters() if p.requires_grad))
 
     # Needs "from torch.optim import *" and "from models import *" to work
-    solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])
+    solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function],
+                        weight=train_set.class_weights)
     solver.train(train_loader, val_loader, eval_data=val_set)
     print('exit')
 
@@ -55,6 +56,7 @@ def parse_arguments():
     p.add_argument('--model_parameters', type=dict, help='dictionary of model parameters')
     p.add_argument('--loss_function', type=str, default='LocCrossEntropy',
                    help='Classname of one of the loss functions models/loss_functions.py')
+    p.add_argument('--balanced_loss', type=bool, default=False, help='balance loss by class prevalence in train set')
     p.add_argument('--solubility_loss', type=float, default=0,
                    help='how much the loss of the solubility will be weighted')
     p.add_argument('--unknown_solubility', type=bool, default=True,
