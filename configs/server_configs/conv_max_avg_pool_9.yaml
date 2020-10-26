@@ -1,11 +1,11 @@
-experiment_name: '9_replicate'
+experiment_name: '9'
 
-num_epochs: 5000
+num_epochs: 2500
 batch_size: 256
 log_iterations: 100
-solubility_loss: 0
+patience: 150
 optimizer_parameters:
-  lr: 5.0e-6
+  lr: 5.0e-05
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
