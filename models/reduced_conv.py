@@ -27,7 +27,7 @@ class ReducedConv(nn.Module):
         )
         self.output = nn.Linear(32, output_dim)
 
-    def forward(self, x) -> torch.Tensor:
+    def forward(self, x, seq_len) -> torch.Tensor:
         """
         Args:
             x: [batch_size, embeddings_dim] embedding tensor that should be classified

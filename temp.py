@@ -122,13 +122,15 @@ import cv2
 #    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
 #        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
 
-from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
-    sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
 
 #for file in ['train.h5', 'val.h5', 'test.h5']:
 #    position_cat_reduced('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_cat_reduced_' + file,
 #                         position=0)
 
-plt.plot(np.array([0.0953, 0.1959, 0.0625, 0.0250, 0.0225, 0.1055, 0.2896, 0.0106, 0.0538,
-        0.1391]))
-plt.show()
+from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
+    sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
+
+def function(a):
+    print(a)
+
+

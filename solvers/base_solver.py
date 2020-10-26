@@ -130,7 +130,7 @@ class BaseSolver():
             embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
                                              metadata['solubility_known'].to(self.device)
 
-            prediction = self.model(embedding)
+            prediction = self.model(embedding, metadata['length'].to(self.device))
             loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
             if optim:  # run backpropagation if an optimizer is provided
                 loss.backward()

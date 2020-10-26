@@ -9,17 +9,17 @@ from torch.utils.data import DataLoader
 from models import *  # This is necessary, do not remove it
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
-from datasets.transforms import LabelToInt, ToTensor
+from datasets.transforms import SolubilityToInt, ToTensor
 from utils.general import normalize, padded_permuted_collate
 
-checkpoint = 'runs/.ex15/ConvMaxAvgPoolConv_9_NoBatchnorm_20-10_08-58-05'
+checkpoint = 'runs/.ex16/ConvMaxAvgPoolNoBatchnorm_bert_24-10_05-39-28'
 embeddings = 'data/embeddings/val.h5'
 remapping = 'data/embeddings/val_remapped.fasta'
 batch_size = 8
 
 
 def explore_embeddings(args):
-    transform = transforms.Compose([LabelToInt(), ToTensor()])
+    transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     dataset = EmbeddingsLocalizationDataset(embeddings, remapping, unknown_solubility=False, transform=transform)
 
     if len(dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional lenght dim
@@ -39,6 +39,7 @@ def explore_embeddings(args):
     model(embedding)
 
     plt.plot(torch.max(embedding[1],dim=0)[0])
+    plt.title('embedding max')
     plt.show()
 
 
@@ -50,20 +51,25 @@ def visualize_activation_hook(self, input, output):
     print('output norm:', output.data.norm())
     plt.rcParams['figure.dpi'] = 300
     plt.rcParams["image.cmap"] = 'viridis'
-    inp = normalize(input[0][1].squeeze())
-    out = normalize(output.data[1].squeeze())
+    inp = input[0][1].squeeze()
+    out = output.data[1].squeeze()
     inp_max = torch.max(inp, dim=0)[0]
     out_avg = torch.mean(out, dim=0)
     out_max = torch.max(out, dim=0)[0]
     plt.plot(inp_max)
+    plt.title('input max')
     plt.show()
     plt.plot(out_avg)
+    plt.title('output avg')
     plt.show()
     plt.plot(out_max)
+    plt.title('output max')
     plt.show()
-    plt.imshow(out)
+    plt.imshow(normalize(out))
+    plt.title('output')
     plt.show()
-    plt.imshow(inp)
+    plt.imshow(normalize(inp))
+    plt.title('input')
     plt.show()
 
 
