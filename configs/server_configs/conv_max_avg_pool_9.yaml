@@ -1,4 +1,4 @@
-experiment_name: '9'
+experiment_name: 'bert'
 
 num_epochs: 2500
 batch_size: 256
