@@ -10,9 +10,8 @@ class ConvSelfAttention(nn.Module):
         super(ConvSelfAttention, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size=kernel_size, stride=1,
-                               padding=0)
-        self.multi_head_attention = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads,
-                                                       skip_last_linear=True)
+                               padding=kernel_size//2)
+
 
         self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),

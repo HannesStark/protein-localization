@@ -123,14 +123,13 @@ import cv2
 #        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
 
 
-#for file in ['train.h5', 'val.h5', 'test.h5']:
+# for file in ['train.h5', 'val.h5', 'test.h5']:
 #    position_cat_reduced('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_cat_reduced_' + file,
 #                         position=0)
 
 from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
     sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
 
-def function(a):
-    print(a)
+a = torch.tensor([[1, 2, 3, 0, 0, 0], [2, 3, 0, 0, 0, 0]]).double()
 
-
+print(torch.softmax(a, dim=0))
