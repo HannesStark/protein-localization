@@ -129,7 +129,10 @@ import cv2
 
 from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
     sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
+lengths = torch.tensor([6,2])
+mask = torch.arange(lengths.max())[None, :] < lengths[:, None]
 
-a = torch.tensor([[1, 2, 3, 0, 0, 0], [2, 3, 0, 0, 0, 0]]).double()
-
+a = torch.tensor([[1, 2, 3, 3, 5, 2], [2, 3, 0, 0, 0, 0]]).double()
+print(mask)
+a = a.masked_fill()
 print(torch.softmax(a, dim=0))

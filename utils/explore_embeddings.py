@@ -36,7 +36,7 @@ def explore_embeddings(args):
 
     # register defined hooks and run trough some example in the dataset
     model.conv1.register_forward_hook(visualize_activation_hook)
-    model(embedding)
+    model(embedding, metadata['length'])
 
     plt.plot(torch.max(embedding[1],dim=0)[0])
     plt.title('embedding max')
@@ -56,6 +56,7 @@ def visualize_activation_hook(self, input, output):
     inp_max = torch.max(inp, dim=0)[0]
     out_avg = torch.mean(out, dim=0)
     out_max = torch.max(out, dim=0)[0]
+    print(out_max[-1])
     plt.plot(inp_max)
     plt.title('input max')
     plt.show()

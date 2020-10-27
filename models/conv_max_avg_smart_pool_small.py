@@ -38,3 +38,4 @@ class ConvMaxAvgSmartPoolSmall(nn.Module):
         o = torch.cat([o1, o2], dim=-1)
         o = self.linear(o)
         return self.output(o)
+
