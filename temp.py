@@ -134,5 +134,8 @@ mask = torch.arange(lengths.max())[None, :] < lengths[:, None]
 
 a = torch.tensor([[1, 2, 3, 3, 5, 2], [2, 3, 0, 0, 0, 0]]).double()
 print(mask)
-a = a.masked_fill()
-print(torch.softmax(a, dim=0))
+b = a + 1
+print(b * mask)
+a = a.masked_fill(mask==False, float('-inf'))
+print(a)
+print(torch.softmax(a, dim=1))
