@@ -18,7 +18,7 @@ class ConvMaxAvgPoolSigmoid(nn.Module):
         )
         self.output = nn.Linear(32, output_dim)
 
-    def forward(self, x: torch.Tensor, seq_len) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, mask) -> torch.Tensor:
         """
         Args:
             x: [batch_size, embeddings_dim, sequence_length] embedding tensor that should be classified

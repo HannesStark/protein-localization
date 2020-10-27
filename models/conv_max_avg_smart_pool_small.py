@@ -22,10 +22,12 @@ class ConvMaxAvgSmartPoolSmall(nn.Module):
         )
         self.output = nn.Linear(32, output_dim)
 
-    def forward(self, x: torch.Tensor, seq_len) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, mask) -> torch.Tensor:
         """
         Args:
             x: [batch_size, embeddings_dim, sequence_length] embedding tensor that should be classified
+            mask: [batch_size, sequence_length] mask corresponding to the zero padding used for the shorter sequecnes in the batch. All values corresponding to padding are False and the rest is True.
+
 
         Returns:
             classification: [batch_size,output_dim] tensor with logits

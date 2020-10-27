@@ -1,11 +1,10 @@
-experiment_name: '9'
+experiment_name: 'correct'
 
-num_epochs: 5000
-batch_size: 3
+num_epochs: 2500
+batch_size: 2
 log_iterations: 100
-solubility_loss: 0
 optimizer_parameters:
-  lr: 5.0e-6
+  lr: 5.0e-05
 
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
@@ -18,5 +17,7 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 # Model parameters
 model_type: 'FirstAttention'
 model_parameters:
+  output_dim: 10
   dropout: 0.25
+  conv_dropout: 0.25
   kernel_size: 9

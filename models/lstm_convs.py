@@ -22,7 +22,7 @@ class LSTMConvs(nn.Module):
 
         self.output = nn.Linear(lstm_hidden_dim * 2, output_dim)
 
-    def forward(self, x, seq_len):
+    def forward(self, x, mask):
         """
         Args:
             x: [batch_size, embeddings_dim, sequence_length] embedding tensor that should be classified
