@@ -122,20 +122,17 @@ import cv2
 #    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
 #        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
 
-
-# for file in ['train.h5', 'val.h5', 'test.h5']:
-#    position_cat_reduced('data/embeddings/' + file, 'data/combined_embeddings/' + 'cls_cat_reduced_' + file,
-#                         position=0)
-
 from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
     sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
-lengths = torch.tensor([6,2])
-mask = torch.arange(lengths.max())[None, :] < lengths[:, None]
 
-a = torch.tensor([[1, 2, 3, 3, 5, 2], [2, 3, 0, 0, 0, 0]]).double()
-print(mask)
-b = a + 1
-print(b * mask)
-a = a.masked_fill(mask==False, float('-inf'))
-print(a)
-print(torch.softmax(a, dim=1))
+for position in [2, -2, -3]:
+    for file in ['train.h5', 'val.h5', 'test.h5']:
+        position_token_embeddings('data/embeddings/' + file, 'data/combined_embeddings/' + str(position) + '_' + file,
+                                  position=position)
+
+for position in [0, 1, 2]:
+    for factor in [2, 4]:
+        for file in ['train.h5', 'val.h5', 'test.h5']:
+            position_token_embeddings('data/embeddings/' + file,
+                                      'data/combined_embeddings/' + str(position) + '_' + str(factor) + '_' + file,
+                                      position=position, factor=factor)

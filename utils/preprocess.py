@@ -69,7 +69,7 @@ def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = '
             raise ValueError('Specified type does not exist')
         combined_embeddings.create_dataset(key, data=combined_embedding)
 
-def position_token_embeddings(file: str, output_path: str, position: int = 0):
+def position_token_embeddings(file: str, output_path: str, position: int = 0, factor=None):
     """
     get the  token at position of embeddings and save them to a new file
     Args:
@@ -86,7 +86,10 @@ def position_token_embeddings(file: str, output_path: str, position: int = 0):
     embeddings = h5py.File(output_path, 'w')
     for key in tqdm(loaded_embeddings.keys()):
         embedding = loaded_embeddings[key][:]
-        embeddings.create_dataset(key, data=embedding[position])
+        if factor:
+            embeddings.create_dataset(key, data=embedding[len(embedding)//factor+position])
+        else:
+            embeddings.create_dataset(key, data=embedding[position])
 
 def position_cat_reduced(file: str, output_path: str, position: int = 0):
     """

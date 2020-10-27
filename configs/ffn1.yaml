@@ -1,4 +1,4 @@
-experiment_name: 'cat'
+experiment_name: '1'
 
 num_epochs: 10000
 batch_size: 2048
@@ -13,9 +13,9 @@ optimizer_parameters:
 #test_embeddings: 'data/embeddings/test_reduced.h5'
 
 # Paths to combined
-train_embeddings: 'data/combined_embeddings/cat_train_reduced.h5'
-val_embeddings: 'data/combined_embeddings/cat_val_reduced.h5'
-test_embeddings: 'data/combined_embeddings/cat_test_reduced.h5'
+train_embeddings: 'data/combined_embeddings/1_train.h5'
+val_embeddings: 'data/combined_embeddings/1_val.h5'
+test_embeddings: 'data/combined_embeddings/1_test.h5'
 
 train_remapping: 'data/embeddings/train_remapped.fasta'
 val_remapping: 'data/embeddings/val_remapped.fasta'
