@@ -15,7 +15,7 @@ class ConvMaxAvgSmartPoolSmall(nn.Module):
         self.dropout = nn.Dropout(conv_dropout)
 
         self.linear = nn.Sequential(
-            nn.Linear(512, 32),
+            nn.Linear(1024, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
