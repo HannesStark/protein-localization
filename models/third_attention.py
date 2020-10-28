@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class SecondAttention(nn.Module):
+class ThirdAttention(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size=7, conv_dropout: float = 0.25):
-        super(SecondAttention, self).__init__()
+        super(ThirdAttention, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
         self.attend = nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1)
@@ -30,8 +30,8 @@ class SecondAttention(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         o = self.conv1(x)
-        o = self.dropout(o)
         attention = self.attend(o)
+        o = self.dropout(o)
         attention = attention.masked_fill(mask[:, None, :] == False, float('-inf'))
         o = torch.sum(o * F.softmax(attention, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
         o = self.linear(o)
