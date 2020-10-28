@@ -1,0 +1,26 @@
+experiment_name: 'low_lr'
+
+num_epochs: 2500
+batch_size: 128
+log_iterations: 100
+optimizer_parameters:
+  lr: 5.0e-06
+
+checkpoint: 'runs/ConvMaxAvgPoolLateConcat__28-10_09-54-30'
+
+# Paths to Data
+train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/combined_embeddings/cat_train.h5'
+val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/combined_embeddings/cat_val.h5'
+test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/combined_embeddings/cat_test.h5'
+
+train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
+val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
+test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
+
+# Model parameters
+model_type: 'ConvMaxAvgPoolLateConcat'
+model_parameters:
+  output_dim: 10
+  dropout: 0.25
+  conv_dropout: 0.25
+  kernel_size: 9
