@@ -6,7 +6,7 @@ log_iterations: 100
 solubility_loss: 0
 min_train_acc: 99.5
 optimizer_parameters:
-  lr: 5.0e-6
+  lr: 5.0e-5
 
 checkpoint: 'runs/FirstAttention_9_27-10_09-36-54'
 
