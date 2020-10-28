@@ -50,7 +50,7 @@ class ConvMaxAvgPoolLateConcat(nn.Module):
         o1 = self.linear1(o1)
 
         o2 = F.relu(self.conv2(x[:, embeddings_dim // 2:, :]))
-        o2 = self.dropout(o2)
+        o2 = self.dropout2(o2)
         o2_avg = torch.sum(o2 * mask, dim=-1) / mask.sum(dim=-1)
         o2_max, _ = torch.max(o2, dim=-1)
         o2 = torch.cat([o2_avg, o2_max], dim=-1)

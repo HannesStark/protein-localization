@@ -16,7 +16,7 @@ val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/rem
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'ConvMaxAvgSmartPoolSmall'
+model_type: 'ConvMaxAvgPoolSmall'
 model_parameters:
   output_dim: 10
   dropout: 0.25
