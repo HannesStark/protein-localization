@@ -18,13 +18,13 @@ class ConvMaxAvgPoolLateConcat(nn.Module):
         self.dropout2 = nn.Dropout(conv_dropout)
 
         self.linear1 = nn.Sequential(
-            nn.Linear(embeddings_dim // 2, 32),
+            nn.Linear(embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
         self.linear2 = nn.Sequential(
-            nn.Linear(embeddings_dim // 2, 32),
+            nn.Linear(embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
