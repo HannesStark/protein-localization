@@ -40,20 +40,21 @@ class ConvMaxAvgPoolLateConcat(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
+        embeddings_dim = x.shape[1]
         mask = mask[:, None, :]  # add singleton dimension for broadcasting
-        o1 = F.relu(self.conv1(x))  # [batch_size, embeddings_dim, sequence_length - kernel_size//2]
+        o1 = F.relu(self.conv1(x[:, :embeddings_dim // 2, :]))
         o1 = self.dropout1(o1)
         o1_avg = torch.sum(o1 * mask, dim=-1) / mask.sum(dim=-1)
         o1_max, _ = torch.max(o1, dim=-1)
         o1 = torch.cat([o1_avg, o1_max], dim=-1)
         o1 = self.linear1(o1)
 
-        o2 = F.relu(self.conv2(x))  # [batch_size, embeddings_dim, sequence_length - kernel_size//2]
+        o2 = F.relu(self.conv2(x[:, embeddings_dim // 2:, :]))
         o2 = self.dropout(o2)
         o2_avg = torch.sum(o2 * mask, dim=-1) / mask.sum(dim=-1)
         o2_max, _ = torch.max(o2, dim=-1)
         o2 = torch.cat([o2_avg, o2_max], dim=-1)
         o2 = self.linear2(o2)
 
-        o = torch.cat([o1,o2],dim=-1)
+        o = torch.cat([o1, o2], dim=-1)
         return self.output(o)

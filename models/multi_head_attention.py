@@ -30,7 +30,7 @@ class MultiHeadAttention(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-    def forward(self, query, key, value):
+    def forward(self, query, key, value, mask):
         batch_size = query.shape[0]
 
         # query = [batch size, query len, embeddigns_dim]
@@ -54,6 +54,8 @@ class MultiHeadAttention(nn.Module):
         # V = [batch size, n heads, value len, head dim]
 
         attention_scores = torch.matmul(Q, K.permute(0, 1, 3, 2)) / math.sqrt(self.head_dim)
+        if mask:
+            attention_scores = attention_scores * mask[:, None, :, None].expand(-1, self.n_heads, -1, 1)
 
         attention = torch.softmax(attention_scores, dim=-1)
 

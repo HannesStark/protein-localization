@@ -30,7 +30,7 @@ class SelfAttention(nn.Module):
         query = x.mean(dim=-1)  # [batch_size, embeddings_dim]
         x = x.permute(0, 2, 1)  # [batch_size, sequence_length, embeddings_dim]
 
-        o, _ = self.multi_head_attention(query, x, x)  # [batch_size, 1, embeddings_dim]
+        o, _ = self.multi_head_attention(query, x, x, mask)  # [batch_size, 1, embeddings_dim]
         o = o.squeeze()  # [batch_size, embeddings_dim]
 
         o = self.linear(o)

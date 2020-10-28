@@ -30,7 +30,7 @@ class SelfAttention2Layer(nn.Module):
         """
         x = x.permute(0, 2, 1)  # [batch_size, sequence_length, embeddings_dim]
 
-        o, _ = self.multi_head_attention1(x, x, x)
+        o, _ = self.multi_head_attention1(x, x, x, mask)
         print(o.shape)
         query = o.mean(dim=-2)  # [batch_size, embeddings_dim]
 
