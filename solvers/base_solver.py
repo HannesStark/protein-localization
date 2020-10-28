@@ -32,11 +32,11 @@ class BaseSolver():
             self.optim.load_state_dict(checkpoint['optimizer_state_dict'])
             with open(os.path.join(self.writer.log_dir, 'epoch.txt'), "r") as f:  # last epoch not the best epoch
                 self.start_epoch = int(f.read()) + 1
-            self.maximum_accuracy = checkpoint['maximum_accuracy']
+            self.max_val_acc = checkpoint['maximum_accuracy']
             self.weight = checkpoint['weight'].to(self.device)
         elif not eval:
             self.start_epoch = 0
-            self.maximum_accuracy = 0  # running accuracy to decide whether or not a new model should be saved
+            self.max_val_acc = 0  # running accuracy to decide whether or not a new model should be saved
             self.writer = SummaryWriter(
                 'runs/{}_{}_{}'.format(args.model_type, args.experiment_name,
                                        datetime.now().strftime('%d-%m_%H-%M-%S')))
@@ -60,6 +60,7 @@ class BaseSolver():
         """
         args = self.args
         epochs_no_improve = 0  # counts every epoch that the validation accuracy did not improve for early stopping
+        max_train_acc = 0
         for epoch in range(self.start_epoch, args.num_epochs):  # loop over the dataset multiple times
             self.model.train()
             train_loc_loss, train_sol_loss, train_results = self.predict(train_loader, epoch + 1, optim=self.optim)
@@ -88,9 +89,9 @@ class BaseSolver():
                 self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
                 self.writer.add_scalars('Sol_Acc', {'train': sol_train_acc, 'val': sol_val_acc}, epoch + 1)
 
-            if val_acc >= self.maximum_accuracy:  # save the model with the best accuracy
+            if val_acc >= self.max_val_acc:  # save the model with the best accuracy
                 epochs_no_improve = 0
-                self.maximum_accuracy = val_acc
+                self.max_val_acc = val_acc
                 self.save_checkpoint(epoch + 1)
             else:
                 epochs_no_improve += 1
@@ -98,7 +99,9 @@ class BaseSolver():
             with open(os.path.join(self.writer.log_dir, 'epoch.txt'), 'w') as file:  # save what the last epoch is
                 file.write(str(epoch))
 
-            if epochs_no_improve >= args.patience:  # stop if there was no improvement for patience  many epochs
+            if train_acc >= max_train_acc:
+                max_train_acc = train_acc
+            if epochs_no_improve >= args.patience and max_train_acc >= args.min_train_acc:  # stopping criterion
                 break
 
         if eval_data:  # do evaluation on the test data if a eval_data is provided
@@ -208,7 +211,7 @@ class BaseSolver():
         torch.save({
             'epoch': epoch,
             'weight': self.weight,
-            'maximum_accuracy': self.maximum_accuracy,
+            'maximum_accuracy': self.max_val_acc,
             'model_state_dict': self.model.state_dict(),
             'optimizer_state_dict': self.optim.state_dict(),
         }, os.path.join(run_dir, 'checkpoint.pt'))
