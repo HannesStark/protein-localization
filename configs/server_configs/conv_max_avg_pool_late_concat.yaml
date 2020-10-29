@@ -4,9 +4,7 @@ num_epochs: 2500
 batch_size: 128
 log_iterations: 100
 optimizer_parameters:
-  lr: 5.0e-05
-
-checkpoint: 'runs/ConvMaxAvgPoolLateConcat__28-10_09-54-30'
+  lr: 3.0e-05
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/combined_embeddings/cat_train.h5'
