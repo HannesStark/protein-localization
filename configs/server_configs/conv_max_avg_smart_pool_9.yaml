@@ -1,4 +1,4 @@
-experiment_name: 'correct'
+experiment_name: '64_linear'
 
 num_epochs: 2500
 batch_size: 256

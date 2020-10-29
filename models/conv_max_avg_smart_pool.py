@@ -13,12 +13,12 @@ class ConvMaxAvgSmartPool(nn.Module):
         self.dropout = nn.Dropout(conv_dropout)
 
         self.linear = nn.Sequential(
-            nn.Linear(2 * embeddings_dim, 32),
+            nn.Linear(2 * embeddings_dim, 64),
             nn.Dropout(dropout),
             nn.ReLU(),
-            nn.BatchNorm1d(32)
+            nn.BatchNorm1d(64)
         )
-        self.output = nn.Linear(32, output_dim)
+        self.output = nn.Linear(64, output_dim)
 
     def forward(self, x: torch.Tensor, mask) -> torch.Tensor:
         """

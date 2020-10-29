@@ -20,5 +20,5 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 model_type: 'FFNLateConcat'
 model_parameters:
   output_dim: 10
-  hidden_dim: 32
+  hidden_dim: 64
   dropout: 0.25
