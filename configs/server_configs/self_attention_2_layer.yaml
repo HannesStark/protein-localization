@@ -2,10 +2,9 @@ experiment_name: ''
 
 num_epochs: 5000
 batch_size: 4
+log_iterations: 5
 optimizer_parameters:
   lr: 1.0e-4
-log_iterations: 5
-checkpoint: 'runs/SelfAttention2Layer__03-10_10-32-16'
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'

@@ -8,12 +8,12 @@ class SecondAttention(nn.Module):
         super(SecondAttention, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
-        self.attend = nn.Conv1d(embeddings_dim, embeddings_dim, 1, stride=1)
+        self.attend = nn.Conv1d(embeddings_dim, 1, kernel_size, stride=1, padding=kernel_size // 2)
 
         self.dropout = nn.Dropout(conv_dropout)
 
         self.linear = nn.Sequential(
-            nn.Linear(embeddings_dim, 32),
+            nn.Linear(2*embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
@@ -25,14 +25,17 @@ class SecondAttention(nn.Module):
         """
         Args:
             x: [batch_size, embeddings_dim, sequence_length] embedding tensor that should be classified
+            mask: [batch_size, sequence_length] mask corresponding to the zero padding used for the shorter sequecnes in the batch. All values corresponding to padding are False and the rest is True.
 
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
         o = self.conv1(x)
         o = self.dropout(o)
-        attention = self.attend(o)
-        attention = attention.masked_fill(mask[:, None, :] == False, float('-inf'))
-        o = torch.sum(o * F.softmax(attention, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
+        attention = self.attend(x)
+        attention = attention.masked_fill(mask[:, None, :] == False, -1e9)
+        o1 = torch.sum(o * F.softmax(attention, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
+        o2, _ = torch.max(o, dim=-1)
+        o = torch.cat([o1, o2], dim=-1)
         o = self.linear(o)
         return self.output(o)

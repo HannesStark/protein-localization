@@ -2,10 +2,9 @@ experiment_name: ''
 
 num_epochs: 5000
 batch_size: 2
+log_iterations: 1
 optimizer_parameters:
   lr: 1.0e-4
-log_iterations: 1
-checkpoint: 'runs/SelfAttention2Layer__03-10_10-32-16'
 
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'

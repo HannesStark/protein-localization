@@ -69,23 +69,26 @@ class BaseSolver():
             with torch.no_grad():
                 val_loc_loss, val_sol_loss, val_results = self.predict(val_loader, epoch + 1)
 
-            train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
-            val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
-            train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
-            val_mcc = matthews_corrcoef(val_results[:, 1], val_results[:, 0])
+            loc_train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
+            loc_val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
+            loc_train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
+            loc_val_mcc = matthews_corrcoef(val_results[:, 1], val_results[:, 0])
 
             sol_preds_train = np.equal(train_results[:, 2], train_results[:, 3]) * train_results[:, 4]
             sol_train_acc = 100 * sol_preds_train.sum() / train_results[:, 4].sum()
             sol_preds_val = np.equal(val_results[:, 2], val_results[:, 3]) * val_results[:, 4]
             sol_val_acc = 100 * sol_preds_val.sum() / val_results[:, 4].sum()
 
+            val_acc = sol_val_acc if args.target == 'sol' else loc_val_acc
+            train_acc = sol_train_acc if args.target == 'sol' else loc_train_acc
+
             print('[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (epoch + 1, val_acc, train_acc))
 
-            tensorboard_confusion_matrix(train_results, val_results, self.writer, epoch + 1)
-            self.writer.add_scalars('Loc_Acc', {'train': train_acc, 'val': val_acc}, epoch + 1)
-            self.writer.add_scalars('Loc_MCC', {'train': train_mcc, 'val': val_mcc}, epoch + 1)
+            tensorboard_confusion_matrix(train_results, val_results, self.writer, args, epoch + 1)
+            self.writer.add_scalars('Loc_Acc', {'train': loc_train_acc, 'val': loc_val_acc}, epoch + 1)
+            self.writer.add_scalars('Loc_MCC', {'train': loc_train_mcc, 'val': loc_val_mcc}, epoch + 1)
             self.writer.add_scalars('Loc_Loss', {'train': train_loc_loss, 'val': val_loc_loss}, epoch + 1)
-            if args.solubility_loss != 0:
+            if args.solubility_loss != 0 or args.target == 'sol':
                 self.writer.add_scalars('Sol_Loss', {'train': train_sol_loss, 'val': val_sol_loss}, epoch + 1)
                 self.writer.add_scalars('Sol_Acc', {'train': sol_train_acc, 'val': sol_val_acc}, epoch + 1)
 
@@ -143,10 +146,13 @@ class BaseSolver():
                 self.optim.step()
                 self.optim.zero_grad()
 
-            loc_pred = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
             sol_pred = torch.max(prediction[..., -2:], dim=1)[1]  # get indices of the highest value for sol
-            results.append(
-                torch.stack((loc_pred, loc, sol_pred, sol, sol_known), dim=1).detach().cpu().numpy())
+
+            if args.target == 'sol':
+                loc_pred = sol_pred  # ignore loc predictions
+            else:
+                loc_pred = torch.max(prediction[..., :10], dim=1)[1]  # get indices of the highest value for loc
+            results.append(torch.stack((loc_pred, loc, sol_pred, sol, sol_known), dim=1).detach().cpu().numpy())
             loc_loss_item = loc_loss.item()
             running_loc_loss += loc_loss_item
             running_sol_loss += sol_loss.item()
@@ -183,8 +189,12 @@ class BaseSolver():
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
                 loc_loss, sol_loss, results = self.predict(data_loader)
-                accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
-                mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
+                if self.args.target == 'sol':
+                    accuracies.append(100 * np.equal(results[:, 2], results[:, 3]).sum() / len(results))
+                    mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))
+                else:
+                    accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
+                    mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
 
         accuracy = np.mean(accuracies)
         accuracy_stderr = np.std(accuracies)

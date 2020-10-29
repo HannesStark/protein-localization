@@ -18,18 +18,18 @@ class ConvMaxAvgPoolLateConcat(nn.Module):
         self.dropout2 = nn.Dropout(conv_dropout)
 
         self.linear1 = nn.Sequential(
-            nn.Linear(embeddings_dim, 16),
+            nn.Linear(embeddings_dim, 64),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(16)
         )
         self.linear2 = nn.Sequential(
-            nn.Linear(embeddings_dim, 16),
+            nn.Linear(embeddings_dim, 64),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(16)
         )
-        self.output = nn.Linear(32, output_dim)
+        self.output = nn.Linear(64*2, output_dim)
 
     def forward(self, x: torch.Tensor, mask) -> torch.Tensor:
         """

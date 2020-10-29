@@ -5,7 +5,8 @@ from models.multi_head_attention import MultiHeadAttention
 
 
 class SelfAttention2Layer(nn.Module):
-    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12 , dropout=0.25, attention_dropout=0.25, n_heads=8):
+    def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12, dropout=0.25, attention_dropout=0.25,
+                 n_heads=8):
         super(SelfAttention2Layer, self).__init__()
 
         self.multi_head_attention1 = MultiHeadAttention(embeddings_dim, attention_dropout, n_heads)
@@ -31,10 +32,9 @@ class SelfAttention2Layer(nn.Module):
         x = x.permute(0, 2, 1)  # [batch_size, sequence_length, embeddings_dim]
 
         o, _ = self.multi_head_attention1(x, x, x, mask)
-        print(o.shape)
-        query = o.mean(dim=-2)  # [batch_size, embeddings_dim]
+        query = torch.sum(o * mask[..., None], dim=-2) / mask[..., None].sum(dim=-2)  # [batch_size, embeddings_dim]
 
-        o, _ = self.multi_head_attention2(query, o, o)  # [batch_size, 1, embeddings_dim]
+        o, _ = self.multi_head_attention2(query, o, o, mask)  # [batch_size, 1, embeddings_dim]
         o = o.squeeze()  # [batch_size, embeddings_dim]
         o = self.linear(o)
         return self.output(o)

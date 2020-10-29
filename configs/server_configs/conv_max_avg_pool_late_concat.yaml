@@ -1,4 +1,4 @@
-experiment_name: ''
+experiment_name: 'larger_dim'
 
 num_epochs: 2500
 batch_size: 200
@@ -20,5 +20,5 @@ model_type: 'ConvMaxAvgPoolLateConcat'
 model_parameters:
   output_dim: 10
   dropout: 0.25
-  conv_dropout: 0.25
+  conv_dropout: 0.3
   kernel_size: 9

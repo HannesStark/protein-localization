@@ -6,9 +6,7 @@ log_iterations: 100
 solubility_loss: 0
 min_train_acc: 99.5
 optimizer_parameters:
-  lr: 5.0e-6
-
-checkpoint: 'runs/FirstAttention_9_27-10_09-36-54'
+  lr: 5.0e-5
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'

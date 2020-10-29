@@ -53,5 +53,27 @@ class LocCrossEntropy(nn.Module):
                 loss: the overall loss
 
             """
-        localization_loss = F.cross_entropy(prediction[..., :10], localization, weight=self.weight)
+        localization_loss = F.cross_entropy(prediction, localization, weight=self.weight)
         return localization_loss, localization_loss, torch.tensor([0])
+
+
+class SolCrossEntropy(nn.Module):
+    def __init__(self, weight=None) -> None:
+        super(SolCrossEntropy, self).__init__()
+        self.weight = weight
+
+    def forward(self, prediction: Tensor, localization: Tensor,
+                solubility: Tensor, solubility_known: bool, args) -> Tuple[Tensor, Tensor, Tensor]:
+        """
+
+            Args:
+                prediction: output of the network with 12 logits where the last two are for the solubility
+                localization: true label for localization
+
+
+            Returns:
+                loss: the overall loss
+
+            """
+        solubility_loss = F.cross_entropy(prediction[..., -2:], solubility)
+        return solubility_loss, torch.tensor([0]), solubility_loss

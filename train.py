@@ -40,7 +40,7 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/conv_self_attention.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=2500, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
@@ -57,6 +57,7 @@ def parse_arguments():
     p.add_argument('--model_parameters', type=dict, help='dictionary of model parameters')
     p.add_argument('--loss_function', type=str, default='LocCrossEntropy',
                    help='Classname of one of the loss functions models/loss_functions.py')
+    p.add_argument('--target', type=str, default='loc', help='to predict solubility or localization [loc,sol]')
     p.add_argument('--balanced_loss', type=bool, default=False, help='balance loss by class prevalence in train set')
     p.add_argument('--solubility_loss', type=float, default=0,
                    help='how much the loss of the solubility will be weighted')

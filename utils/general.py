@@ -22,7 +22,8 @@ LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', '
 SOLUBILITY = ['M', 'S', 'U']
 
 
-def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, step: int):
+def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
+                                 step: int):
     """
     Turns results into two confusion matrices, plots them side by side and writes them to tensorboard
     Args:
@@ -34,12 +35,16 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     Returns:
 
     """
-
-    train_confusion = confusion_matrix(train_results[:, 1], train_results[:, 0])  # confusion matrix for train
-    val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
-
-    train_cm = pd.DataFrame(train_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
-    val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
+    if args.target == 'sol':
+        train_confusion = confusion_matrix(train_results[:, 3], train_results[:, 2])  # confusion matrix for train
+        val_confusion = confusion_matrix(val_results[:, 3], val_results[:, 2])  # confusion matrix for validation
+        train_cm = pd.DataFrame(train_confusion, SOLUBILITY[:2], SOLUBILITY[:2])
+        val_cm = pd.DataFrame(val_confusion, SOLUBILITY[:2], SOLUBILITY[:2])
+    else:
+        train_confusion = confusion_matrix(train_results[:, 1], train_results[:, 0])  # confusion matrix for train
+        val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
+        train_cm = pd.DataFrame(train_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
+        val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
 
     fig, ax = plt.subplots(1, 2, figsize=(15, 6.5))
     ax[0].set_title('Training')
@@ -47,7 +52,6 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     sn.heatmap(train_cm, ax=ax[0], annot=True, cmap='Blues', fmt='g', rasterized=False)
     sn.heatmap(val_cm, ax=ax[1], annot=True, cmap='YlOrBr', fmt='g', rasterized=False)
     writer.add_figure('Confusion Matrix ', fig, global_step=step)
-
 
 
 def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]]) -> Tuple[
@@ -87,8 +91,8 @@ def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Te
     embeddings = pad_sequence(embeddings, batch_first=True)
     return embeddings.permute(0, 2, 1), localization, solubility
 
+
 def normalize(arr):
     arr = arr - arr.min()
     arr = arr / arr.max()
     return arr
-
