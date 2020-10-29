@@ -19,5 +19,5 @@ model_type: 'ConvSelfAttention'
 model_parameters:
   dropout: 0.25
   attention_dropout: 0.25
-  n_heads: 1
+  n_heads: 8
   kernel_size: 9

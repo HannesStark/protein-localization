@@ -54,8 +54,9 @@ class MultiHeadAttention(nn.Module):
         # V = [batch size, n heads, value len, head dim]
 
         attention_scores = torch.matmul(Q, K.permute(0, 1, 3, 2)) / math.sqrt(self.head_dim)
-        if mask:
-            attention_scores.masked_fill(mask[:, None, None, :].expand(-1, ) == False, float('-inf'))
+        if mask != None:
+            attention_scores.masked_fill(mask[:, None, None, :].expand(-1, 1, attention_scores.shape[2], -1) == False,
+                                         -1e9)
 
         attention = torch.softmax(attention_scores, dim=-1)
 
