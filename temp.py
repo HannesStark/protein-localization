@@ -121,18 +121,59 @@ import cv2
 # for type in ['cat', 'sum', 'avg', 'max']:
 #    for file in ['train_reduced.h5', 'val_reduced.h5', 'test_reduced.h5']:
 #        combine_embeddings('data/embeddings/' + file,'data/seqvec_embeddings/' + file, type=type)
-
+from utils.general import LOCALIZATION, LOCALIZATION_abbrev
 from utils.preprocess import remove_duplicates, deeploc_train_test, train_val_split, retrieve_by_id, reduce_embeddings, \
     sum_seqvec_embeddings, combine_embeddings, position_token_embeddings, position_cat_reduced
 
-for position in [2, -2, -3]:
-    for file in ['train.h5', 'val.h5', 'test.h5']:
-        position_token_embeddings('data/embeddings/' + file, 'data/combined_embeddings/' + str(position) + '_' + file,
-                                  position=position)
+# for position in [2, -2, -3]:
+#    for file in ['train.h5', 'val.h5', 'test.h5']:
+#        position_token_embeddings('data/embeddings/' + file, 'data/combined_embeddings/' + str(position) + '_' + file,
+#                                  position=position)
+#
+# for position in [0, 1, 2]:
+#    for factor in [2, 4]:
+#        for file in ['train.h5', 'val.h5', 'test.h5']:
+#            position_token_embeddings('data/embeddings/' + file,
+#                                      'data/combined_embeddings/' + str(position) + '_' + str(factor) + '_' + file,
+#                                      position=position, factor=factor)
+import seaborn as sn
 
-for position in [0, 1, 2]:
-    for factor in [2, 4]:
-        for file in ['train.h5', 'val.h5', 'test.h5']:
-            position_token_embeddings('data/embeddings/' + file,
-                                      'data/combined_embeddings/' + str(position) + '_' + str(factor) + '_' + file,
-                                      position=position, factor=factor)
+# sn.heatmap(train_cm, ax=ax[0], annot=True, cmap='Blues', fmt='g', rasterized=False)
+a = np.array([0.676471,
+          0.506173,
+          0.441176,
+          0.000000,
+          0.038462,
+          0.777778,
+          0.839237,
+          0.000000,
+          0.684932,
+          0.948454])
+std = np.array([0.16471,
+          0.26173,
+          0.141176,
+          0.100000,
+          0.238462,
+          0.177778,
+          0.339237,
+          0.100000,
+          0.284932,
+          0.248454])
+tips = sn.load_dataset('tips')
+print(tips)
+print(pd.DataFrame(a, LOCALIZATION))
+channel = ["Red", "Green", "Blue", "Red", "Green", "Blue", "Red", "Green", "Blue"]
+average= [83.438681, 36.512924, 17.826646, 83.763724, 36.689707, 17.892932, 84.747069, 37.072383, 18.070416]
+sd = [7.451285, 3.673155, 1.933273, 7.915111, 3.802536, 2.060639, 7.415741, 3.659094, 2.020355]
+conc = ["0.00", "0.00", "0.00", "0.25", "0.25", "0.25", "0.50", "0.50", "0.50"]
+
+df = pd.DataFrame({'Localization': LOCALIZATION,
+                  "Accuracy": a,
+                  "std" : std})
+sn.set_style('darkgrid')
+barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
+barplot.axvline(1)
+plt.errorbar(x = df['Accuracy'], y = LOCALIZATION, xerr=df['std'], fmt='none', c= 'black', capsize = 3)
+#fig.savefig("output.png")
+plt.show()
+

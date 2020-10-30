@@ -12,7 +12,7 @@ from solvers.base_solver import BaseSolver
 
 
 def inference(args):
-    transform = transforms.Compose([LabelToInt(), ToTensor()])
+    transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping, unknown_solubility=False,
                                              transform=transform)
 

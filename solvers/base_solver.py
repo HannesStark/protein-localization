@@ -186,6 +186,7 @@ class BaseSolver():
         data_loader = DataLoader(dataset, batch_size=self.args.batch_size, sampler=sampler, collate_fn=collate_function)
         mccs = []
         accuracies = []
+        class_accuracies = []
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
                 loc_loss, sol_loss, results = self.predict(data_loader)
@@ -206,6 +207,14 @@ class BaseSolver():
                          'MCC stderr: {:.4f}\n'.format(accuracy, accuracy_stderr, mcc, mcc_stderr)
         with open(os.path.join(self.writer.log_dir, 'evaluation.txt'), 'w') as file:
             file.write(results_string)
+        df = pd.DataFrame({'Localization': LOCALIZATION,
+                           "Accuracy": a,
+                           "std": std})
+        sn.set_style('darkgrid')
+        barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
+        barplot.axvline(1)
+        plt.errorbar(x=df['Accuracy'], y=LOCALIZATION, xerr=df['std'], fmt='none', c='black', capsize=3)
+        # fig.savefig("output.png")
         print(results_string)
 
     def save_checkpoint(self, epoch: int):
