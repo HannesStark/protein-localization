@@ -174,6 +174,7 @@ sn.set_style('darkgrid')
 barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
 barplot.axvline(1)
 plt.errorbar(x = df['Accuracy'], y = LOCALIZATION, xerr=df['std'], fmt='none', c= 'black', capsize = 3)
-#fig.savefig("output.png")
+plt.tight_layout()
+plt.savefig("output.png")
 plt.show()
 

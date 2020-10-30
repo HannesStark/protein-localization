@@ -16,7 +16,8 @@ from datetime import datetime
 from tqdm import tqdm
 
 from models.loss_functions import JointCrossEntropy
-from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, LOCALIZATION, plot_class_accuracies
+from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, LOCALIZATION, plot_class_accuracies, \
+    tensorboard_class_accuracies
 
 
 class BaseSolver():
@@ -84,6 +85,7 @@ class BaseSolver():
 
             print('[Epoch %d] VAL accuracy: %.4f%% train accuracy: %.4f%%' % (epoch + 1, val_acc, train_acc))
 
+            tensorboard_class_accuracies(train_results, val_results, self.writer, args, epoch + 1)
             tensorboard_confusion_matrix(train_results, val_results, self.writer, args, epoch + 1)
             self.writer.add_scalars('Loc_Acc', {'train': loc_train_acc, 'val': loc_val_acc}, epoch + 1)
             self.writer.add_scalars('Loc_MCC', {'train': loc_train_mcc, 'val': loc_val_mcc}, epoch + 1)

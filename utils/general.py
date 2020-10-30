@@ -22,6 +22,47 @@ LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', '
 SOLUBILITY = ['M', 'S', 'U']
 
 
+def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
+                                 step: int):
+    """
+    Turns results into two confusion matrices, plots them side by side and writes them to tensorboard
+    Args:
+        train_results: [n_samples, 2] the first column is the prediction the second is the true label
+        val_results: [n_samples, 2] the first column is the prediction the second is the true label
+        writer: a pytorch summary writer
+        step: the step at which the confusion matrix should be displayed
+
+    Returns:
+
+    """
+    if args.target == 'sol':
+        train_confusion = confusion_matrix(train_results[:, 3], train_results[:, 2])  # confusion matrix for train
+        val_confusion = confusion_matrix(val_results[:, 3], val_results[:, 2])  # confusion matrix for validation
+        labels = SOLUBILITY
+    else:
+        train_confusion = confusion_matrix(train_results[:, 1], train_results[:, 0])  # confusion matrix for train
+        val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
+        labels = LOCALIZATION
+
+    train_class_accuracies = np.diag(train_confusion) / train_confusion.sum()
+    val_class_accuracies = np.diag(val_confusion) / val_confusion.sum()
+
+    train_class_accuracies = pd.DataFrame({'Localization': labels,
+                                           "Accuracy": train_class_accuracies})
+    val_class_accuracies = pd.DataFrame({'Localization': labels,
+                                         "Accuracy": val_class_accuracies})
+    sn.set_style('darkgrid')
+    fig, ax = plt.subplots(1, 2, figsize=(15, 6.5))
+    ax[0].set_title('Training')
+    ax[1].set_title('Validation')
+    barplot1 = sn.barplot(x="Accuracy", y="Localization", ax=ax[0], data=train_class_accuracies, ci=None)
+    barplot1.axvline(1)
+    barplot2 = sn.barplot(x="Accuracy", y="Localization", ax=ax[1], data=val_class_accuracies, ci=None)
+    barplot2.axvline(1)
+    plt.tight_layout()
+    writer.add_figure('Class accuracies ', fig, global_step=step)
+
+
 def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
                                  step: int):
     """
@@ -50,8 +91,6 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     ax[0].set_title('Training')
     ax[1].set_title('Validation')
     sn.heatmap(train_cm, ax=ax[0], annot=True, cmap='Blues', fmt='g', rasterized=False)
-    sn.heatmap(pd.DataFrame(np.diag(val_cm) / np.array(val_cm).sum(1), LOCALIZATION), ax=ax[0], annot=True,
-               cmap='Blues', fmt='g', rasterized=False)
     sn.heatmap(val_cm, ax=ax[1], annot=True, cmap='YlOrBr', fmt='g', rasterized=False)
     writer.add_figure('Confusion Matrix ', fig, global_step=step)
 
@@ -75,6 +114,7 @@ def plot_class_accuracies(accuracy, stderr, path, args=None):
     barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
     barplot.axvline(1)
     plt.errorbar(x=df['Accuracy'], y=labels, xerr=df['std'], fmt='none', c='black', capsize=3)
+    plt.tight_layout()
     plt.savefig(path)
 
 
