@@ -48,7 +48,7 @@ class FirstAttentionCat(nn.Module):
         embeddings_dim = x.shape[1]
         mask = mask[:, None, :]  # add singleton dimension for broadcasting
 
-        o1 = F.relu(self.conv1(x[:, :embeddings_dim // 2, :]))
+        o1 = self.conv1(x[:, :embeddings_dim // 2, :])
         o1 = self.dropout1(o1)
         attention1 = self.attend1(x[:, :embeddings_dim // 2, :])
         attention1 = attention1.masked_fill(mask == False, -1e9)
@@ -57,7 +57,7 @@ class FirstAttentionCat(nn.Module):
         o1 = torch.cat([o1_att, o1_max], dim=-1)
         o1 = self.linear1(o1)
 
-        o2 = F.relu(self.conv2(x[:, :embeddings_dim // 2, :]))
+        o2 = self.conv2(x[:, :embeddings_dim // 2, :])
         o2 = self.dropout2(o2)
         attention2 = self.attend2(x[:, :embeddings_dim // 2, :])
         attention2 = attention2.masked_fill(mask == False, -1e9)

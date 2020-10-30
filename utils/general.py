@@ -22,10 +22,6 @@ LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', '
 SOLUBILITY = ['M', 'S', 'U']
 
 
-def get_confusion_matrix(train_results: np.ndarray) -> np.ndarray:
-    pass
-
-
 def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
                                  step: int):
     """
@@ -49,8 +45,37 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
         val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
         train_cm = pd.DataFrame(train_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
         val_cm = pd.DataFrame(val_confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
-        print(pd.DataFrame(np.diag(val_cm) / np.array(val_cm).sum(1), LOCALIZATION_abbrev))
 
+    fig, ax = plt.subplots(1, 2, figsize=(15, 6.5))
+    ax[0].set_title('Training')
+    ax[1].set_title('Validation')
+    sn.heatmap(train_cm, ax=ax[0], annot=True, cmap='Blues', fmt='g', rasterized=False)
+    sn.heatmap(pd.DataFrame(np.diag(val_cm) / np.array(val_cm).sum(1), LOCALIZATION), ax=ax[0], annot=True,
+               cmap='Blues', fmt='g', rasterized=False)
+    sn.heatmap(val_cm, ax=ax[1], annot=True, cmap='YlOrBr', fmt='g', rasterized=False)
+    writer.add_figure('Confusion Matrix ', fig, global_step=step)
+
+
+def plot_class_accuracies(accuracy, stderr, path, args=None):
+    """
+    Create seaborn plot and save it to path
+    Args:
+        accuracy: accuracies
+        stderr: standard errors
+        path: where to save the plot
+
+    Returns:
+
+    """
+    labels = SOLUBILITY if args.target == 'sol' else LOCALIZATION
+    df = pd.DataFrame({'Localization': labels,
+                       "Accuracy": accuracy,
+                       "std": stderr})
+    sn.set_style('darkgrid')
+    barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
+    barplot.axvline(1)
+    plt.errorbar(x=df['Accuracy'], y=labels, xerr=df['std'], fmt='none', c='black', capsize=3)
+    plt.savefig(path)
 
 
 def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]]) -> Tuple[

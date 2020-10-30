@@ -8,7 +8,7 @@ import pyaml
 import torch
 import numpy as np
 from models import *
-from sklearn.metrics import matthews_corrcoef
+from sklearn.metrics import matthews_corrcoef, confusion_matrix
 from torch.utils.data import DataLoader, RandomSampler, Dataset
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
@@ -16,7 +16,7 @@ from datetime import datetime
 from tqdm import tqdm
 
 from models.loss_functions import JointCrossEntropy
-from utils.general import tensorboard_confusion_matrix, padded_permuted_collate
+from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, LOCALIZATION, plot_class_accuracies
 
 
 class BaseSolver():
@@ -193,29 +193,28 @@ class BaseSolver():
                 if self.args.target == 'sol':
                     accuracies.append(100 * np.equal(results[:, 2], results[:, 3]).sum() / len(results))
                     mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))
+
                 else:
                     accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                     mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
+                    conf = confusion_matrix(results[:, 1], results[:, 0])
+                    class_accuracies.append(np.diag(conf) / conf.sum(1))
 
         accuracy = np.mean(accuracies)
         accuracy_stderr = np.std(accuracies)
         mcc = np.mean(mccs)
         mcc_stderr = np.std(mccs)
+        class_accuracy = np.mean(np.array(class_accuracies), axis=0)
+        class_accuracy_stderr = np.std(np.array(class_accuracies), axis=0)
         results_string = 'Accuracy: {:.2f}% \n' \
                          'Accuracy stderr: {:.2f}%\n' \
                          'MCC: {:.4f}\n' \
                          'MCC stderr: {:.4f}\n'.format(accuracy, accuracy_stderr, mcc, mcc_stderr)
         with open(os.path.join(self.writer.log_dir, 'evaluation.txt'), 'w') as file:
             file.write(results_string)
-        df = pd.DataFrame({'Localization': LOCALIZATION,
-                           "Accuracy": a,
-                           "std": std})
-        sn.set_style('darkgrid')
-        barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
-        barplot.axvline(1)
-        plt.errorbar(x=df['Accuracy'], y=LOCALIZATION, xerr=df['std'], fmt='none', c='black', capsize=3)
-        # fig.savefig("output.png")
         print(results_string)
+        plot_class_accuracies(class_accuracy, class_accuracy_stderr,
+                              os.path.join(self.writer.log_dir, 'class_accuracies.png'), self.args)
 
     def save_checkpoint(self, epoch: int):
         """

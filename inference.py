@@ -27,7 +27,7 @@ def inference(args):
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/.ex15/ConvMaxAvgPoolNoBatchnorm_9_20-10_08-58-02',
+    p.add_argument('--checkpoint', type=str, default='runs/FFN__30-10_10-44-51',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--batch_size', type=int, default=16, help='samples that will be processed in parallel')
     p.add_argument('--n_draws', type=int, default=100,
@@ -36,7 +36,7 @@ def parse_arguments():
     p.add_argument('--loss_function', type=str, default='JointCrossEntropy',
                    help='Classname of one of the loss functions models/loss_functions.py')
 
-    p.add_argument('--embeddings', type=str, default='data/embeddings/val.h5',
+    p.add_argument('--embeddings', type=str, default='data/embeddings/val_reduced.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
