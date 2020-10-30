@@ -30,10 +30,11 @@ class FirstAttention(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
+        mask = mask[:, None, :]  # add singleton dimension for broadcasting
         o = self.conv1(x)
         o = self.dropout(o)
         attention = self.attend(x)
-        attention = attention.masked_fill(mask[:, None, :] == False, -1e9)
+        attention = attention.masked_fill(mask == False, -1e9)
         o1 = torch.sum(o * F.softmax(attention, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
         o2, _ = torch.max(o, dim=-1)
         o = torch.cat([o1, o2], dim=-1)
