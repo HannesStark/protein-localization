@@ -12,7 +12,7 @@ from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDatas
 from datasets.transforms import SolubilityToInt, ToTensor
 from utils.general import normalize, padded_permuted_collate
 
-checkpoint = 'runs/.ex16/ConvMaxAvgPoolNoBatchnorm_bert_24-10_05-39-28'
+checkpoint = 'runs/.ex18/FirstAttention_9_29-10_20-01-52'
 embeddings = 'data/embeddings/val.h5'
 remapping = 'data/embeddings/val_remapped.fasta'
 batch_size = 8
@@ -35,8 +35,12 @@ def explore_embeddings(args):
     embedding, localization, solubility, metadata = next(iter(data_loader))
 
     # register defined hooks and run trough some example in the dataset
-    model.conv1.register_forward_hook(visualize_activation_hook)
-    model(embedding, metadata['length'])
+    # model.conv1.register_forward_hook(visualize_activation_hook)
+    model.attend.register_forward_hook(visualize_activation_hook)
+
+    # create mask corresponding to the zero padding used for the shorter sequecnes in the batch. All values corresponding to padding are False and the rest is True.
+    mask = torch.arange(metadata['length'].max())[None, :] < metadata['length'][:, None]  # [batchsize, seq_len]
+    model(embedding, mask)
 
     plt.plot(torch.max(embedding[1], dim=0)[0])
     plt.title('embedding max')

@@ -8,6 +8,7 @@ import pyaml
 import torch
 import numpy as np
 from models import *
+import warnings
 from sklearn.metrics import matthews_corrcoef, confusion_matrix
 from torch.utils.data import DataLoader, RandomSampler, Dataset
 from torch.utils.tensorboard import SummaryWriter
@@ -72,8 +73,10 @@ class BaseSolver():
 
             loc_train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             loc_val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
-            loc_train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
-            loc_val_mcc = matthews_corrcoef(val_results[:, 1], val_results[:, 0])
+            with warnings.catch_warnings(): # because sklearns mcc implementation is a little dim
+                warnings.filterwarnings("ignore", message="invalid value encountered in double_scalars")
+                loc_train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
+                loc_val_mcc = matthews_corrcoef(val_results[:, 1], val_results[:, 0])
 
             sol_preds_train = np.equal(train_results[:, 2], train_results[:, 3]) * train_results[:, 4]
             sol_train_acc = 100 * sol_preds_train.sum() / train_results[:, 4].sum()

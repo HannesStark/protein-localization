@@ -20,7 +20,7 @@ If everything works without errors, you can now go to `localhost:6006` in your b
 
 Python 3 dependencies:
 
-- torch <=1.4
+- pytorch (verified with version 1.6 and 1.7)
 - biopython
 - h5py
 - matplotlib
