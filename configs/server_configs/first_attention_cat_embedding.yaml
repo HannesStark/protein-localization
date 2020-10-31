@@ -1,7 +1,7 @@
-experiment_name: ''
+experiment_name: 'on_cat_embedding'
 
 num_epochs: 5000
-batch_size: 150
+batch_size: 128
 log_iterations: 100
 solubility_loss: 0
 min_train_acc: 99.6
@@ -9,15 +9,16 @@ optimizer_parameters:
   lr: 5.0e-5
 
 # Paths to Data
-train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
+train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/combined_embeddings/cat_train.h5'
+val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/combined_embeddings/cat_val.h5'
+test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/combined_embeddings/cat_test.h5'
+
 train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
-val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
 val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
-test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'FirstAttentionNoMax'
+model_type: 'FirstAttention'
 model_parameters:
   dropout: 0.25
   kernel_size: 9

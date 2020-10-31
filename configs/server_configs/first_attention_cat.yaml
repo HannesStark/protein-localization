@@ -1,4 +1,4 @@
-experiment_name: ''
+experiment_name: 'middle'
 
 num_epochs: 5000
 batch_size: 80

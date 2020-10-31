@@ -31,7 +31,7 @@ class FirstAttention(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         mask = mask[:, None, :]  # add singleton dimension for broadcasting
-        o = F.relu(self.conv1(x))
+        o = self.conv1(x)
         o = self.dropout(o)
         attention = self.attend(x)
         attention = attention.masked_fill(mask == False, -1e9)

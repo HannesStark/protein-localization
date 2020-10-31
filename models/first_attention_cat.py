@@ -20,21 +20,15 @@ class FirstAttentionCat(nn.Module):
         self.dropout1 = nn.Dropout(conv_dropout)
         self.dropout2 = nn.Dropout(conv_dropout)
 
-        self.linear1 = nn.Sequential(
+        self.linear = nn.Sequential(
             nn.Linear(embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
         )
 
-        self.linear2 = nn.Sequential(
-            nn.Linear(embeddings_dim, 32),
-            nn.Dropout(dropout),
-            nn.ReLU(),
-            nn.BatchNorm1d(32)
-        )
 
-        self.output = nn.Linear(64, output_dim)
+        self.output = nn.Linear(32, output_dim)
 
     def forward(self, x: torch.Tensor, mask) -> torch.Tensor:
         """
@@ -54,8 +48,7 @@ class FirstAttentionCat(nn.Module):
         attention1 = attention1.masked_fill(mask == False, -1e9)
         o1_att = torch.sum(o1 * F.softmax(attention1, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
         o1_max, _ = torch.max(o1, dim=-1)
-        o1 = torch.cat([o1_att, o1_max], dim=-1)
-        o1 = self.linear1(o1)
+
 
         o2 = self.conv2(x[:, :embeddings_dim // 2, :])
         o2 = self.dropout2(o2)
@@ -63,8 +56,7 @@ class FirstAttentionCat(nn.Module):
         attention2 = attention2.masked_fill(mask == False, -1e9)
         o2_att = torch.sum(o2 * F.softmax(attention2, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
         o2_max, _ = torch.max(o2, dim=-1)
-        o2 = torch.cat([o2_att, o2_max], dim=-1)
-        o2 = self.linear2(o2)
+        o = torch.cat([o1_att, o1_max, o2_att, o2_max], dim=-1)
 
-        o = torch.cat([o1, o2], dim=-1)
+        o = self.linear(o)
         return self.output(o)
