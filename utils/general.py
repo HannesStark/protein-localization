@@ -44,8 +44,8 @@ def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndar
         val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
         labels = LOCALIZATION
 
-    train_class_accuracies = np.diag(train_confusion) / train_confusion.sum()
-    val_class_accuracies = np.diag(val_confusion) / val_confusion.sum()
+    train_class_accuracies = np.diag(train_confusion) / train_confusion.sum(1)
+    val_class_accuracies = np.diag(val_confusion) / val_confusion.sum(1)
 
     train_class_accuracies = pd.DataFrame({'Localization': labels,
                                            "Accuracy": train_class_accuracies})
