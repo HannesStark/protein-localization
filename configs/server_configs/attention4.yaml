@@ -1,0 +1,23 @@
+experiment_name: ''
+
+num_epochs: 5000
+batch_size: 256
+log_iterations: 100
+solubility_loss: 0
+min_train_acc: 99.6
+optimizer_parameters:
+  lr: 5.0e-5
+
+# Paths to Data
+train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
+train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
+val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
+val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
+test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
+test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
+
+# Model parameters
+model_type: 'Attention4'
+model_parameters:
+  dropout: 0.25
+  kernel_size: 9
