@@ -13,7 +13,7 @@ from utils.general import padded_permuted_collate
 
 
 def train(args):
-    torch.manual_seed(0)
+    torch.manual_seed(1)
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
                                               args.max_length, transform)
