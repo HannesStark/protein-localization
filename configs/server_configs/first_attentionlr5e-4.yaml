@@ -1,4 +1,4 @@
-experiment_name: ''
+experiment_name: 'lr5e-4'
 
 num_epochs: 5000
 batch_size: 150
@@ -6,7 +6,7 @@ log_iterations: 100
 patience: 100
 min_train_acc: 99.6
 optimizer_parameters:
-  lr: 5.0e-5
+  lr: 5.0e-4
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'

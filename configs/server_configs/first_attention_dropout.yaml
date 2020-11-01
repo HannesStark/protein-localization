@@ -17,7 +17,7 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'FirstAttention'
+model_type: 'FirstAttentionDropout'
 model_parameters:
   output_dim: 10
   dropout: 0.25
