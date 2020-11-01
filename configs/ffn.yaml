@@ -4,6 +4,7 @@ num_epochs: 10000
 batch_size: 2048
 log_iterations: 10
 patience: 400
+balanced_loss: True
 optimizer_parameters:
   lr: 1.0e-4
 

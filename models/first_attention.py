@@ -34,7 +34,6 @@ class FirstAttention(nn.Module):
         o = self.conv1(x)  # [batch_size, embeddings_dim, sequence_length]
         o = self.dropout(o)  # [batch_size, embeddings_dim, sequence_length]
         attention = self.attend(x)
-
         attention = attention.masked_fill(mask == False, -1e9)
         o1 = torch.sum(o * F.softmax(attention, dim=-1), dim=-1)  # [batchsize, embeddingsdim]
         o2, _ = torch.max(o, dim=-1)
