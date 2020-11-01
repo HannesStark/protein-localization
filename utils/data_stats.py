@@ -3,8 +3,12 @@ import os
 from Bio import SeqIO
 import pandas as pd
 import matplotlib.pyplot as plt
+from utils.general import LOCALIZATION
+import seaborn as sn
+sn.set_style('darkgrid')
 
-fasta_path = '../data/fasta_files/train.fasta'
+
+fasta_path = '../data/fasta_files/test_as_per_deeploc.fasta'
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
     color = 'orange'
@@ -25,9 +29,16 @@ df = pd.DataFrame(list(zip(identifiers, labels, solubility, sequences)),
 # df = df[df['solubility'] != 'U']
 df['length'] = df['seq'].apply(lambda x: len(x))
 
-fig, ax = plt.subplots()
 
-df['label'].value_counts().plot(ax=ax, kind='bar')
+
+# visualize class prevalences
+counts = df['label'].value_counts()
+counts = pd.DataFrame({'Localization': counts.index,
+                       "Number_Sequences": counts.array})
+counts['ordering'] = counts['Localization'].apply(lambda x: LOCALIZATION.index(x))
+counts = counts.sort_values(by=['ordering'])
+barplot = sn.barplot(x='Number_Sequences', y='Localization', data=counts, ci=None)
+barplot.set(xlabel='Number Sequences per Class', ylabel='')
 plt.show()
 
 print(df['label'].value_counts())
