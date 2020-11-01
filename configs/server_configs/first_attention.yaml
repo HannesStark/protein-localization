@@ -18,6 +18,6 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/r
 # Model parameters
 model_type: 'FirstAttention'
 model_parameters:
-  outputdim: 10
+  output_dim: 10
   dropout: 0.25
   kernel_size: 9
