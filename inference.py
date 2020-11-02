@@ -33,8 +33,6 @@ def parse_arguments():
     p.add_argument('--n_draws', type=int, default=100,
                    help='how often to bootstrap from the dataset for variance estimation')
     p.add_argument('--log_iterations', type=int, default=100, help='log every log_iterations (-1 for no logging)')
-    p.add_argument('--loss_function', type=str, default='JointCrossEntropy',
-                   help='Classname of one of the loss functions models/loss_functions.py')
 
     p.add_argument('--embeddings', type=str, default='data/embeddings/val_reduced.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
@@ -53,8 +51,7 @@ def parse_arguments():
     # get the arguments from the yaml config file that is saved in the runs checkpoint
     data = yaml.load(open(os.path.join(args.checkpoint, 'train_arguments.yaml'), 'r'), Loader=yaml.FullLoader)
     for key, value in data.items():
-        # add the or because my old runs did not have the loss function parameter yet so there is a default value here but I want the default value to be overwritten in case I am reading from a new run
-        if key not in args.__dict__.keys() or key == 'loss_function':
+        if key not in args.__dict__.keys():
             if isinstance(value, list):
                 for v in value:
                     arg_dict[key].append(v)

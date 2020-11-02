@@ -38,7 +38,7 @@ def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndar
     if args.target == 'sol':
         train_confusion = confusion_matrix(train_results[:, 3], train_results[:, 2])  # confusion matrix for train
         val_confusion = confusion_matrix(val_results[:, 3], val_results[:, 2])  # confusion matrix for validation
-        labels = SOLUBILITY
+        labels = SOLUBILITY[:2]
     else:
         train_confusion = confusion_matrix(train_results[:, 1], train_results[:, 0])  # confusion matrix for train
         val_confusion = confusion_matrix(val_results[:, 1], val_results[:, 0])  # confusion matrix for validation
@@ -114,7 +114,7 @@ def plot_class_accuracies(accuracy, stderr, path, args=None):
                        "std": stderr})
     sn.set_style('darkgrid')
     barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
-    barplot.set(xlabel='Accuracy', ylabel='')
+    barplot.set(xlabel='Average accuracy over '+ str(args.n_draws) + ' draws', ylabel='')
     barplot.axvline(1)
     plt.errorbar(x=df['Accuracy'], y=labels, xerr=df['std'], fmt='none', c='black', capsize=3)
     plt.tight_layout()

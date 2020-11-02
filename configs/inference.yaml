@@ -1,1 +1,7 @@
-log_iterations: 100
+log_iterations: 2
+n_draws: 50
+batch_size: 16
+checkpoint: runs/.ex21/FirstAttention_eps1e-11_01-11_19-07-39
+
+embeddings: data/embeddings/val.h5
+remapping: data/embeddings/val_remapped.fasta

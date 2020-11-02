@@ -73,7 +73,7 @@ class BaseSolver():
 
             loc_train_acc = 100 * np.equal(train_results[:, 0], train_results[:, 1]).sum() / len(train_results)
             loc_val_acc = 100 * np.equal(val_results[:, 0], val_results[:, 1]).sum() / len(val_results)
-            with warnings.catch_warnings(): # because sklearns mcc implementation is a little dim
+            with warnings.catch_warnings():  # because sklearns mcc implementation is a little dim
                 warnings.filterwarnings("ignore", message="invalid value encountered in double_scalars")
                 loc_train_mcc = matthews_corrcoef(train_results[:, 1], train_results[:, 0])
                 loc_val_mcc = matthews_corrcoef(val_results[:, 1], val_results[:, 0])
@@ -211,10 +211,11 @@ class BaseSolver():
         mcc_stderr = np.std(mccs)
         class_accuracy = np.mean(np.array(class_accuracies), axis=0)
         class_accuracy_stderr = np.std(np.array(class_accuracies), axis=0)
-        results_string = 'Accuracy: {:.2f}% \n' \
+        results_string = 'Number of draws: {} \n' \
+                         'Accuracy: {:.2f}% \n' \
                          'Accuracy stderr: {:.2f}%\n' \
                          'MCC: {:.4f}\n' \
-                         'MCC stderr: {:.4f}\n'.format(accuracy, accuracy_stderr, mcc, mcc_stderr)
+                         'MCC stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr)
         with open(os.path.join(self.writer.log_dir, 'evaluation.txt'), 'w') as file:
             file.write(results_string)
         print(results_string)
