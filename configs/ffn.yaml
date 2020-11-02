@@ -2,7 +2,7 @@ experiment_name: ''
 
 num_epochs: 10000
 batch_size: 2048
-log_iterations: 10
+log_iterations: 100
 patience: 400
 balanced_loss: True
 optimizer_parameters:
