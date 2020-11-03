@@ -1,5 +1,5 @@
 log_iterations: 100
-n_draws: 100
+n_draws: 1000
 batch_size: 150
 checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/FirstAttention__02-11_01-14-06
 

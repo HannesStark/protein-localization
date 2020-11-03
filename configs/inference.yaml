@@ -1,7 +1,7 @@
-log_iterations: 2
-n_draws: 50
-batch_size: 16
-checkpoint: runs/.ex21/FirstAttention_eps1e-11_01-11_19-07-39
+log_iterations: 100
+n_draws: 1000
+batch_size: 1024
+checkpoint: runs/FFN_solubility_02-11_17-23-12
 
-embeddings: data/embeddings/val.h5
-remapping: data/embeddings/val_remapped.fasta
+embeddings: data/embeddings/test_reduced.h5
+remapping: data/embeddings/test_remapped.fasta
