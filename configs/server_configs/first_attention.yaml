@@ -21,3 +21,4 @@ model_type: 'FirstAttention'
 model_parameters:
   dropout: 0.25
   kernel_size: 9
+  output_dim: 10
