@@ -13,7 +13,8 @@ from solvers.base_solver import BaseSolver
 
 def inference(args):
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
-    data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping, unknown_solubility=False,
+    data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping,
+                                             unknown_solubility=args.unknown_solubility,
                                              transform=transform)
 
     # Needs "from models import *" to work

@@ -93,6 +93,26 @@ def position_token_embeddings(file: str, output_path: str, position: int = 0, fa
             embeddings.create_dataset(key, data=embedding[position])
 
 
+def cut_tokens_embeddings(file: str, output_path: str, position=3):
+    """
+    get the  token at position of embeddings and save them to a new file
+    Args:
+        file: h5 file with bert embeddings
+        output_path: file path to save the new embeddings.
+        position: which token to fetch
+
+    Returns:
+
+    """
+    loaded_embeddings = h5py.File(file, 'r')
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.mkdir(os.path.dirname(output_path))
+    embeddings = h5py.File(output_path, 'w')
+    for key in tqdm(loaded_embeddings.keys()):
+        embedding = loaded_embeddings[key][:]
+        embeddings.create_dataset(key, data=embedding[:position])
+
+
 def position_cat_reduced(file: str, output_path: str, position: int = 0):
     """
     get the  token at position of the BERT embeddings and concatenate it with the avg over the length

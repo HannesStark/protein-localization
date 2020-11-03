@@ -1,5 +1,5 @@
 log_iterations: 100
-n_draws: 1000
+n_draws: 10
 batch_size: 1024
 checkpoint: runs/FFN_solubility_02-11_17-23-12
 
