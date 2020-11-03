@@ -110,7 +110,8 @@ def cut_tokens_embeddings(file: str, output_path: str, position=3):
     embeddings = h5py.File(output_path, 'w')
     for key in tqdm(loaded_embeddings.keys()):
         embedding = loaded_embeddings[key][:]
-        embeddings.create_dataset(key, data=embedding[:position])
+        embedding = np.concatenate(embedding[:3, :], axis=0)
+        embeddings.create_dataset(key, data=embedding)
 
 
 def position_cat_reduced(file: str, output_path: str, position: int = 0):

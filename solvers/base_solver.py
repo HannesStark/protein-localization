@@ -216,11 +216,11 @@ class BaseSolver():
                          'Accuracy stderr: {:.2f}%\n' \
                          'MCC: {:.4f}\n' \
                          'MCC stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr)
-        with open(os.path.join(self.writer.log_dir, 'evaluation_val.txt'), 'w') as file:
+        with open(os.path.join(self.writer.log_dir, 'evaluation.txt'), 'w') as file:
             file.write(results_string)
         print(results_string)
         plot_class_accuracies(class_accuracy, class_accuracy_stderr,
-                              os.path.join(self.writer.log_dir, 'class_accuracies_val.png'), self.args)
+                              os.path.join(self.writer.log_dir, 'class_accuracies.png'), self.args)
 
     def save_checkpoint(self, epoch: int):
         """
