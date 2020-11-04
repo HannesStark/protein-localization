@@ -12,7 +12,7 @@ from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDatas
 from datasets.transforms import SolubilityToInt, ToTensor
 from utils.general import normalize, padded_permuted_collate
 
-checkpoint = 'runs/.ex18/FirstAttention_9_29-10_20-01-52'
+checkpoint = 'runs/..finalModels/FirstAttention_replicate_03-11_11-02-24_checkpoint'
 embeddings = 'data/embeddings/val.h5'
 remapping = 'data/embeddings/val_remapped.fasta'
 batch_size = 8
@@ -48,7 +48,7 @@ def explore_embeddings(args):
         plt.show()
 
 
-def visualize_activation_hook(self, input, output, clamp=False):
+def visualize_activation_hook(self, input, output, clamp=True):
     print('Inside ' + self.__class__.__name__ + ' forward')
     print('')
     print('input size:', input[0].size())
