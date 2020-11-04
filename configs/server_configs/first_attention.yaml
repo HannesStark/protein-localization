@@ -3,7 +3,7 @@ experiment_name: 'replicate2'
 num_epochs: 5000
 batch_size: 150
 log_iterations: 100
-patience: 50
+patience: 60
 min_train_acc: 99.6
 optimizer_parameters:
   lr: 5.0e-5

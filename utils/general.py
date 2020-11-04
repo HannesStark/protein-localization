@@ -1,6 +1,7 @@
 import copy
 import inspect
 import os
+import random
 import shutil
 from typing import List, Tuple
 
@@ -21,6 +22,19 @@ LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', '
 
 SOLUBILITY = ['M', 'S', 'U']
 
+def seed_all(seed):
+    if not seed:
+        seed = 0
+
+    print("[ Using Seed : ", seed, " ]")
+
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.cuda.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
                                  step: int):
