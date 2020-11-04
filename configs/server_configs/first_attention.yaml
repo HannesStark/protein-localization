@@ -1,4 +1,4 @@
-experiment_name: 'replicate2'
+experiment_name: 'replicate1'
 
 num_epochs: 5000
 batch_size: 150
