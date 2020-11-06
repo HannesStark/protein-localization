@@ -1,6 +1,6 @@
-experiment_name: 's100'
+experiment_name: 's1234'
 
-seed: 100
+seed: 1234
 num_epochs: 5000
 batch_size: 150
 log_iterations: 100

@@ -1,10 +1,10 @@
-experiment_name: '42'
+experiment_name: '12345'
 
-seed: 42
+seed: 12345
 num_epochs: 5000
 batch_size: 150
 log_iterations: 100
-patience: 60
+patience: 80
 min_train_acc: 99.6
 optimizer_parameters:
   lr: 5.0e-5
