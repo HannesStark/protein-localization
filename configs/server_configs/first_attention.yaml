@@ -1,6 +1,5 @@
-experiment_name: 'replicate_10'
+experiment_name: ''
 
-seed: 10
 num_epochs: 5000
 batch_size: 150
 log_iterations: 100
