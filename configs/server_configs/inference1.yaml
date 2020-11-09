@@ -1,7 +1,7 @@
 log_iterations: 100
 n_draws: 1000
 batch_size: 256
-checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/FirstAttention_12345_06-11_14-11-38
+checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/FirstAttention__08-11_14-48-20
 
 embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
 remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
