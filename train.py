@@ -47,7 +47,7 @@ def parse_arguments():
     p.add_argument('--patience', type=int, default=50, help='stop training after no improvement in this many epochs')
     p.add_argument('--min_train_acc', type=int, default=95, help='dont stop training before reaching this acc')
     p.add_argument('--n_draws', type=int, default=200, help='number of times to sample for estimation of stderr')
-    p.add_argument('--seed', type=int, default=100, help='seed for reproducibility')
+    p.add_argument('--seed', type=int, default=123, help='seed for reproducibility')
     p.add_argument('--optimizer', type=str, default='Adam', help='Class name of torch.optim like [Adam, SGD, AdamW]')
     p.add_argument('--optimizer_parameters', type=dict, help='parameters with keywords of the chosen optimizer like lr')
     p.add_argument('--log_iterations', type=int, default=-1,
