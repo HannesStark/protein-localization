@@ -1,4 +1,4 @@
-experiment_name: 'solubilitylr5e-6'
+experiment_name: 'solubilitylr8e-6'
 
 num_epochs: 5000
 batch_size: 150
@@ -9,7 +9,7 @@ target: sol
 unknown_solubility: False
 loss_function: SolCrossEntropy
 optimizer_parameters:
-  lr: 5.0e-6
+  lr: 8.0e-6
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
