@@ -1,0 +1,25 @@
+experiment_name: '711'
+
+seed: 711
+num_epochs: 5000
+batch_size: 150
+log_iterations: 100
+patience: 80
+min_train_acc: 99.6
+optimizer_parameters:
+  lr: 5.0e-5
+
+# Paths to Data
+train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
+train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
+val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
+val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
+test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
+test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
+
+# Model parameters
+model_type: 'FirstAttention'
+model_parameters:
+  dropout: 0.25
+  kernel_size: 9
+  output_dim: 10

@@ -1,11 +1,11 @@
-experiment_name: '11111'
+experiment_name: '603'
 
+seed: 603
 num_epochs: 5000
 batch_size: 150
 log_iterations: 100
 patience: 80
 min_train_acc: 99.6
-seed: 11111
 optimizer_parameters:
   lr: 5.0e-5
 
