@@ -1,8 +1,5 @@
-from models import *
-model = FirstAttention()
+import numpy as np
 
+a =np.random.randint(low=100,high=999, size=21)
 
-
-for name, param in model.named_parameters():
-    if param.requires_grad:
-        print(name, param.data.numel())
+print(repr(a))
