@@ -1,18 +1,19 @@
 import torch
 import torch.nn as nn
+from sparsemax import Sparsemax
 import torch.nn.functional as F
 
 
-class LogSoftmax(nn.Module):
+class LogSparsemax(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size=7, conv_dropout: float = 0.25):
-        super(LogSoftmax, self).__init__()
+        super(LogSparsemax, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
         self.attend1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
         self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
         self.attend2 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
 
-        self.softmax = nn.Softmax(dim=-1)
+        self.sparsemax = Sparsemax(dim=-1)
         self.log_softmax = nn.LogSoftmax(dim=-1)
 
         self.dropout1 = nn.Dropout(conv_dropout)
@@ -40,7 +41,7 @@ class LogSoftmax(nn.Module):
         o = self.dropout1(o)  # [batch_size, embeddings_dim, sequence_length]
         attention = self.attend1(x)
         attention = attention.masked_fill(mask[:, None, :] == False, -1e9)
-        o1 = torch.sum(o * self.softmax(attention), dim=-1)  # [batchsize, embeddingsdim]
+        o1 = torch.sum(o * self.sparsemax(attention), dim=-1)  # [batchsize, embeddingsdim]
 
         o = self.conv2(x)  # [batch_size, embeddings_dim, sequence_length]
         o = self.dropout2(o)  # [batch_size, embeddings_dim, sequence_length]
