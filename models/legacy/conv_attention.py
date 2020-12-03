@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models.multi_head_attention import MultiHeadAttention
-
 
 class ConvSelfAttention(nn.Module):
     def __init__(self, embeddings_dim: int = 1024, output_dim: int = 12 , dropout=0.25, kernel_size=7, attention_dropout: float=0.25, n_heads=8):
