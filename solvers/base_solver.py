@@ -172,11 +172,12 @@ class BaseSolver():
         running_sol_loss /= len(data_loader)
         return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
 
-    def evaluation(self, dataset: Dataset):
+    def evaluation(self, dataset: Dataset, filename: str = None):
         """
         Estimate the standard error on the provided dataset and write it to evaluation_val.txt in the run directory
         Args:
             dataset: the dataset for which to estimate the stderr
+            filename: string to append to the results
 
         Returns:
 
@@ -216,11 +217,11 @@ class BaseSolver():
                          'Accuracy stderr: {:.2f}%\n' \
                          'MCC: {:.4f}\n' \
                          'MCC stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr)
-        with open(os.path.join(self.writer.log_dir, 'evaluation_test.txt'), 'w') as file:
+        with open(os.path.join(self.writer.log_dir, 'evaluation_' + filename + '.txt'), 'w') as file:
             file.write(results_string)
         print(results_string)
         plot_class_accuracies(class_accuracy, class_accuracy_stderr,
-                              os.path.join(self.writer.log_dir, 'class_accuracies_test.png'), self.args)
+                              os.path.join(self.writer.log_dir, 'class_accuracies_' + filename + '.png'), self.args)
 
     def save_checkpoint(self, epoch: int):
         """

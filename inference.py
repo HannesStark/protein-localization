@@ -22,7 +22,7 @@ def inference(args):
 
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])
-    solver.evaluation(data_set)
+    solver.evaluation(data_set, 'inference')
 
 
 def parse_arguments():

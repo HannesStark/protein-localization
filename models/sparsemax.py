@@ -4,9 +4,9 @@ import torch.nn.functional as F
 from sparsemax import Sparsemax
 
 
-class Sparsemax(nn.Module):
+class SparseMax(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size=7, conv_dropout: float = 0.25):
-        super(Sparsemax, self).__init__()
+        super(SparseMax, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
         self.attend = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)

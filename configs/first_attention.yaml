@@ -15,7 +15,7 @@ val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'Logmax'
+model_type: 'SparseMax'
 model_parameters:
   output_dim: 10
   dropout: 0.25
