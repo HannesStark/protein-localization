@@ -1,5 +1,6 @@
 import numpy as np
 
-a =np.random.randint(low=100,high=999, size=21)
+res = np.array([80.56, 80.39, 79.91, 80.28, 80.33])
 
-print(repr(a))
+print(res.mean())
+print(res.std())
