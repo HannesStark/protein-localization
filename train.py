@@ -1,14 +1,13 @@
-from models import *  # required dont remove this
-from torch.optim import *  # required dont remove this
 import argparse
 import yaml
-from adabelief_pytorch import AdaBelief
+from models import *  # For loading classes specified in config
+from torch.optim import *  # For loading optimizer specified in config
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
 
-from solvers.base_solver import BaseSolver
+from solver import Solver
 from utils.general import padded_permuted_collate, seed_all
 
 
@@ -33,14 +32,14 @@ def train(args):
     print('trainable params: ', sum(p.numel() for p in model.parameters() if p.requires_grad))
 
     # Needs "from torch.optim import *" and "from models import *" to work
-    solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function],
-                        weight=train_set.class_weights)
+    solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function],
+                    weight=train_set.class_weights)
     solver.train(train_loader, val_loader, eval_data=val_set)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/first_attention.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=2500, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')

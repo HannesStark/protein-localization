@@ -1,6 +1,6 @@
 experiment_name: ''
 
-num_epochs: 10000
+num_epochs: 10
 batch_size: 2048
 log_iterations: 100
 patience: 400

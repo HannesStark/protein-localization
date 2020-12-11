@@ -1,14 +1,13 @@
+from models import *  # For loading classes specified in config
+from torch.optim import * # For loading optimizer class that was used in the checkpoint
 import os
-from models import *  # required dont remove this
-from torch.optim import *  # required dont remove this
-from adabelief_pytorch import AdaBelief
 import argparse
 import yaml
 import torch.nn as nn
 from torchvision.transforms import transforms
 from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDataset
 from datasets.transforms import *
-from solvers.base_solver import BaseSolver
+from solver import Solver
 
 
 def inference(args):
@@ -21,7 +20,7 @@ def inference(args):
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
 
     # Needs "from torch.optim import *" and "from models import *" to work
-    solver = BaseSolver(model, args, globals()[args.optimizer], globals()[args.loss_function])
+    solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
     solver.evaluation(data_set, 'inference')
 
 

@@ -17,11 +17,11 @@ from datetime import datetime
 from tqdm import tqdm
 
 from models.loss_functions import JointCrossEntropy
-from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, LOCALIZATION, plot_class_accuracies, \
+from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, plot_class_accuracies, \
     tensorboard_class_accuracies
 
 
-class BaseSolver():
+class Solver():
     def __init__(self, model, args, optim=torch.optim.Adam, loss_func=JointCrossEntropy, weight=None, eval=False):
         self.optim = optim(list(model.parameters()), **args.optimizer_parameters)
         self.args = args
@@ -245,7 +245,6 @@ class BaseSolver():
         pyaml.dump(train_args.__dict__, open(os.path.join(run_dir, 'train_arguments.yaml'), 'w'))
         shutil.copyfile(self.args.config.name, os.path.join(run_dir, os.path.basename(self.args.config.name)))
 
-        # Sorry for this.
         # Get the class of the used model (works because of the "from models import *" calling the init.py in the models dir)
         model_class = globals()[type(self.model).__name__]
         source_code = inspect.getsource(model_class)  # Get the sourcecode of the class of the model.
