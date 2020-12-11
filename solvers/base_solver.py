@@ -177,7 +177,7 @@ class BaseSolver():
         Estimate the standard error on the provided dataset and write it to evaluation_val.txt in the run directory
         Args:
             dataset: the dataset for which to estimate the stderr
-            filename: string to append to the results
+            filename: string to append to the produced visualizations
 
         Returns:
 

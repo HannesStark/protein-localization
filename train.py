@@ -20,7 +20,7 @@ def train(args):
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
                                             transform=transform)
 
-    if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional lenght dim
+    if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
         collate_function = padded_permuted_collate
     else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
         collate_function = None
