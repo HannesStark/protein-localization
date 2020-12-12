@@ -11,13 +11,13 @@ information as in profile embeddings. Such embeddings can be generated from ``.f
 [bio-embeddings](https://pypi.org/project/bio-embeddings/) library.
 
 ### Quickstart
-Change the training and validation file paths in ``configs/first_attention.yaml`` to point to your embeddings
+Change the training and validation file paths in ``configs/light_attention.yaml`` to point to your embeddings
 and remapping files obtained from [bio-embeddings](https://pypi.org/project/bio-embeddings/) .
 Then start the training like this.
 ```
 conda env create -f environment.yml
 conda activate bio
-python train.py --config configs/first_attention.yaml
+python train.py --config configs/light_attention.yaml
 tensorboard --logdir=runs --port=6006
 ```
 If everything works without errors, you can now go to `localhost:6006` in your browser and the model training.

@@ -7,7 +7,3 @@ import numpy as np
 #
 #print(res.mean())
 #print(res.std())
-
-values = np.random.randint(100, 999, 20)
-print(values)
-print(values.tolist())
