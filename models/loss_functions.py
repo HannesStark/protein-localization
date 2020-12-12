@@ -37,13 +37,19 @@ class JointCrossEntropy(nn.Module):
 
 class LocCrossEntropy(nn.Module):
     def __init__(self, weight=None) -> None:
+        '''
+            essentially the same as torch.nn.CrossEntropyLoss
+        Args:
+            weight: weights for the individual classes
+        '''
         super(LocCrossEntropy, self).__init__()
         self.weight = weight
 
     def forward(self, prediction: Tensor, localization: Tensor,
                 solubility: Tensor, solubility_known: bool, args) -> Tuple[Tensor, Tensor, Tensor]:
         """
-
+            This is just a wrapper for the standard torch.nn.functional.cross_entropy.
+            So essentially the same as torch.nn.CrossEntropyLoss
             Args:
                 prediction: output of the network with 12 logits where the last two are for the solubility
                 localization: true label for localization

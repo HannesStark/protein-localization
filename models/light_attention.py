@@ -1,11 +1,10 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
-class FirstAttention(nn.Module):
+class LightAttention(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size=7, conv_dropout: float = 0.25):
-        super(FirstAttention, self).__init__()
+        super(LightAttention, self).__init__()
 
         self.conv1 = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
         self.attend = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1, padding=kernel_size // 2)
@@ -35,7 +34,7 @@ class FirstAttention(nn.Module):
         o = self.conv1(x)  # [batch_size, embeddings_dim, sequence_length]
         o = self.dropout(o)  # [batch_size, embeddings_dim, sequence_length]
         attention = self.attend(x)
-        attention = attention.masked_fill(mask[:, None, :] == False, -1e9)
+        attention = attention.masked_fill(mask[:, None, :] == False, -1e9) # mask out the
         o1 = torch.sum(o * self.softmax(attention), dim=-1)  # [batchsize, embeddingsdim]
         o2, _ = torch.max(o, dim=-1)
         o = torch.cat([o1, o2], dim=-1)

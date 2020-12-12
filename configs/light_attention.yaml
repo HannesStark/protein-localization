@@ -1,7 +1,7 @@
 experiment_name: ''
 
-num_epochs: 2500
-batch_size: 2
+num_epochs: 1
+batch_size: 10
 log_iterations: 2
 optimizer_parameters:
   lr: 5.0e-05
@@ -15,7 +15,7 @@ val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'FirstAttention'
+model_type: 'LightAttention'
 model_parameters:
   output_dim: 10
   dropout: 0.25

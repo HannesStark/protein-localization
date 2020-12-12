@@ -172,7 +172,7 @@ class Solver():
         running_sol_loss /= len(data_loader)
         return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
 
-    def evaluation(self, dataset: Dataset, filename: str = None):
+    def evaluation(self, dataset: Dataset, filename: str = 'None'):
         """
         Estimate the standard error on the provided dataset and write it to evaluation_val.txt in the run directory
         Args:
