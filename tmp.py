@@ -7,8 +7,7 @@ import numpy as np
 #
 #print(res.mean())
 #print(res.std())
-from utils.preprocess import create_annotations_csv
 
-create_annotations_csv('data/fasta_files/train.fasta', 'data/fasta_files/train_annotations.csv')
-
-create_annotations_csv('data/fasta_files/model_sequences.fasta', 'data/fasta_files/test_annotations.csv')
+values = np.random.randint(100, 999, 20)
+print(values)
+print(values.tolist())
