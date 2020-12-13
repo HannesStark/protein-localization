@@ -1,7 +1,7 @@
  # Protein Subcellular Localization Prediction :microscope:
 
 PyTorch Implementation for predicting the subcellular localization of proteins.
-Achieves **80.60%** accuracy on the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
+Achieves **80.20%** accuracy on the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
 (previous SOTA is 78%). To reproduce just run ``train.py`` on the embedded DeepLoc 
 [train set](http://www.cbs.dtu.dk/services/DeepLoc/data.php) and ``inference.py`` on 
 the [test set](http://www.cbs.dtu.dk/services/DeepLoc/data.php).
@@ -48,7 +48,7 @@ Accuracy on the DeepLoc test set:
 
 | Method | Accuracy |
 | --- | --- |
-| Ours | **80.62%** |
+| Ours | **80.22%** |
 | DeepLoc | 77.97% |
 | iLoc-Euk | 68.20% |
 | YLoc | 61.22% |
