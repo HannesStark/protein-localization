@@ -12,6 +12,7 @@ from torch.utils.tensorboard import SummaryWriter
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sn
+sn.set_theme()
 from models import *  # imports all classes in the models directory
 
 LOCALIZATION = ['Cell.membrane', 'Cytoplasm', 'Endoplasmic.reticulum', 'Golgi.apparatus', 'Lysosome/Vacuole',
@@ -60,7 +61,7 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
         evaluation_data[0] = evaluation_data[0].mean(axis=-2)  # average out the length dimension
 
     classifier = KNeighborsClassifier(n_neighbors=1)
-    classifier.fit(lookup_data[0].numpy(), lookup_data[1].numpy())
+    classifier.fit(lookup_data[0], lookup_data[1])
     predictions = classifier.predict(evaluation_data[0])
     distances, _ = classifier.kneighbors(evaluation_data[0])
 
@@ -81,7 +82,7 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
             lower_accuracy_found = True
         if accuracy >= accuracy_threshold and not lower_accuracy_found:
             high_accuracy_predictions = below_cutoff
-            low_accuracy_mask = np.invert(low_accuracy_mask)
+            low_accuracy_mask = np.invert(high_accuracy_mask)
         number_sequences.append(len(below_cutoff))
 
     if writer:
@@ -90,6 +91,7 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
         sn.lineplot(data=df, x="distance", y="accuracy")
         plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
         plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_' + filename + '.png'))
+        plt.clf()
         sn.lineplot(data=df, x="number sequences", y="accuracy")
         plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
         plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_num_sequences_' + filename + '.png'))
@@ -226,8 +228,8 @@ def numpy_collate_reduced(batch: List[Tuple[np.array, np.array, np.array, dict]]
     Returns: tuple of np.arrays of embeddings with [batchsize, embeddings_dim] and the rest in batched form
 
     """
-    embeddings = [item[0] for item in batch]
-    localization = [item[1] for item in batch]
+    embeddings = [np.array(item[0]) for item in batch]
+    localization = [np.array(item[1]) for item in batch]
     solubility = [item[2] for item in batch]
     metadata = [item[3] for item in batch]
     metadata = torch.utils.data.dataloader.default_collate(metadata)

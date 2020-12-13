@@ -211,7 +211,10 @@ class Solver():
                     mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))
 
                 else:
-                    results = np.cat([low_distance_results, results[:, 0:1]])
+                    print(low_distance_results.shape)
+                    print(results.shape)
+                    print(results[:, 0:1].shape)
+                    results = np.concatenate([low_distance_results[:, :2], results[:, :2]])
                     accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                     mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
                     conf = confusion_matrix(results[:, 1], results[:, 0])
