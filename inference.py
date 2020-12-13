@@ -13,16 +13,20 @@ from solver import Solver
 
 def inference(args):
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
+    # lookup_set
     data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping,
                                              unknown_solubility=args.unknown_solubility,
                                              transform=transform)
+    lookup_set = None
+    if args.accuracy_threshold >= 0:  # use lookup set for embedding space similarity annotation transfer
+        lookup_set = EmbeddingsLocalizationDataset(args.lookup_embeddings, args.lookup_remapping, transform=transform)
 
     # Needs "from models import *" to work
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
 
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
-    solver.evaluation(data_set, 'inference')
+    solver.evaluation(data_set, 'inference', lookup_set, args.accuracy_threshold)
 
 
 def parse_arguments():
@@ -38,6 +42,13 @@ def parse_arguments():
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
+    p.add_argument('--accuracy_threshold', type=float, default=-1.0,
+                   help='used to determine the cutoff similarity above which embedding similarity based annotation transfer is used to predict the sequences localization. If it is negative all predictions are made without similarity lookup.')
+    p.add_argument('--lookup_embeddings', type=str, default='data/embeddings/val_reduced.h5',
+                   help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file for embedding based similarity annotation transfer')
+    p.add_argument('--lookup_remapping', type=str, default='data/embeddings/val_remapped.fasta',
+                   help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file for embedding based similarity annotation transfer')
+
     args = p.parse_args()
     arg_dict = args.__dict__
     if args.config:

@@ -10,7 +10,7 @@ import numpy as np
 from models import *
 import warnings
 from sklearn.metrics import matthews_corrcoef, confusion_matrix
-from torch.utils.data import DataLoader, RandomSampler, Dataset
+from torch.utils.data import DataLoader, RandomSampler, Dataset, Subset
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 
@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 from models.loss_functions import JointCrossEntropy
 from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, plot_class_accuracies, \
-    tensorboard_class_accuracies
+    tensorboard_class_accuracies, annotation_transfer
 
 
 class Solver():
@@ -172,24 +172,34 @@ class Solver():
         running_sol_loss /= len(data_loader)
         return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
 
-    def evaluation(self, dataset: Dataset, filename: str = 'None'):
+    def evaluation(self, eval_dataset: Dataset, filename: str = '', lookup_dataset: Dataset = None,
+                   accuracy_threshold=0.81):
         """
         Estimate the standard error on the provided dataset and write it to evaluation_val.txt in the run directory
         Args:
-            dataset: the dataset for which to estimate the stderr
+            eval_dataset: the dataset for which to estimate the stderr
             filename: string to append to the produced visualizations
+            lookup_dataset: dataset used for embedding space similarity annotation transfer. If it is none, no annotation transfer will be done
+            accuracy_threshold: accuracy to determine the distance below which the annotation transfer is used.
 
         Returns:
 
         """
+        low_distance_results, high_distance_indices = annotation_transfer(eval_dataset, lookup_dataset,
+                                                                          accuracy_threshold,
+                                                                          self.writer,
+                                                                          filename)
+
         self.model.eval()
-        if len(dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
+        if len(eval_dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
             collate_function = padded_permuted_collate
         else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
             collate_function = None
 
-        sampler = RandomSampler(dataset, replacement=True)
-        data_loader = DataLoader(dataset, batch_size=self.args.batch_size, sampler=sampler, collate_fn=collate_function)
+        eval_dataset = Subset(eval_dataset, high_distance_indices)  # only keep the indices for which we have
+        sampler = RandomSampler(eval_dataset, replacement=True)
+        data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, sampler=sampler,
+                                 collate_fn=collate_function)
         mccs = []
         accuracies = []
         class_accuracies = []
@@ -201,6 +211,7 @@ class Solver():
                     mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))
 
                 else:
+                    results = np.cat([low_distance_results, results[:, 0:1]])
                     accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                     mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
                     conf = confusion_matrix(results[:, 1], results[:, 0])

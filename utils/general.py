@@ -1,10 +1,13 @@
+import os
 import random
 from typing import List, Tuple
 
 import numpy as np
 import torch
 from sklearn.metrics import confusion_matrix
+from sklearn.neighbors import KNeighborsClassifier
 from torch.nn.utils.rnn import pad_sequence
+from torch.utils.data import DataLoader, Dataset
 from torch.utils.tensorboard import SummaryWriter
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,6 +19,7 @@ LOCALIZATION = ['Cell.membrane', 'Cytoplasm', 'Endoplasmic.reticulum', 'Golgi.ap
 LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', 'Pla', 'Ext']
 
 SOLUBILITY = ['M', 'S', 'U']
+
 
 def seed_all(seed):
     if not seed:
@@ -30,6 +34,68 @@ def seed_all(seed):
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+
+
+def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_threshold: float,
+                        writer: SummaryWriter = None, filename: str = ''):
+    '''
+    Uses knn for embedding space similarity based annotation transfer
+    Args:
+        evaluation_set: dataset for which to make predictions.
+        lookup_dataset: annotated dataset from which to transfer the annotations.
+        accuracy_threshold: threshold to determine the disitance under which annotation transfer will be used.
+
+    Returns:
+        tuple of array[predictions, labels], and indices for which high confidence predictions were possible
+    '''
+
+    lookup_loader = DataLoader(lookup_set, batch_size=len(lookup_set), collate_fn=numpy_collate_reduced)
+    evaluation_loader = DataLoader(evaluation_set, batch_size=len(evaluation_set), collate_fn=numpy_collate_reduced)
+
+    lookup_data = next(iter(lookup_loader))  # tuple of embedding, localization, solubility, metadata
+    evaluation_data = next(iter(evaluation_loader))  # tuple of embedding, localization, solubility, metadata
+
+    # if we have per residue embeddings they have an additional length dim so we sum them up to get the reduced embeddings
+    if len(evaluation_data[0][0].shape) == 2:
+        evaluation_data[0] = evaluation_data[0].mean(axis=-2)  # average out the length dimension
+
+    classifier = KNeighborsClassifier(n_neighbors=1)
+    classifier.fit(lookup_data[0].numpy(), lookup_data[1].numpy())
+    predictions = classifier.predict(evaluation_data[0])
+    distances, _ = classifier.kneighbors(evaluation_data[0])
+
+    # here we want to find out below which distance we still get an accuracy higher than accuracy_threshold
+    cutoffs = np.linspace(distances.min(), distances.max(), 500)  # check 500 different cutoff possibilities
+    results = np.array([predictions, evaluation_data[1], distances.squeeze()]).T
+    accuracies = []
+    number_sequences = []
+    lower_accuracy_found = False
+    high_accuracy_predictions = None
+    low_accuracy_mask = None
+    for cutoff in cutoffs:
+        high_accuracy_mask = results[:, 2] <= cutoff
+        below_cutoff = results[high_accuracy_mask]
+        accuracy = np.equal(below_cutoff[:, 0], below_cutoff[:, 1]).sum() / len(below_cutoff)
+        accuracies.append(accuracy * 100)
+        if accuracy <= accuracy_threshold:
+            lower_accuracy_found = True
+        if accuracy >= accuracy_threshold and not lower_accuracy_found:
+            high_accuracy_predictions = below_cutoff
+            low_accuracy_mask = np.invert(low_accuracy_mask)
+        number_sequences.append(len(below_cutoff))
+
+    if writer:
+        df = pd.DataFrame(np.array([cutoffs, accuracies, number_sequences]).T,
+                          columns=["distance", "accuracy", 'number sequences'])
+        sn.lineplot(data=df, x="distance", y="accuracy")
+        plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
+        plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_' + filename + '.png'))
+        sn.lineplot(data=df, x="number sequences", y="accuracy")
+        plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
+        plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_num_sequences_' + filename + '.png'))
+
+    return high_accuracy_predictions, np.where(low_accuracy_mask)[0]
+
 
 def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
                                  step: int):
@@ -68,7 +134,7 @@ def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndar
     barplot1.set(xlabel='Accuracy', ylabel='')
     barplot1.axvline(1)
     barplot2 = sn.barplot(x="Accuracy", y="Localization", ax=ax[1], data=val_class_accuracies, ci=None)
-    barplot2 .set(xlabel='Accuracy', ylabel='')
+    barplot2.set(xlabel='Accuracy', ylabel='')
     barplot2.axvline(1)
     plt.tight_layout()
     writer.add_figure('Class accuracies ', fig, global_step=step)
@@ -123,7 +189,7 @@ def plot_class_accuracies(accuracy, stderr, path, args=None):
                        "std": stderr})
     sn.set_style('darkgrid')
     barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
-    barplot.set(xlabel='Average accuracy over '+ str(args.n_draws) + ' draws', ylabel='')
+    barplot.set(xlabel='Average accuracy over ' + str(args.n_draws) + ' draws', ylabel='')
     barplot.axvline(1)
     plt.errorbar(x=df['Accuracy'], y=labels, xerr=df['std'], fmt='none', c='black', capsize=3)
     plt.tight_layout()
@@ -148,6 +214,24 @@ def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.
     metadata = torch.utils.data.dataloader.default_collate(metadata)
     embeddings = pad_sequence(embeddings, batch_first=True)
     return embeddings.permute(0, 2, 1), localization, solubility, metadata
+
+
+def numpy_collate_reduced(batch: List[Tuple[np.array, np.array, np.array, dict]]) -> Tuple[
+    np.array, np.array, np.array, dict]:
+    """
+    Collate function for reduced per protein embedding that returns numpy arrays intead of tensors
+    Args:
+        batch: list of tuples with embeddings and the corresponding label
+
+    Returns: tuple of np.arrays of embeddings with [batchsize, embeddings_dim] and the rest in batched form
+
+    """
+    embeddings = [item[0] for item in batch]
+    localization = [item[1] for item in batch]
+    solubility = [item[2] for item in batch]
+    metadata = [item[3] for item in batch]
+    metadata = torch.utils.data.dataloader.default_collate(metadata)
+    return embeddings, localization, solubility, metadata
 
 
 def packed_padded_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor]]) -> Tuple[
