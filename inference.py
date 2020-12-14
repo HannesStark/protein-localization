@@ -26,14 +26,17 @@ def inference(args):
 
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
-    solver.evaluation(data_set, 'inference', lookup_set, args.accuracy_threshold)
+    solver.evaluation(data_set, args.save_name, lookup_set, args.accuracy_threshold)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
+
     p.add_argument('--checkpoint', type=str, default='runs/FFN__30-10_10-44-51',
                    help='path to directory that contains a checkpoint')
+    p.add_argument('--save_name', type=str, default='inference',
+                   help='string that is appended to produced evaluation files in the run folder')
     p.add_argument('--batch_size', type=int, default=16, help='samples that will be processed in parallel')
     p.add_argument('--n_draws', type=int, default=100,
                    help='how often to bootstrap from the dataset for variance estimation')

@@ -1,11 +1,10 @@
 log_iterations: 100
 n_draws: 10
 batch_size: 1024
-checkpoint: runs/FFN__11-12_15-56-43
+checkpoint: runs/FFN__02-11_15-32-02
 
-embeddings: data/embeddings/test_reduced.h5
-remapping: data/embeddings/test_remapped.fasta
+embeddings: data/embeddings/val_reduced.h5
+remapping: data/embeddings/val_remapped.fasta
 
-accuracy_threshold: 0.81
 lookup_embeddings: 'data/embeddings/train_reduced.h5'
 lookup_remapping: 'data/embeddings/train_remapped.fasta'

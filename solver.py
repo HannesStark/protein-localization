@@ -185,10 +185,13 @@ class Solver():
         Returns:
 
         """
-        low_distance_results, high_distance_indices = annotation_transfer(eval_dataset, lookup_dataset,
-                                                                          accuracy_threshold,
-                                                                          self.writer,
-                                                                          filename)
+        if self.args.target != 'sol' and lookup_dataset:
+            low_distance_results, high_distance_indices = annotation_transfer(eval_dataset, lookup_dataset,
+                                                                              accuracy_threshold,
+                                                                              self.writer,
+                                                                              filename)
+            # only keep the indices for which we have high confidence
+            eval_dataset = Subset(eval_dataset, high_distance_indices)
 
         self.model.eval()
         if len(eval_dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
@@ -196,12 +199,13 @@ class Solver():
         else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
             collate_function = None
 
-        eval_dataset = Subset(eval_dataset, high_distance_indices)  # only keep the indices for which we have
         sampler = RandomSampler(eval_dataset, replacement=True)
         data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, sampler=sampler,
                                  collate_fn=collate_function)
         mccs = []
         accuracies = []
+        supervised_accuracies = []
+        unsupervised_accuracies = []
         class_accuracies = []
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
@@ -211,10 +215,13 @@ class Solver():
                     mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))
 
                 else:
-                    print(low_distance_results.shape)
-                    print(results.shape)
-                    print(results[:, 0:1].shape)
-                    results = np.concatenate([low_distance_results[:, :2], results[:, :2]])
+                    if lookup_dataset:
+                        supervised_accuracies.append(
+                            100 * np.equal(low_distance_results[:, 0], low_distance_results[:, 1]).sum() / len(
+                                low_distance_results))
+                        unsupervised_accuracies.append(
+                            100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
+                        results = np.concatenate([low_distance_results[:, :2], results[:, :2]])
                     accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                     mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
                     conf = confusion_matrix(results[:, 1], results[:, 0])
@@ -231,6 +238,12 @@ class Solver():
                          'Accuracy stderr: {:.2f}%\n' \
                          'MCC: {:.4f}\n' \
                          'MCC stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr)
+        if lookup_dataset:  # if we did lookups we append the individual accuracies to the results file
+            unsupervised_accuracy = np.mean(np.array(unsupervised_accuracies), axis=0)
+            supervised_accuracy = np.mean(np.array(supervised_accuracies), axis=0)
+            results_string += 'unsupervised accuracy: {:.4f}\n' \
+                              'supervised accuracy: {:.4f}\n'.format(unsupervised_accuracy, supervised_accuracy)
+
         with open(os.path.join(self.writer.log_dir, 'evaluation_' + filename + '.txt'), 'w') as file:
             file.write(results_string)
         print(results_string)
