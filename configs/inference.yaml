@@ -6,5 +6,6 @@ checkpoint: runs/FirstAttention__11-12_16-04-12
 embeddings: data/embeddings/val.h5
 remapping: data/embeddings/val_remapped.fasta
 
-lookup_embeddings: 'data/embeddings/train.h5'
+accuracy_threshold: 0.90
+lookup_embeddings: 'data/embeddings/train_reduced.h5'
 lookup_remapping: 'data/embeddings/train_remapped.fasta'
