@@ -58,7 +58,7 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
 
     # if we have per residue embeddings they have an additional length dim so we sum them up to get the reduced embeddings
     if len(evaluation_data[0][0].shape) == 2:
-        evaluation_data[0] = evaluation_data[0].mean(axis=-2)  # average out the length dimension
+        evaluation_data[0] = np.array(evaluation_data[0]).mean(axis=-2)  # average out the length dimension
 
     classifier = KNeighborsClassifier(n_neighbors=1, p=1) # use 1 neighbor and L1 distance
     classifier.fit(lookup_data[0], lookup_data[1])

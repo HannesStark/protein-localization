@@ -1,10 +1,10 @@
 log_iterations: 100
-n_draws: 10
-batch_size: 1024
-checkpoint: runs/FFN__02-11_15-32-02
+n_draws: 1
+batch_size: 2
+checkpoint: runs/FirstAttention__11-12_16-04-12
 
-embeddings: data/embeddings/val_reduced.h5
+embeddings: data/embeddings/val.h5
 remapping: data/embeddings/val_remapped.fasta
 
-lookup_embeddings: 'data/embeddings/train_reduced.h5'
+lookup_embeddings: 'data/embeddings/train.h5'
 lookup_remapping: 'data/embeddings/train_remapped.fasta'
