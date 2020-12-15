@@ -4,8 +4,8 @@ n_draws: 30
 batch_size: 256
 checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/FirstAttention_189_27-11_04-47-35
 
-embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
-remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
+embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
+remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
 
 accuracy_threshold: 0.90
 lookup_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/reduced_embeddings_file.h5'
