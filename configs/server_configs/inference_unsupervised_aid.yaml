@@ -1,6 +1,6 @@
 save_name: cutoff_90
 log_iterations: 100
-n_draws: 10
+n_draws: 30
 batch_size: 256
 checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/FirstAttention_189_27-11_04-47-35
 

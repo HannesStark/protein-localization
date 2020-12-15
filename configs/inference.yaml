@@ -1,11 +1,12 @@
 log_iterations: 100
-n_draws: 1
+n_draws: 20
 batch_size: 2
-checkpoint: runs/FirstAttention__11-12_16-04-12
+checkpoint: 'runs/FFN__02-11_15-32-02'
+output_files_name: '0.96'
 
-embeddings: data/embeddings/val.h5
+embeddings: data/embeddings/val_reduced.h5
 remapping: data/embeddings/val_remapped.fasta
 
-accuracy_threshold: 0.90
+accuracy_threshold: 0.96
 lookup_embeddings: 'data/embeddings/train_reduced.h5'
 lookup_remapping: 'data/embeddings/train_remapped.fasta'

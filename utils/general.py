@@ -50,18 +50,18 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
         tuple of array[predictions, labels], and indices for which high confidence predictions were possible
     '''
 
-    lookup_loader = DataLoader(lookup_set, batch_size=len(lookup_set), collate_fn=numpy_collate_reduced)
-    evaluation_loader = DataLoader(evaluation_set, batch_size=len(evaluation_set), collate_fn=numpy_collate_reduced)
+    if len(evaluation_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
+        eval_collate_function = numpy_collate_to_reduced
+    else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
+        eval_collate_function = numpy_collate_for_reduced
+
+    lookup_loader = DataLoader(lookup_set, batch_size=len(lookup_set), collate_fn=numpy_collate_for_reduced)
+    evaluation_loader = DataLoader(evaluation_set, batch_size=len(evaluation_set), collate_fn=eval_collate_function)
 
     lookup_data = next(iter(lookup_loader))  # tuple of embedding, localization, solubility, metadata
     evaluation_data = next(iter(evaluation_loader))  # tuple of embedding, localization, solubility, metadata
 
-    # if we have per residue embeddings they have an additional length dim so we sum them up to get the reduced embeddings
-    if len(evaluation_data[0][0].shape) == 2:
-        print(evaluation_data.shape)
-        evaluation_data[0] = np.array(evaluation_data[0]).mean(axis=-2)  # average out the length dimension
-
-    print('fitting')
+    print('Running 1-NN classification for annotation transfer with accuracy threshold: ' + str(accuracy_threshold))
     classifier = KNeighborsClassifier(n_neighbors=1, p=1) # use 1 neighbor and L1 distance
     classifier.fit(lookup_data[0], lookup_data[1])
     predictions = classifier.predict(evaluation_data[0])
@@ -219,8 +219,24 @@ def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.
     embeddings = pad_sequence(embeddings, batch_first=True)
     return embeddings.permute(0, 2, 1), localization, solubility, metadata
 
+def numpy_collate_to_reduced(batch: List[Tuple[np.array, np.array, np.array, dict]]) -> Tuple[
+    np.array, np.array, np.array, dict]:
+    """
+    Takes list of tuples with embeddings of variable sizes and takes the mean over the length dimension
+    Args:
+        batch: list of tuples with embeddings and the corresponding label
 
-def numpy_collate_reduced(batch: List[Tuple[np.array, np.array, np.array, dict]]) -> Tuple[
+    Returns: tuple of np.arrays of embeddings with [batchsize, embeddings_dim] and the rest in batched form
+
+    """
+    embeddings = [np.array(item[0]).mean(axis=-2) for item in batch] # take mean over lenght dimension
+    localization = [np.array(item[1]) for item in batch]
+    solubility = [item[2] for item in batch]
+    metadata = [item[3] for item in batch]
+    metadata = torch.utils.data.dataloader.default_collate(metadata)
+    return embeddings, localization, solubility, metadata
+
+def numpy_collate_for_reduced(batch: List[Tuple[np.array, np.array, np.array, dict]]) -> Tuple[
     np.array, np.array, np.array, dict]:
     """
     Collate function for reduced per protein embedding that returns numpy arrays intead of tensors

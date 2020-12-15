@@ -215,10 +215,10 @@ class Solver():
 
                 else:
                     if lookup_dataset:
-                        supervised_accuracies.append(
+                        unsupervised_accuracies.append(
                             100 * np.equal(low_distance_results[:, 0], low_distance_results[:, 1]).sum() / len(
                                 low_distance_results))
-                        unsupervised_accuracies.append(
+                        supervised_accuracies.append(
                             100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                         results = np.concatenate([low_distance_results[:, :2], results[:, :2]])
                     accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
