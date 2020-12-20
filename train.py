@@ -15,9 +15,9 @@ def train(args):
     seed_all(args.seed)
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
-                                              args.max_length, transform)
+                                              args.remapping_in_hash_format, args.max_length, transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
-                                            transform=transform)
+                                            args.remapping_in_hash_format, transform=transform)
 
     if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
         collate_function = padded_permuted_collate
