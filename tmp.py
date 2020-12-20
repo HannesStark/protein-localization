@@ -25,7 +25,7 @@ save_appendix = ['bertHALF.h5',
                  't5-encoderOnlyHALF.h5']
 
 fasta_paths = ['data/fasta_files/train.fasta',
-               'data/fasta_files/val_homreduced.fasta,'
+               'data/fasta_files/val_homreduced.fasta',
                'data/fasta_files/test_as_per_deeploc.fasta']
 
 save_name = ['train_',

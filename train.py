@@ -78,6 +78,8 @@ def parse_arguments():
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--test_remapping', type=str, default='data/embeddings/test_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
+    p.add_argument('--remapping_in_hash_format', type=bool, default=True,
+                   help='whether or not the identifiers are remapped to hashes or if they just are the fasta description of the sequence')
     args = p.parse_args()
     if args.config:
         data = yaml.load(args.config, Loader=yaml.FullLoader)

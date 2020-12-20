@@ -1,10 +1,12 @@
 experiment_name: ''
 
-num_epochs: 1
-batch_size: 10
-log_iterations: 2
+num_epochs: 5000
+batch_size: 150
+log_iterations: 100
+patience: 80
+min_train_acc: 99.6
 optimizer_parameters:
-  lr: 5.0e-05
+  lr: 5.0e-5
 
 # Paths to Data
 train_embeddings: 'data/embeddings/train.h5'
@@ -17,7 +19,6 @@ test_remapping: 'data/embeddings/test_remapped.fasta'
 # Model parameters
 model_type: 'LightAttention'
 model_parameters:
-  output_dim: 10
   dropout: 0.25
-  conv_dropout: 0.25
   kernel_size: 9
+  output_dim: 10
