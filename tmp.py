@@ -12,7 +12,7 @@ import os
 import h5py
 from Bio import SeqIO
 
-base_path = 'data'
+base_path = '/mnt/home/mheinzinger/deepppi1tb/embedder/embeddings/hannes_embeddings'
 
 appendix = [
             'hannes_deeploc_t5-encoderOnly.h5',
@@ -35,9 +35,7 @@ save_paths = []
 
 for i, append in enumerate(appendix):
     embeddings_file = h5py.File(os.path.join(base_path, append), 'r')
-    print(embeddings_file.keys())
     for split_index, fasta_path in enumerate(fasta_paths):
         save_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + save_appendix[i]), 'w')
         for record in SeqIO.parse(open(fasta_path), 'fasta'):
-            print(record.description)
-            save_file.create_dataset(record.description, data=embeddings_file[record.description])
+            save_file.create_dataset(record.description, data=embeddings_file[str(record.description).replace('.', '_')])
