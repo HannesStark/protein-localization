@@ -19,7 +19,6 @@ appendix = ['hannes_deeploc_bertHALF.h5',
             'hannes_deeploc_t5-encoderOnly.h5',
             'hannes_deeploc_t5-encoderOnlyHALF.h5']
 
-
 save_appendix = ['bertHALF.h5',
                  'bertSECONDLAST.h5',
                  't5-encoderOnly.h5',
@@ -41,4 +40,4 @@ for i, append in enumerate(appendix):
     for split_index, fasta_path in enumerate(fasta_paths):
         for record in SeqIO.parse(open(fasta_path), 'fasta'):
             save_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + save_appendix[i]), 'w')
-            save_file[record.description] = embeddings_file[record.description]
+            save_file.create_dataset(record.description, data=embeddings_file[record.description])
