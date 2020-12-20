@@ -38,8 +38,6 @@ save_paths = []
 
 for i, append in enumerate(appendix):
     embeddings_file = h5py.File(os.path.join(base_path, append), 'r')
-    print(embeddings_file.keys())
-    print(embeddings_file['0011ab0c11c7fea51fefcd039b1b69f5'])
     for split_index, fasta_path in enumerate(fasta_paths):
         for record in SeqIO.parse(open(fasta_path), 'fasta'):
             save_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + save_appendix[i]), 'w')
