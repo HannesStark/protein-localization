@@ -23,7 +23,7 @@ def inference(args):
 
     # Needs "from models import *" to work
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
-    
+
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
     solver.evaluation(data_set, args.output_files_name, lookup_set, args.accuracy_threshold)

@@ -14,7 +14,8 @@ class EmbeddingsLocalizationDataset(Dataset):
     """
 
     def __init__(self, embeddings_path: str, remapped_sequences: str, unknown_solubility: bool = True,
-                 max_length: int = float('inf'), descriptions_with_hash=True,
+                 descriptions_with_hash=True,
+                 max_length: int = float('inf'),
                  transform=lambda x: x) -> None:
         """Create dataset.
         Args:
