@@ -14,13 +14,13 @@ from Bio import SeqIO
 
 base_path = '/mnt/home/mheinzinger/deepppi1tb/embedder/embeddings/hannes_embeddings'
 
-appendix = ['hannes_deeploc_bertHALF.h5 ',
+appendix = ['hannes_deeploc_bertHALF.h5',
             'hannes_deeploc_bertSECONDLAST.h5',
             'hannes_deeploc_t5-encoderOnly.h5',
             'hannes_deeploc_t5-encoderOnlyHALF.h5']
 
 
-save_appendix = ['bertHALF.h5 ',
+save_appendix = ['bertHALF.h5',
                  'bertSECONDLAST.h5',
                  't5-encoderOnly.h5',
                  't5-encoderOnlyHALF.h5']
