@@ -14,7 +14,7 @@ class EmbeddingsLocalizationDataset(Dataset):
     """
 
     def __init__(self, embeddings_path: str, remapped_sequences: str, unknown_solubility: bool = True,
-                 max_length: int = float('inf'),
+                 max_length: int = float('inf'), descriptions_with_hash=True,
                  transform=lambda x: x) -> None:
         """Create dataset.
         Args:
@@ -33,11 +33,18 @@ class EmbeddingsLocalizationDataset(Dataset):
         self.localization_solubility_metadata_list = []
         self.class_weights = torch.zeros(10)
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
-            localization = record.description.split(' ')[2].split('-')[0]
-            localization = LOCALIZATION.index(localization)  # get localization as integer
-            solubility = record.description.split(' ')[2].split('-')[-1]
+            if descriptions_with_hash:
+                localization = record.description.split(' ')[2].split('-')[0]
+                localization = LOCALIZATION.index(localization)  # get localization as integer
+                solubility = record.description.split(' ')[2].split('-')[-1]
+                id = str(record.id)
+            else:
+                localization = record.description.split(' ')[1].split('-')[0]
+                localization = LOCALIZATION.index(localization)  # get localization as integer
+                solubility = record.description.split(' ')[1].split('-')[-1]
+                id = str(record.description)
             if len(record.seq) <= max_length:
-                metadata = {'id': str(record.id),
+                metadata = {'id': id,
                             'sequence': str(record.seq),
                             'length': len(record.seq),
                             'solubility_known': not (solubility == 'U')}
@@ -46,7 +53,7 @@ class EmbeddingsLocalizationDataset(Dataset):
                 if unknown_solubility or not (solubility == 'U'):
                     self.localization_solubility_metadata_list.append(
                         {'localization': localization, 'solubility': solubility, 'metadata': metadata})
-            self.class_weights[localization] +=1
+            self.class_weights[localization] += 1
         self.class_weights /= self.class_weights.sum()
 
     def __getitem__(self, index: int) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]:
