@@ -1,4 +1,4 @@
-experiment_name: ''
+experiment_name: 't5-encoderOnly'
 
 num_epochs: 5000
 batch_size: 150
@@ -9,15 +9,16 @@ optimizer_parameters:
   lr: 5.0e-5
 
 # Paths to Data
-train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/bert_embeddings/embeddings_file.h5'
-train_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_train/embeddings/remapped_sequences_file.fasta'
-val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/bert_embeddings/embeddings_file.h5'
-val_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_val/embeddings/remapped_sequences_file.fasta'
-test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
-test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
+train_embeddings: 'data/embeddings/train_t5-encoderOnly.h5'
+train_remapping: 'data/fasta_files/train.fasta'
+val_embeddings: 'data/embeddings/val_t5-encoderOnly.h5'
+val_remapping: 'data/fasta_files/val_homreduced.h5'
+test_embeddings: 'data/embeddings/test_t5-encoderOnly.h5'
+test_remapping: 'data/fasta_files/test_as_per_deeploc.fasta'
+remapping_in_hash_format: False
 
 # Model parameters
-model_type: 'Logmax'
+model_type: 'LightAttention'
 model_parameters:
   dropout: 0.25
   kernel_size: 9
