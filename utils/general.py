@@ -67,6 +67,8 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
     predictions = classifier.predict(evaluation_data[0])
     distances, _ = classifier.kneighbors(evaluation_data[0])
 
+    return np.array([predictions, evaluation_data[1], distances.squeeze()]).T
+
     # here we want to find out below which distance we still get an accuracy higher than accuracy_threshold
     cutoffs = np.linspace(distances.min(), distances.max(), 500)  # check 500 different cutoff possibilities
     results = np.array([predictions, evaluation_data[1], distances.squeeze()]).T
@@ -98,7 +100,7 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
         plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
         plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_num_sequences_' + filename + '.png'))
 
-    return high_accuracy_predictions, np.where(low_accuracy_mask)[0]
+
 
 
 def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,

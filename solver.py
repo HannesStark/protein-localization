@@ -172,7 +172,7 @@ class Solver():
         return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
 
     def evaluation(self, eval_dataset: Dataset, filename: str = '', lookup_dataset: Dataset = None,
-                   accuracy_threshold=0.81):
+                   distance_threshold=0.81):
         """
         Estimate the standard error on the provided dataset and write it to evaluation_val.txt in the run directory
         Args:
@@ -185,12 +185,9 @@ class Solver():
 
         """
         if self.args.target != 'sol' and lookup_dataset:
-            low_distance_results, high_distance_indices = annotation_transfer(eval_dataset, lookup_dataset,
-                                                                              accuracy_threshold,
-                                                                              self.writer,
-                                                                              filename)
-            # only keep the indices for which we have high confidence
-            eval_dataset = Subset(eval_dataset, high_distance_indices)
+            # arraay with len eval_dataset and columns: predictions, labels, distance to nearest neighbors
+            knn_predictions = annotation_transfer(eval_dataset, lookup_dataset, distance_threshold, self.writer,
+                                                  filename)
 
         self.model.eval()
         if len(eval_dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
@@ -201,6 +198,9 @@ class Solver():
         sampler = RandomSampler(eval_dataset, replacement=True)
         data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, sampler=sampler,
                                  collate_fn=collate_function)
+        data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, collate_fn=collate_function)
+        loc_loss, sol_loss, de_novo_predictions = self.predict(data_loader)
+
         mccs = []
         accuracies = []
         supervised_accuracies = []
