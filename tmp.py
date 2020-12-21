@@ -14,12 +14,10 @@ from Bio import SeqIO
 
 base_path = '/mnt/home/mheinzinger/deepppi1tb/embedder/embeddings/hannes_embeddings'
 
-appendix = [
-            'hannes_deeploc_t5-encoderOnly.h5',
+appendix = ['hannes_deeploc_t5-encoderOnly.h5',
             'hannes_deeploc_t5-encoderOnlyHALF.h5']
 
-save_appendix = [
-                 't5-encoderOnly.h5',
+save_appendix = ['t5-encoderOnly.h5',
                  't5-encoderOnlyHALF.h5']
 
 fasta_paths = ['data/fasta_files/train.fasta',
@@ -38,4 +36,6 @@ for i, append in enumerate(appendix):
     for split_index, fasta_path in enumerate(fasta_paths):
         save_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + save_appendix[i]), 'w')
         for record in SeqIO.parse(open(fasta_path), 'fasta'):
-            save_file.create_dataset(record.description, data=embeddings_file[str(record.description).replace('.', '_')])
+            save_file.create_dataset(record.description,
+                                     data=embeddings_file[str(record.description).replace('.', '_').replace('/', '_')])
+    
