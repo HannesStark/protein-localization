@@ -38,4 +38,3 @@ for i, append in enumerate(appendix):
         for record in SeqIO.parse(open(fasta_path), 'fasta'):
             save_file.create_dataset(record.description,
                                      data=embeddings_file[str(record.description).replace('.', '_').replace('/', '_')])
-    
