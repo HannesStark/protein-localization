@@ -202,16 +202,15 @@ class Solver():
         data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, sampler=sampler,
                                  collate_fn=collate_function)
 
-        data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, shuffle=False, collate_fn=collate_function)
-        loc_loss, sol_loss, results = self.predict(data_loader)
         mccs = []
+
         accuracies = []
         supervised_accuracies = []
         unsupervised_accuracies = []
         class_accuracies = []
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
-
+                loc_loss, sol_loss, results = self.predict(data_loader)
                 if self.args.target == 'sol':
                     accuracies.append(100 * np.equal(results[:, 2], results[:, 3]).sum() / len(results))
                     mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))
