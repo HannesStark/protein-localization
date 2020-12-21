@@ -33,8 +33,10 @@ save_name = ['train_',
 paths = []
 save_paths = []
 
+
 for i, append in enumerate(appendix):
     embeddings_file = h5py.File(os.path.join(base_path, append), 'r')
+    embeddings_file2 = h5py.File(os.path.join(base_path, 'hannes_deeploc_bertHALF.h5'), 'r')
     print(len(embeddings_file.keys()))
     for split_index, fasta_path in enumerate(fasta_paths):
         print(fasta_path)
@@ -46,3 +48,7 @@ for i, append in enumerate(appendix):
                                              str(record.description).replace('.', '_').replace('/', '_')])
             except:
                 print(str(record.description).replace('.', '_').replace('/', '_'))
+                save_file.create_dataset(record.description,
+                                         data=embeddings_file2[
+                                             str(record.description).replace('.', '_').replace('/', '_')])
+
