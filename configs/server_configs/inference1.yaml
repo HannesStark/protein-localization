@@ -1,6 +1,6 @@
 log_iterations: 100
 n_draws: 1
-batch_size: 150 
+batch_size: 150
 checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/LightAttention_t5-encoderOnly_21-12_09-02-17
 
 embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings/val_t5-encoderOnly.h5'
