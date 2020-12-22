@@ -211,6 +211,7 @@ class Solver():
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
                 loc_loss, sol_loss, results = self.predict(data_loader)
+                np.save(os.path.join(self.writer.log_dir, 'results_array_' + filename), results)
                 if self.args.target == 'sol':
                     accuracies.append(100 * np.equal(results[:, 2], results[:, 3]).sum() / len(results))
                     mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))

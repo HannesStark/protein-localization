@@ -1,8 +1,8 @@
 log_iterations: 100
-n_draws: 500
+n_draws: 1
 batch_size: 256
-checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/FirstAttention_189_27-11_04-47-35
+checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/LightAttention_t5-encoderOnly_21-12_09-02-17
 
-embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/bert_embeddings/embeddings_file.h5'
-remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test/embeddings/remapped_sequences_file.fasta'
+embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings/val_t5-encoderOnly.h5'
+remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/fasta_files/val_homreduced.fasta'
 
