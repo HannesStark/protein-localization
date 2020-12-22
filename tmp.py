@@ -7,6 +7,7 @@
 #
 # print(res.mean())
 # print(res.std())
+
 import os
 
 import h5py
@@ -14,11 +15,9 @@ from Bio import SeqIO
 
 base_path = '/mnt/home/mheinzinger/deepppi1tb/embedder/embeddings/hannes_embeddings'
 
-appendix = ['hannes_deeploc_t5-encoderOnly.h5',
-            'hannes_deeploc_t5-encoderOnlyHALF.h5']
+appendix = ['hannes_deeploc_bertSECONDLAST.h5']
 
-save_appendix = ['t5-encoderOnly.h5',
-                 't5-encoderOnlyHALF.h5']
+save_appendix = ['bertSECONDLAST.h5']
 
 fasta_paths = [
     'data/fasta_files/train.fasta',
