@@ -16,10 +16,13 @@ def inference(args):
     # lookup_set
     data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping,
                                              unknown_solubility=args.unknown_solubility,
+                                             descriptions_with_hash=args.remapping_in_hash_format,
                                              transform=transform)
     lookup_set = None
     if args.accuracy_threshold >= 0:  # use lookup set for embedding space similarity annotation transfer
-        lookup_set = EmbeddingsLocalizationDataset(args.lookup_embeddings, args.lookup_remapping, transform=transform)
+        lookup_set = EmbeddingsLocalizationDataset(args.lookup_embeddings, args.lookup_remapping,
+                                                   descriptions_with_hash=args.remapping_in_hash_format,
+                                                   transform=transform)
 
     # Needs "from models import *" to work
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
