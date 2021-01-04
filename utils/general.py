@@ -37,8 +37,7 @@ def seed_all(seed):
     torch.backends.cudnn.benchmark = False
 
 
-def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_threshold: float,
-                        writer: SummaryWriter = None, filename: str = ''):
+def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset):
     '''
     Uses knn for embedding space similarity based annotation transfer
     Args:
@@ -61,11 +60,12 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
     lookup_data = next(iter(lookup_loader))  # tuple of embedding, localization, solubility, metadata
     evaluation_data = next(iter(evaluation_loader))  # tuple of embedding, localization, solubility, metadata
 
-    print('Running 1-NN classification for annotation transfer with accuracy threshold: ' + str(accuracy_threshold))
+    print('Running 1-NN classification for annotation transfer')
     classifier = KNeighborsClassifier(n_neighbors=1, p=1) # use 1 neighbor and L1 distance
     classifier.fit(lookup_data[0], lookup_data[1])
     predictions = classifier.predict(evaluation_data[0])
     distances, _ = classifier.kneighbors(evaluation_data[0])
+    print('Finished 1-NN classification for annotation transfer')
 
     return np.array([predictions, evaluation_data[1], distances.squeeze()]).T
 
