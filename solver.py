@@ -205,9 +205,8 @@ class Solver():
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
                 samples = np.random.choice(range(0, len(eval_dataset) - 1), len(eval_dataset))
-                print(samples.shape)
                 if lookup_dataset and not self.args.target == 'sol':
-                    mask = knn_predictions[samples] <= distance_threshold
+                    mask = knn_predictions[samples][:, 2] <= distance_threshold
                     chosen_knn_predictions = knn_predictions[samples][mask]
                     chosen_denovo_predictions = de_novo_predictions[samples][np.invert(mask)]
                     knn_accuracies.append(
@@ -219,7 +218,7 @@ class Solver():
                     results = np.concatenate([chosen_denovo_predictions[:, :2], chosen_knn_predictions[:, :2]])
                 else:
                     results = de_novo_predictions[samples]
-                print(results.shape)
+
                 accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                 mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
                 conf = confusion_matrix(results[:, 1], results[:, 0])
