@@ -69,40 +69,6 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
 
     return np.array([predictions, evaluation_data[1], distances.squeeze()]).T
 
-    # here we want to find out below which distance we still get an accuracy higher than accuracy_threshold
-    cutoffs = np.linspace(distances.min(), distances.max(), 500)  # check 500 different cutoff possibilities
-    results = np.array([predictions, evaluation_data[1], distances.squeeze()]).T
-    accuracies = []
-    number_sequences = []
-    lower_accuracy_found = False
-    high_accuracy_predictions = None
-    low_accuracy_mask = None
-    for cutoff in cutoffs:
-        high_accuracy_mask = results[:, 2] <= cutoff
-        below_cutoff = results[high_accuracy_mask]
-        accuracy = np.equal(below_cutoff[:, 0], below_cutoff[:, 1]).sum() / len(below_cutoff)
-        accuracies.append(accuracy * 100)
-        if accuracy <= accuracy_threshold:
-            lower_accuracy_found = True
-        if accuracy >= accuracy_threshold and not lower_accuracy_found:
-            high_accuracy_predictions = below_cutoff
-            low_accuracy_mask = np.invert(high_accuracy_mask)
-        number_sequences.append(len(below_cutoff))
-
-    if writer:
-        df = pd.DataFrame(np.array([cutoffs, accuracies, number_sequences]).T,
-                          columns=["distance", "accuracy", 'number sequences'])
-        sn.lineplot(data=df, x="distance", y="accuracy")
-        plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
-        plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_' + filename + '.png'))
-        plt.clf()
-        sn.lineplot(data=df, x="number sequences", y="accuracy")
-        plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
-        plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_num_sequences_' + filename + '.png'))
-
-
-
-
 def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
                                  step: int):
     """
