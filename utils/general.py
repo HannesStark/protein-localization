@@ -37,8 +37,7 @@ def seed_all(seed):
     torch.backends.cudnn.benchmark = False
 
 
-def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_threshold: float,
-                        writer: SummaryWriter = None, filename: str = ''):
+def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset):
     '''
     Uses knn for embedding space similarity based annotation transfer
     Args:
@@ -61,45 +60,14 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset, accuracy_t
     lookup_data = next(iter(lookup_loader))  # tuple of embedding, localization, solubility, metadata
     evaluation_data = next(iter(evaluation_loader))  # tuple of embedding, localization, solubility, metadata
 
-    print('Running 1-NN classification for annotation transfer with accuracy threshold: ' + str(accuracy_threshold))
+    print('Running 1-NN classification for annotation transfer')
     classifier = KNeighborsClassifier(n_neighbors=1, p=1) # use 1 neighbor and L1 distance
     classifier.fit(lookup_data[0], lookup_data[1])
     predictions = classifier.predict(evaluation_data[0])
     distances, _ = classifier.kneighbors(evaluation_data[0])
+    print('Finished 1-NN classification for annotation transfer')
 
-    # here we want to find out below which distance we still get an accuracy higher than accuracy_threshold
-    cutoffs = np.linspace(distances.min(), distances.max(), 500)  # check 500 different cutoff possibilities
-    results = np.array([predictions, evaluation_data[1], distances.squeeze()]).T
-    accuracies = []
-    number_sequences = []
-    lower_accuracy_found = False
-    high_accuracy_predictions = None
-    low_accuracy_mask = None
-    for cutoff in cutoffs:
-        high_accuracy_mask = results[:, 2] <= cutoff
-        below_cutoff = results[high_accuracy_mask]
-        accuracy = np.equal(below_cutoff[:, 0], below_cutoff[:, 1]).sum() / len(below_cutoff)
-        accuracies.append(accuracy * 100)
-        if accuracy <= accuracy_threshold:
-            lower_accuracy_found = True
-        if accuracy >= accuracy_threshold and not lower_accuracy_found:
-            high_accuracy_predictions = below_cutoff
-            low_accuracy_mask = np.invert(high_accuracy_mask)
-        number_sequences.append(len(below_cutoff))
-
-    if writer:
-        df = pd.DataFrame(np.array([cutoffs, accuracies, number_sequences]).T,
-                          columns=["distance", "accuracy", 'number sequences'])
-        sn.lineplot(data=df, x="distance", y="accuracy")
-        plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
-        plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_' + filename + '.png'))
-        plt.clf()
-        sn.lineplot(data=df, x="number sequences", y="accuracy")
-        plt.axhline(y=accuracy_threshold * 100, linewidth=1, color='black')
-        plt.savefig(os.path.join(writer.log_dir, 'embedding_distances_num_sequences_' + filename + '.png'))
-
-    return high_accuracy_predictions, np.where(low_accuracy_mask)[0]
-
+    return np.array([predictions, evaluation_data[1], distances.squeeze()]).T
 
 def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
                                  step: int):

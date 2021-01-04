@@ -172,7 +172,7 @@ class Solver():
         return running_loc_loss, running_sol_loss, np.concatenate(results)  # [n_train_proteins, 2] pred and loc
 
     def evaluation(self, eval_dataset: Dataset, filename: str = '', lookup_dataset: Dataset = None,
-                   accuracy_threshold=0.81):
+                   distance_threshold=0.81):
         """
         Estimate the standard error on the provided dataset and write it to evaluation_val.txt in the run directory
         Args:
@@ -184,13 +184,9 @@ class Solver():
         Returns:
 
         """
-        if self.args.target != 'sol' and lookup_dataset:
-            low_distance_results, high_distance_indices = annotation_transfer(eval_dataset, lookup_dataset,
-                                                                              accuracy_threshold,
-                                                                              self.writer,
-                                                                              filename)
-            # only keep the indices for which we have high confidence
-            eval_dataset = Subset(eval_dataset, high_distance_indices)
+        if lookup_dataset and not self.args.target == 'sol':
+            # arraay with len eval_dataset and columns: predictions, labels, distance to nearest neighbors
+            knn_predictions = annotation_transfer(eval_dataset, lookup_dataset)
 
         self.model.eval()
         if len(eval_dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
@@ -198,36 +194,34 @@ class Solver():
         else:  # if we have reduced sequence wise embeddings use the default collate function by passing None
             collate_function = None
 
-        sampler = RandomSampler(eval_dataset, replacement=True)
-        data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, sampler=sampler,
-                                 collate_fn=collate_function)
+        data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, collate_fn=collate_function)
+        loc_loss, sol_loss, de_novo_predictions = self.predict(data_loader)
 
         mccs = []
-
         accuracies = []
-        supervised_accuracies = []
-        unsupervised_accuracies = []
+        denovo_accuracies = []
+        knn_accuracies = []
         class_accuracies = []
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
-                loc_loss, sol_loss, results = self.predict(data_loader)
-                np.save(os.path.join(self.writer.log_dir, 'results_array_' + filename), results)
-                if self.args.target == 'sol':
-                    accuracies.append(100 * np.equal(results[:, 2], results[:, 3]).sum() / len(results))
-                    mccs.append(matthews_corrcoef(results[:, 3], results[:, 2]))
-
+                samples = np.random.choice(range(0, len(eval_dataset) - 1), len(eval_dataset))
+                if lookup_dataset and not self.args.target == 'sol':
+                    mask = knn_predictions[samples][:, 2] <= distance_threshold
+                    chosen_knn_predictions = knn_predictions[samples][mask]
+                    chosen_denovo_predictions = de_novo_predictions[samples][np.invert(mask)]
+                    knn_accuracies.append(
+                        100 * np.equal(chosen_knn_predictions[:, 0], chosen_knn_predictions[:, 1]).sum() / len(
+                            chosen_knn_predictions))
+                    denovo_accuracies.append(
+                        100 * np.equal(chosen_denovo_predictions[:, 0], chosen_denovo_predictions[:, 1]).sum() / len(
+                            chosen_denovo_predictions))
+                    results = np.concatenate([chosen_denovo_predictions[:, :2], chosen_knn_predictions[:, :2]])
                 else:
-                    if lookup_dataset:
-                        unsupervised_accuracies.append(
-                            100 * np.equal(low_distance_results[:, 0], low_distance_results[:, 1]).sum() / len(
-                                low_distance_results))
-                        supervised_accuracies.append(
-                            100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
-                        results = np.concatenate([low_distance_results[:, :2], results[:, :2]])
-                    accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
-                    mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
-                    conf = confusion_matrix(results[:, 1], results[:, 0])
-                    class_accuracies.append(np.diag(conf) / conf.sum(1))
+                    results = de_novo_predictions[samples]
+                accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
+                mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
+                conf = confusion_matrix(results[:, 1], results[:, 0])
+                class_accuracies.append(np.diag(conf) / conf.sum(1))
 
         accuracy = np.mean(accuracies)
         accuracy_stderr = np.std(accuracies)
@@ -241,10 +235,10 @@ class Solver():
                          'MCC: {:.4f}\n' \
                          'MCC stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr)
         if lookup_dataset:  # if we did lookups we append the individual accuracies to the results file
-            unsupervised_accuracy = np.mean(np.array(unsupervised_accuracies), axis=0)
-            supervised_accuracy = np.mean(np.array(supervised_accuracies), axis=0)
-            results_string += 'unsupervised accuracy: {:.4f}\n' \
-                              'supervised accuracy: {:.4f}\n'.format(unsupervised_accuracy, supervised_accuracy)
+            unsupervised_accuracy = np.mean(np.array(knn_accuracies), axis=0)
+            supervised_accuracy = np.mean(np.array(denovo_accuracies), axis=0)
+            results_string += 'knn accuracy: {:.4f}\n' \
+                              'denovo accuracy: {:.4f}\n'.format(unsupervised_accuracy, supervised_accuracy)
 
         with open(os.path.join(self.writer.log_dir, 'evaluation_' + filename + '.txt'), 'w') as file:
             file.write(results_string)
