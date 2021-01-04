@@ -184,7 +184,7 @@ class Solver():
         Returns:
 
         """
-        if self.args.target != 'sol' and lookup_dataset:
+        if lookup_dataset and not self.args.target == 'sol':
             # arraay with len eval_dataset and columns: predictions, labels, distance to nearest neighbors
             knn_predictions = annotation_transfer(eval_dataset, lookup_dataset)
 
@@ -199,23 +199,27 @@ class Solver():
 
         mccs = []
         accuracies = []
-        supervised_accuracies = []
-        unsupervised_accuracies = []
+        denovo_accuracies = []
+        knn_accuracies = []
         class_accuracies = []
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
-                samples = np.random.choice(range(0,len(eval_dataset)-1))
+                samples = np.random.choice(range(0, len(eval_dataset) - 1), len(eval_dataset))
+                print(samples.shape)
                 if lookup_dataset and not self.args.target == 'sol':
-                    results = knn_predictions[samples]
-                    #unsupervised_accuracies.append(
-                    #    100 * np.equal(low_distance_results[:, 0], low_distance_results[:, 1]).sum() / len(
-                    #        low_distance_results))
-                    #supervised_accuracies.append(
-                    #    100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
-                    #results = np.concatenate([low_distance_results[:, :2], results[:, :2]])
+                    mask = knn_predictions[samples] <= distance_threshold
+                    chosen_knn_predictions = knn_predictions[samples][mask]
+                    chosen_denovo_predictions = de_novo_predictions[samples][np.invert(mask)]
+                    knn_accuracies.append(
+                        100 * np.equal(chosen_knn_predictions[:, 0], chosen_knn_predictions[:, 1]).sum() / len(
+                            chosen_knn_predictions))
+                    denovo_accuracies.append(
+                        100 * np.equal(chosen_denovo_predictions[:, 0], chosen_denovo_predictions[:, 1]).sum() / len(
+                            chosen_denovo_predictions))
+                    results = np.concatenate([chosen_denovo_predictions[:, :2], chosen_knn_predictions[:, :2]])
                 else:
                     results = de_novo_predictions[samples]
-
+                print(results.shape)
                 accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                 mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
                 conf = confusion_matrix(results[:, 1], results[:, 0])
@@ -233,10 +237,10 @@ class Solver():
                          'MCC: {:.4f}\n' \
                          'MCC stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr)
         if lookup_dataset:  # if we did lookups we append the individual accuracies to the results file
-            unsupervised_accuracy = np.mean(np.array(unsupervised_accuracies), axis=0)
-            supervised_accuracy = np.mean(np.array(supervised_accuracies), axis=0)
-            results_string += 'unsupervised accuracy: {:.4f}\n' \
-                              'supervised accuracy: {:.4f}\n'.format(unsupervised_accuracy, supervised_accuracy)
+            unsupervised_accuracy = np.mean(np.array(knn_accuracies), axis=0)
+            supervised_accuracy = np.mean(np.array(denovo_accuracies), axis=0)
+            results_string += 'knn accuracy: {:.4f}\n' \
+                              'denovo accuracy: {:.4f}\n'.format(unsupervised_accuracy, supervised_accuracy)
 
         with open(os.path.join(self.writer.log_dir, 'evaluation_' + filename + '.txt'), 'w') as file:
             file.write(results_string)

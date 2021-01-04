@@ -7,6 +7,6 @@ output_files_name: '0.96'
 embeddings: data/embeddings/val_reduced.h5
 remapping: data/embeddings/val_remapped.fasta
 
-accuracy_threshold: 0.96
+distance_threshold: 0.96
 lookup_embeddings: 'data/embeddings/train_reduced.h5'
 lookup_remapping: 'data/embeddings/train_remapped.fasta'

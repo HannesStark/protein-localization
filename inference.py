@@ -18,7 +18,7 @@ def inference(args):
                                              unknown_solubility=args.unknown_solubility,
                                              transform=transform)
     lookup_set = None
-    if args.accuracy_threshold >= 0:  # use lookup set for embedding space similarity annotation transfer
+    if args.distance_threshold >= 0:  # use lookup set for embedding space similarity annotation transfer
         lookup_set = EmbeddingsLocalizationDataset(args.lookup_embeddings, args.lookup_remapping, transform=transform)
 
     # Needs "from models import *" to work
@@ -26,13 +26,12 @@ def inference(args):
 
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
-    solver.evaluation(data_set, args.output_files_name, lookup_set, args.accuracy_threshold)
+    solver.evaluation(data_set, args.output_files_name, lookup_set, args.distance_threshold)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
-
     p.add_argument('--checkpoint', type=str, default='runs/FFN__02-11_15-32-02',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--output_files_name', type=str, default='inference',
@@ -45,8 +44,8 @@ def parse_arguments():
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
-    p.add_argument('--accuracy_threshold', type=float, default=-1.0,
-                   help='used to determine the cutoff similarity above which embedding similarity based annotation transfer is used to predict the sequences localization. If it is negative all predictions are made without similarity lookup.')
+    p.add_argument('--distance_threshold', type=float, default=-1.0,
+                   help='cutoff similarity for when to do lookup and when to use denovo predictions. If negative, denovo predictions will always be used.')
     p.add_argument('--lookup_embeddings', type=str, default='data/embeddings/val_reduced.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file for embedding based similarity annotation transfer')
     p.add_argument('--lookup_remapping', type=str, default='data/embeddings/val_remapped.fasta',
