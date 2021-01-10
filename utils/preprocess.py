@@ -25,7 +25,9 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
         output_path = os.path.join(output_dir, output_filenames[i])
         embeddings = h5py.File(input_path, 'r')
         reduced_embeddings = h5py.File(output_path, 'w')
+        print(embeddings.keys())
         for key in tqdm(embeddings.keys()):
+            print('iters')
             embedding = embeddings[key][:]
             # mean_pool = np.mean(embedding, axis=0)
             reduced = np.mean(embedding, axis=0)
