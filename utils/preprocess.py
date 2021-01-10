@@ -19,6 +19,8 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
     Returns:
 
     """
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
     if len(input_paths) != len(output_filenames):
         raise ValueError('You cannot have more input files than output files')
     for i, input_path in enumerate(input_paths):
