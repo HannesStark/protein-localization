@@ -27,9 +27,10 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
         reduced_embeddings = h5py.File(output_path, 'w')
         for key in tqdm(embeddings.keys()):
             embedding = embeddings[key][:]
-            mean_pool = np.mean(embedding, axis=0)
+            # mean_pool = np.mean(embedding, axis=0)
+            reduced = np.mean(embedding, axis=0)
             max_pool = np.max(embedding, axis=0)
-            reduced = np.concatenate([mean_pool, max_pool], axis=-1)
+            # reduced = np.concatenate([mean_pool, max_pool], axis=-1)
             reduced_embeddings.create_dataset(key, data=reduced)
 
 
@@ -145,7 +146,7 @@ def sum_seqvec_embeddings(input_paths: List[str], output_dir: str, output_filena
         output_filenames: names as which the files should be saved
 
     Returns:
-
+re
     """
     if len(input_paths) != len(output_filenames):
         raise ValueError('You cannot have more input files than output files')
