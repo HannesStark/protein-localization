@@ -34,9 +34,6 @@ save_name = ['train_',
 paths = []
 save_paths = []
 
-reduce_embeddings(['data/hannes_deeploc_t5-encoderOnly.h5'],
-                  'data/',
-                  ['val_t5_reduced.h5'])
 
 reduce_embeddings(['data/embeddings/test_t5-encoderOnly.h5',
                    'data/embeddings/train_t5-encoderOnly.h5',
