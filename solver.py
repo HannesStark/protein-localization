@@ -197,6 +197,8 @@ class Solver():
         data_loader = DataLoader(eval_dataset, batch_size=self.args.batch_size, collate_fn=collate_function)
         loc_loss, sol_loss, de_novo_predictions = self.predict(data_loader)
 
+        # to save the results of the inference
+        np.save(os.path.join(self.writer.log_dir, 'results_array_' + filename), de_novo_predictions)
         mccs = []
         accuracies = []
         denovo_accuracies = []
