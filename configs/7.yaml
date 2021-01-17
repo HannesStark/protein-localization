@@ -3,7 +3,7 @@ output_files_name: 'new_test_set'
 log_iterations: 100
 n_draws: 1000
 batch_size: 4
-checkpoint: runs/..finalModels/LightAttention_t5-encoderOnly_22-12_18-35-28
+checkpoint: runs/..finalModels/LightAttention_t5-encoderOnly_28-12_14-31-22
 
 embeddings: data/embeddings/all_dupes_removesd_new_test_T5.h5
 remapping: data/fasta_files/duplicates_removednew_test_set.fasta

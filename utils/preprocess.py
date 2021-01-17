@@ -165,7 +165,7 @@ re
 
 
 def remove_duplicates(fasta_path: str, output_path: str):
-    """removes duplicates from a fasta file and saves a new fasta file as "duplicates_removed + original_filename.fasta"
+    """removes removes one part of a duplicate from a fasta file and saves a new fasta file as "duplicates_removed + original_filename.fasta"
 
     Args:
         fasta_path: path to fasta file from which duplicates should be removed
@@ -179,6 +179,29 @@ def remove_duplicates(fasta_path: str, output_path: str):
     for record in tqdm(SeqIO.parse(fasta_path, "fasta")):
         if record.seq not in record_seq:
             record_seq.append(record.seq)
+            records.append(record)
+    SeqIO.write(records, os.path.join(output_path, 'duplicates_removed' + os.path.basename(fasta_path)), 'fasta')
+
+def remove_duplicates_full(fasta_path: str, output_path: str):
+    """removes both parts of a duplicate from a fasta file and saves a new fasta file as "duplicates_removed + original_filename.fasta"
+
+    Args:
+        fasta_path: path to fasta file from which duplicates should be removed
+        output_path: where to save the fasta file with the duplicates removed.
+
+    Returns:
+
+    """
+    record_seq = []
+    duplicates = []
+    records = []
+    for record in tqdm(SeqIO.parse(fasta_path, "fasta")):
+        if record.seq in record_seq:
+            duplicates.append(record.seq)
+        record_seq.append(record.seq)
+    print(len(duplicates))
+    for record in tqdm(SeqIO.parse(fasta_path, "fasta")):
+        if record.seq not in duplicates:
             records.append(record)
     SeqIO.write(records, os.path.join(output_path, 'duplicates_removed' + os.path.basename(fasta_path)), 'fasta')
 

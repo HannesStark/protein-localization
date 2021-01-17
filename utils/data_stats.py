@@ -5,10 +5,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from utils.general import LOCALIZATION
 import seaborn as sn
+
+from utils.preprocess import remove_duplicates
+
 sn.set_style('darkgrid')
 
 
-fasta_path = '../data/fasta_files/test_as_per_deeploc.fasta'
+fasta_path = '../data/fasta_files/duplicates_removedhard_set.fasta'
+
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
     color = 'orange'
@@ -29,6 +33,12 @@ df = pd.DataFrame(list(zip(identifiers, labels, solubility, sequences)),
 # df = df[df['solubility'] != 'U']
 df['length'] = df['seq'].apply(lambda x: len(x))
 
+print('number sequences: ', len(df))
+
+print(df['label'].value_counts())
+
+print('percentage of sequences larger than threshold AAs: {}'.format(100 * len(df[df['length'] > 1000]) / len(df)))
+print(df[df['length'] > 6000])
 
 
 # visualize class prevalences
@@ -41,10 +51,6 @@ barplot = sn.barplot(x='Number_Sequences', y='Localization', data=counts, ci=Non
 barplot.set(xlabel='Number Sequences per Class', ylabel='')
 plt.show()
 
-print(df['label'].value_counts())
-
-print('percentage of sequences larger than threshold AAs: {}'.format(100 * len(df[df['length'] > 1000]) / len(df)))
-print(df[df['length'] > 6000])
 
 cut_off = 2000
 df[df['length'] < cut_off].hist(bins=50, ec='black', color=color)

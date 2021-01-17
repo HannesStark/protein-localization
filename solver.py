@@ -229,8 +229,12 @@ class Solver():
         accuracy_stderr = np.std(accuracies)
         mcc = np.mean(mccs)
         mcc_stderr = np.std(mccs)
-        class_accuracy = np.mean(np.array(class_accuracies), axis=0)
-        class_accuracy_stderr = np.std(np.array(class_accuracies), axis=0)
+        try: #TODO: implement better solution for when there are no correct predictions in a certain class
+            class_accuracy = np.mean(np.array(class_accuracies), axis=0)
+            class_accuracy_stderr = np.std(np.array(class_accuracies), axis=0)
+        except:
+            class_accuracy = np.ones(10)
+            class_accuracy_stderr = np.ones(10)
         results_string = 'Number of draws: {} \n' \
                          'Accuracy: {:.2f}% \n' \
                          'Accuracy stderr: {:.2f}%\n' \
