@@ -36,10 +36,15 @@ def train(args):
                     weight=train_set.class_weights)
     solver.train(train_loader, val_loader, eval_data=val_set)
 
+    if args.eval_on_test:
+        test_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
+                                                 args.remapping_in_hash_format, transform=transform)
+        solver.evaluation(test_set, 'test_set_after_train')
+
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/server_configs/4.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=2500, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
@@ -66,6 +71,7 @@ def parse_arguments():
     p.add_argument('--max_length', type=int, default=6000, help='maximum lenght of sequences that will be used for '
                                                                 'training when using embedddings of variable length')
 
+    p.add_argument('--eval_on_test', type=bool, default=False, help='runs evaluation on test set if true')
     p.add_argument('--train_embeddings', type=str, default='data/embeddings/train.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--train_remapping', type=str, default='data/embeddings/train_remapped.fasta',

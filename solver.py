@@ -184,7 +184,7 @@ class Solver():
         Returns:
 
         """
-        if lookup_dataset and not self.args.target == 'sol':
+        if lookup_dataset != None and not self.args.target == 'sol':
             # arraay with len eval_dataset and columns: predictions, labels, distance to nearest neighbors
             knn_predictions = annotation_transfer(eval_dataset, lookup_dataset)
 
@@ -207,7 +207,7 @@ class Solver():
         with torch.no_grad():
             for i in tqdm(range(self.args.n_draws)):
                 samples = np.random.choice(range(0, len(eval_dataset) - 1), len(eval_dataset))
-                if lookup_dataset and not self.args.target == 'sol':
+                if lookup_dataset != None and not self.args.target == 'sol':
                     mask = knn_predictions[samples][:, 2] <= distance_threshold
                     chosen_knn_predictions = knn_predictions[samples][mask]
                     chosen_denovo_predictions = de_novo_predictions[samples][np.invert(mask)]
