@@ -16,8 +16,9 @@ test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test_seqvec/embe
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test_seqvec/embeddings/remapped_sequences_file.fasta'
 
 # Model parameters
-model_type: 'LightAttention'
+model_type: 'FFN'
 model_parameters:
-  dropout: 0.25
-  kernel_size: 9
   output_dim: 10
+  hidden_dim: 32
+  n_hidden_layers: 0
+  dropout: 0.25
