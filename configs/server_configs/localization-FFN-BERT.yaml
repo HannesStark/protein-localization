@@ -4,7 +4,7 @@ batch_size: 1024
 log_iterations: 100
 patience: 100
 optimizer_parameters:
-  lr: 5.0e-5
+  lr: 1.0e-4
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_train_seqvec/embeddings/bert_embeddings/reduced_embeddings_file.h5'
