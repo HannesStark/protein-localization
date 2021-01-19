@@ -32,37 +32,37 @@ save_name = ['train_',
              'val_',
              'test_']
 
-paths = []
-save_paths = []
-
-identifiers = []
-descriptions = []
-labels = []
-sequences = []
-solubility = []
-for record in SeqIO.parse('data/fasta_files/duplicates_removedhard_set.fasta', "fasta"):
-    identifiers.append(record.id)
-    descriptions.append(record.description)
-    labels.append(record.description.split(' ')[1].split('-')[0])
-    sequences.append(str(record.seq))
-    solubility.append(record.description.split(' ')[1].split('-')[-1])
-print(descriptions)
-print(len(descriptions))
-loaded_embeddings = h5py.File('data/embeddings_raw/hannes_new_hard_test_set_PIDE20_t5-encoderOnly.h5', 'r')
-print(loaded_embeddings.keys())
-counter = 0
-embeddings = h5py.File('data/embeddings/all_dupes_removed_hard_test_T5.h5', 'w')
-keys = []
-for key_raw in tqdm(loaded_embeddings.keys()):
-    key = key_raw.replace('_','.').replace('Lysosome.Vacuole','Lysosome/Vacuole')
-    keys.append(key)
-    embedding = loaded_embeddings[key_raw][:]
-    if key in descriptions:
-        counter +=1
-        embeddings.create_dataset(key, data=embedding)
-embeddings.close()
-print(set(descriptions) - set(keys))
-print(counter)
+#paths = []
+#save_paths = []
+#
+#identifiers = []
+#descriptions = []
+#labels = []
+#sequences = []
+#solubility = []
+#for record in SeqIO.parse('data/fasta_files/duplicates_removedhard_set.fasta', "fasta"):
+#    identifiers.append(record.id)
+#    descriptions.append(record.description)
+#    labels.append(record.description.split(' ')[1].split('-')[0])
+#    sequences.append(str(record.seq))
+#    solubility.append(record.description.split(' ')[1].split('-')[-1])
+#print(descriptions)
+#print(len(descriptions))
+#loaded_embeddings = h5py.File('data/embeddings_raw/hannes_new_hard_test_set_PIDE20_t5-encoderOnly.h5', 'r')
+#print(loaded_embeddings.keys())
+#counter = 0
+#embeddings = h5py.File('data/embeddings/all_dupes_removed_hard_test_T5.h5', 'w')
+#keys = []
+#for key_raw in tqdm(loaded_embeddings.keys()):
+#    key = key_raw.replace('_','.').replace('Lysosome.Vacuole','Lysosome/Vacuole')
+#    keys.append(key)
+#    embedding = loaded_embeddings[key_raw][:]
+#    if key in descriptions:
+#        counter +=1
+#        embeddings.create_dataset(key, data=embedding)
+#embeddings.close()
+#print(set(descriptions) - set(keys))
+#print(counter)
 
 
 

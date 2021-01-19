@@ -37,6 +37,7 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
             max_pool = np.max(embedding, axis=0)
             # reduced = np.concatenate([mean_pool, max_pool], axis=-1)
             reduced_embeddings.create_dataset(key, data=reduced)
+        reduced_embeddings
 
 
 def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = 'sum'):
