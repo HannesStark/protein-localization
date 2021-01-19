@@ -116,7 +116,7 @@ class Solver():
             # load checkpoint of best model to do evaluation
             checkpoint = torch.load(os.path.join(self.writer.log_dir, 'checkpoint.pt'), map_location=self.device)
             self.model.load_state_dict(checkpoint['model_state_dict'])
-            self.evaluation(eval_data)
+            self.evaluation(eval_data, filename='val_data_after_training')
 
     def predict(self, data_loader: DataLoader, epoch: int = None, optim: torch.optim.Optimizer = None) -> \
             Tuple[float, float, np.ndarray]:
