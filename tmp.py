@@ -81,8 +81,8 @@ save_name = ['train_',
 
 
 
-embeddings_file = h5py.File(os.path.join(base_path, 'hannes_deeploc_t5-encoderOnly.h5'), 'r')
-print(embeddings_file.keys())
+#embeddings_file = h5py.File(os.path.join(base_path, 'hannes_deeploc_t5-encoderOnly.h5'), 'r')
+
 #for split_index, fasta_path in enumerate(fasta_paths):
 #    save_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + 'T5'), 'w')
 #    for record in SeqIO.parse(open(fasta_path), 'fasta'):
@@ -94,3 +94,14 @@ print(embeddings_file.keys())
 #            print(record.description)
 #    save_file.flush()
 #    save_file.close()
+
+for split_index, fasta_path in enumerate(fasta_paths):
+    embeddings_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + 'T5.h5'), 'r')
+    reduced_embeddings = h5py.File(os.path.join('data/embeddings', save_name[split_index] + 'T5_reduced.h5'), 'w')
+    for record in SeqIO.parse(open(fasta_path), 'fasta'):
+        if len(record.seq) < 13000:
+            embedding = embeddings_file[str(record.description).replace('.', '_').replace('/', '_')][:]
+            reduced_embeddings.create_dataset(record.description,
+                                     data=np.mean(embedding, axis=0))
+        else:
+            print(record.description)
