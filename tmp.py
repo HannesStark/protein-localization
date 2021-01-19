@@ -68,33 +68,28 @@ save_name = ['train_',
 
 
 #remove_duplicates_full('data/fasta_files/new_test_set.fasta', 'data/fasta_files')
-reduce_embeddings(['data/embeddings/train_t5-encoderOnly.h5'],
-                  'data/embeddings/reduced/',
-                  ['train_t5_reduced.h5'])
-reduce_embeddings(['data/embeddings/val_t5-encoderOnly.h5'],
-                  'data/embeddings/reduced/',
-                  ['val_t5_reduced.h5'])
-reduce_embeddings(['data/embeddings/test_t5-encoderOnly.h5'],
-                  'data/embeddings/reduced/',
-                  ['test_t5_reduced.h5'])
+#reduce_embeddings(['data/embeddings/train_t5-encoderOnly.h5'],
+#                  'data/embeddings/reduced/',
+#                  ['train_t5_reduced.h5'])
+#reduce_embeddings(['data/embeddings/val_t5-encoderOnly.h5'],
+#                  'data/embeddings/reduced/',
+#                  ['val_t5_reduced.h5'])
+#reduce_embeddings(['data/embeddings/test_t5-encoderOnly.h5'],
+#                  'data/embeddings/reduced/',
+#                  ['test_t5_reduced.h5'])
 
 
 
-#for i, append in enumerate(appendix):
-#    embeddings_file = h5py.File(os.path.join(base_path, append), 'r')
-#    embeddings_file2 = h5py.File(os.path.join(base_path, 'hannes_deeploc_bertHALF.h5'), 'r')
-#    print(len(embeddings_file.keys()))
-#    for split_index, fasta_path in enumerate(fasta_paths):
-#        print(fasta_path)
-#        save_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + save_appendix[i]), 'w')
-#        for record in SeqIO.parse(open(fasta_path), 'fasta'):
-#            try:
-#                save_file.create_dataset(record.description,
-#                                         data=embeddings_file[
-#                                             str(record.description).replace('.', '_').replace('/', '_')])
-#            except:
-#                print(str(record.description).replace('.', '_').replace('/', '_'))
-#                save_file.create_dataset(record.description,
-#                                         data=embeddings_file2[
-#                                             str(record.description).replace('.', '_').replace('/', '_')])
 
+embeddings_file = h5py.File(os.path.join(base_path, 'hannes_deeploc_t5-encoderOnly.h5'), 'r')
+for split_index, fasta_path in enumerate(fasta_paths):
+    save_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + 'T5'), 'w')
+    for record in SeqIO.parse(open(fasta_path), 'fasta'):
+        if len(record.seq) < 13000:
+            save_file.create_dataset(record.description,
+                                     data=embeddings_file[
+                                         str(record.description).replace('.', '_').replace('/', '_')])
+        else:
+            print(record.description)
+    save_file.flush()
+    save_file.close()
