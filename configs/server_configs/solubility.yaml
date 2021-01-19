@@ -8,7 +8,6 @@ optimizer_parameters:
 
 
 target: sol
-solubility_loss: 1
 unknown_solubility: False
 loss_function: SolCrossEntropy
 
