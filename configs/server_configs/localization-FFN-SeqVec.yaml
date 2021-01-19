@@ -1,6 +1,6 @@
 eval_on_test: True
 num_epochs: 5000
-batch_size: 7000
+batch_size: 1024
 log_iterations: 100
 patience: 80
 min_train_acc: 99.6

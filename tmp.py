@@ -69,13 +69,13 @@ print(counter)
 
 #remove_duplicates_full('data/fasta_files/new_test_set.fasta', 'data/fasta_files')
 
-#reduce_embeddings(['data/embeddings/test_t5-encoderOnly.h5',
-#                   'data/embeddings/train_t5-encoderOnly.h5',
-#                   'data/embeddings/val_t5-encoderOnly.h5'],
-#                  'data/embeddings/reduced/',
-#                  ['test_t5_reduced.h5',
-#                   'train_t5_reduced.h5',
-#                   'val_t5_reduced.h5'])
+reduce_embeddings(['data/embeddings/test_t5-encoderOnly.h5',
+                   'data/embeddings/train_t5-encoderOnly.h5',
+                   'data/embeddings/val_t5-encoderOnly.h5'],
+                  'data/embeddings/reduced/',
+                  ['test_t5_reduced.h5',
+                   'train_t5_reduced.h5',
+                   'val_t5_reduced.h5'])
 
 
 #for i, append in enumerate(appendix):
