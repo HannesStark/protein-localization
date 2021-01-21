@@ -17,7 +17,7 @@ def train(args):
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
                                               args.remapping_in_hash_format, args.max_length, transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
-                                            args.remapping_in_hash_format, transform=transform)
+                                            args.remapping_in_hash_format, args.max_length, transform=transform)
 
     if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
         collate_function = padded_permuted_collate
@@ -44,7 +44,7 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/ffn.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/localization-FFN-T5.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=2500, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
