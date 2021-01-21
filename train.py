@@ -71,7 +71,7 @@ def parse_arguments():
     p.add_argument('--max_length', type=int, default=6000, help='maximum lenght of sequences that will be used for '
                                                                 'training when using embedddings of variable length')
 
-    p.add_argument('--eval_on_test', type=bool, default=False, help='runs evaluation on test set if true')
+    p.add_argument('--eval_on_test', type=bool, default=True, help='runs evaluation on test set if true')
     p.add_argument('--train_embeddings', type=str, default='data/embeddings/train.h5',
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--train_remapping', type=str, default='data/embeddings/train_remapped.fasta',
