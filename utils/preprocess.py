@@ -40,6 +40,21 @@ def reduce_embeddings(input_paths: List[str], output_dir: str, output_filenames:
         reduced_embeddings.flush()
 
 
+def split_fasta_file(fasta_path: str, output_dir: str, max_chunk_len=50):
+    def chunks(lst, n):
+        """Yield successive n-sized chunks from lst."""
+        for i in range(0, len(lst), n):
+            yield lst[i:i + n]
+
+    records = []
+    for record in tqdm(SeqIO.parse(fasta_path, "fasta")):
+        records.append(record)
+    number_chunks = int(np.ceil(len(records) / max_chunk_len))
+    chunks = chunks(records, number_chunks)
+    for i, chunk in enumerate(chunks):
+        SeqIO.write(chunk, os.path.join(output_dir, 'chunk_' + str(i), 'fasta'))
+
+
 def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = 'sum'):
     """
     Combine embeddings of the same size and save them to a file with the name of file1 and the combination type
@@ -182,6 +197,7 @@ def remove_duplicates(fasta_path: str, output_path: str):
             record_seq.append(record.seq)
             records.append(record)
     SeqIO.write(records, os.path.join(output_path, 'duplicates_removed' + os.path.basename(fasta_path)), 'fasta')
+
 
 def remove_duplicates_full(fasta_path: str, output_path: str):
     """removes both parts of a duplicate from a fasta file and saves a new fasta file as "duplicates_removed + original_filename.fasta"
