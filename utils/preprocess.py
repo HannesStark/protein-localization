@@ -52,7 +52,7 @@ def split_fasta_file(fasta_path: str, output_dir: str, max_chunk_len=50):
     number_chunks = int(np.ceil(len(records) / max_chunk_len))
     chunks = chunks(records, number_chunks)
     for i, chunk in enumerate(chunks):
-        SeqIO.write(chunk, os.path.join(output_dir, 'chunk_' + str(i), 'fasta'))
+        SeqIO.write(chunk, os.path.join(output_dir, 'chunk_' + str(i)), 'fasta')
 
 
 def combine_embeddings(file_1: str, file_2: str, output_path: str, type: str = 'sum'):
