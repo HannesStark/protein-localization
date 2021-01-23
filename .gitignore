@@ -7,3 +7,7 @@ bsub.yml
 stderr.log
 stdout.log
 bsub*
+.npy
+.csv
+.png
+.jpg
