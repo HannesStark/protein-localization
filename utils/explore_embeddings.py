@@ -12,15 +12,16 @@ from datasets.embeddings_localization_dataset import EmbeddingsLocalizationDatas
 from datasets.transforms import SolubilityToInt, ToTensor
 from utils.general import normalize, padded_permuted_collate
 
-checkpoint = 'runs/..finalModels/FirstAttention_replicate_03-11_11-02-24_checkpoint'
-embeddings = 'data/embeddings/val.h5'
-remapping = 'data/embeddings/val_remapped.fasta'
+checkpoint = 'runs/..finalModels/LightAttention_t5-encoderOnly_22-12_18-35-28'
+embeddings = 'data/embeddings/test_t5-encoderOnly.h5'
+remapping = 'data/fasta_files/test_as_per_deeploc.fasta'
 batch_size = 8
 
 
 def explore_embeddings(args):
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
-    dataset = EmbeddingsLocalizationDataset(embeddings, remapping, unknown_solubility=False, transform=transform)
+    dataset = EmbeddingsLocalizationDataset(embeddings, remapping, unknown_solubility=False, transform=transform,
+                                            descriptions_with_hash=False)
 
     if len(dataset[0][0].shape) == 2:  # if we have per residue embeddings they have an additional lenght dim
         collate_function = padded_permuted_collate

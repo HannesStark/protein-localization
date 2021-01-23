@@ -27,6 +27,7 @@ def inference(args):
     # Needs "from models import *" to work
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
 
+    model.softmax.register_forward_hook(visualize_activation_hook)
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
     solver.evaluation(data_set, args.output_files_name, lookup_set, args.distance_threshold)
@@ -34,7 +35,7 @@ def inference(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/2.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
     p.add_argument('--checkpoint', type=str, default='runs/FFN__02-11_15-32-02',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--output_files_name', type=str, default='inference',

@@ -3,7 +3,7 @@ output_files_name: 'deeploc_test_set'
 log_iterations: 100
 n_draws: 1000
 batch_size: 4
-checkpoint: runs/..finalModels/LightAttention__ELMo_223_20-01_07-12-12
+checkpoint: runs/..finalModels/LightAttention_t5-encoderOnly_22-12_18-35-28
 
 embeddings: 'data/embeddings/test_t5-encoderOnly.h5'
 remapping: data/fasta_files/test_as_per_deeploc.fasta
