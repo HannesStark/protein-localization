@@ -24,6 +24,10 @@ class LightAttention(nn.Module):
 
         self.output = nn.Linear(32, output_dim)
 
+        self.id0 = nn.Identity()
+        self.id1 = nn.Identity()
+        self.id2 = nn.Identity()
+
     def forward(self, x: torch.Tensor, mask) -> torch.Tensor:
         """
         Args:
@@ -41,8 +45,13 @@ class LightAttention(nn.Module):
         # This padding is added by the dataloader when using the padded_permuted_collate function in utils/general.py
         attention = attention.masked_fill(mask[:, None, :] == False, -1e9)
 
+        extraction =  torch.sum(x * self.softmax(attention), dim=-1)
+        extraction = self.id0(extraction)
+
         o1 = torch.sum(o * self.softmax(attention), dim=-1)  # [batchsize, embeddings_dim]
+        o1 = self.id1(o1)
         o2, _ = torch.max(o, dim=-1)  # [batchsize, embeddings_dim]
         o = torch.cat([o1, o2], dim=-1)  # [batchsize, 2*embeddings_dim]
+        o = self.id2(o)
         o = self.linear(o)  # [batchsize, 32]
         return self.output(o)  # [batchsize, output_dim]

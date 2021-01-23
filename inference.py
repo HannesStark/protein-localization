@@ -27,10 +27,32 @@ def inference(args):
     # Needs "from models import *" to work
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
 
-    model.softmax.register_forward_hook(visualize_activation_hook)
+    embeddings0 = []
+    embeddings1 = []
+    embeddings2 = []
+
+    def extract_embeddings_hook0(self, input, output, clamp=True):
+        embeddings0.append(np.array(output.data.cpu().numpy()))
+
+    def extract_embeddings_hook1(self, input, output, clamp=True):
+        embeddings1.append(np.array(output.data.cpu().numpy()))
+
+    def extract_embeddings_hook2(self, input, output, clamp=True):
+        embeddings2.append(np.array(output.data.cpu().numpy()))
+
+    model.id0.register_forward_hook(extract_embeddings_hook0)
+    model.id1.register_forward_hook(extract_embeddings_hook1)
+    model.id2.register_forward_hook(extract_embeddings_hook2)
+
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
     solver.evaluation(data_set, args.output_files_name, lookup_set, args.distance_threshold)
+
+    print(embeddings1[0].shape)
+    print(np.concatenate(embeddings0).shape)
+    np.save('embedings0', np.concatenate(embeddings0))
+    np.save('embedings1', np.concatenate(embeddings1))
+    np.save('embedings2', np.concatenate(embeddings2))
 
 
 def parse_arguments():

@@ -2,7 +2,7 @@ output_files_name: 'deeploc_test_set'
 
 log_iterations: 100
 n_draws: 1000
-batch_size: 4
+batch_size: 1
 checkpoint: runs/..finalModels/LightAttention_t5-encoderOnly_22-12_18-35-28
 
 embeddings: 'data/embeddings/test_t5-encoderOnly.h5'
