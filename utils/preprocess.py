@@ -46,11 +46,12 @@ def split_fasta_file(fasta_path: str, output_dir: str, max_chunk_len=50):
         for i in range(0, len(lst), n):
             yield lst[i:i + n]
 
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
     records = []
     for record in tqdm(SeqIO.parse(fasta_path, "fasta")):
         records.append(record)
-    number_chunks = int(np.ceil(len(records) / max_chunk_len))
-    chunks = chunks(records, number_chunks)
+    chunks = chunks(records, max_chunk_len)
     for i, chunk in enumerate(chunks):
         SeqIO.write(chunk, os.path.join(output_dir, 'chunk_' + str(i)), 'fasta')
 

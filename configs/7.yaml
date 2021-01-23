@@ -1,9 +1,14 @@
-output_files_name: 'new_test_set'
+output_files_name: 'deeploc_test_set'
 
 log_iterations: 100
 n_draws: 1000
 batch_size: 4
-checkpoint: runs/..finalModels/LightAttention_t5-encoderOnly_28-12_14-31-22
+checkpoint: runs/..finalModels/FFN__T5_590_21-01_13-48-40
 
-embeddings: data/embeddings/all_dupes_removesd_new_test_T5.h5
-remapping: data/fasta_files/duplicates_removednew_test_set.fasta
+
+embeddings: 'data/embeddings/test_T5_reduced.h5'
+remapping: data/fasta_files/test_as_per_deeploc.fasta
+remapping_in_hash_format: False
+
+#embeddings: 'data/embeddings/new_hard_set_BERT.h5'
+#remapping: data/embeddings/new_hard_set_BERT_remapping.fasta

@@ -1,10 +1,17 @@
-output_files_name: 'new_test_set'
+output_files_name: 'deeploc_test_set'
 
 log_iterations: 100
 n_draws: 1000
 batch_size: 4
-checkpoint: runs/..finalModels/LightAttention__t5Solubility_214_15-01_15-34-48
+checkpoint: runs/..finalModels/LightAttention__ELMo_223_20-01_07-12-12
 
-embeddings: data/embeddings/test_t5-encoderOnly.h5
+embeddings: 'data/embeddings/test_t5-encoderOnly.h5'
 remapping: data/fasta_files/test_as_per_deeploc.fasta
 remapping_in_hash_format: False
+
+#embeddings: 'data/embeddings/test_T5_reduced.h5'
+#remapping: data/fasta_files/test_as_per_deeploc.fasta
+#remapping_in_hash_format: False
+
+#embeddings: 'data/embeddings/new_hard_set_BERT.h5'
+#remapping: data/embeddings/new_hard_set_BERT_remapping.fasta

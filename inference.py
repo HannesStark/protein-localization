@@ -34,7 +34,7 @@ def inference(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/2.yaml')
     p.add_argument('--checkpoint', type=str, default='runs/FFN__02-11_15-32-02',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--output_files_name', type=str, default='inference',
