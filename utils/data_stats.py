@@ -11,7 +11,7 @@ from utils.preprocess import remove_duplicates
 sn.set_style('darkgrid')
 
 
-fasta_path = '../data/fasta_files/duplicates_removedhard_set.fasta'
+fasta_path = '../data/embeddings/new_hard_set_t5_remapping.fasta'
 
 filename = os.path.basename(fasta_path)
 if 'test' in filename:

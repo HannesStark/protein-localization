@@ -1,15 +1,17 @@
 import os
 
 import pandas as pd
+from sklearn.metrics import matthews_corrcoef
 
 deep_loc_results_dfs = []
-path = 'data/fasta_files/new_hard_chunks'
+path = 'data/results/deeploc_hard_set'
 for filename in os.listdir(path):
     if filename.endswith(".csv"):
         csv = pd.read_csv(os.path.join(path, filename))
         deep_loc_results_dfs.append(csv)
-
 results = pd.concat(deep_loc_results_dfs, axis=0, ignore_index=True)
+
+results = pd.read_csv('data/deeploc_predictions.csv')
 annotations = pd.read_csv('data/final_hard_set_annotations.csv')
 annotations["location"] = annotations["location"].map({"Endoplasmic.reticulum": "Endoplasmic reticulum",
                                                        "Cell.membrane": 'Cell membrane',
@@ -46,5 +48,6 @@ combined = combined[['accession', 'location', 'Localization']]
 combined['correct_prediction'] = combined['location'] == combined['Localization']
 combined.columns = ['accession', 'true_label', 'deep_loc_prediction', 'correct']
 print(combined)
-print(combined['correct'].value_counts(normalize=True).mul(100).astype(str)+'%')
+print(matthews_corrcoef(combined['true_label'], combined['deep_loc_prediction']))
+print(combined['correct'].value_counts(normalize=True).mul(100).astype(str) + '%')
 combined.to_csv('deep_loc_results.csv')

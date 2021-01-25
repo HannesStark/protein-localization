@@ -27,19 +27,38 @@ def inference(args):
     # Needs "from models import *" to work
     model: nn.Module = globals()[args.model_type](embeddings_dim=data_set[0][0].shape[-1], **args.model_parameters)
 
+    embeddings0 = []
+    embeddings1 = []
+    embeddings2 = []
+
+    def extract_embeddings_hook0(self, input, output, clamp=True):
+        embeddings0.append(np.array(output.data.cpu().numpy()))
+
+    def extract_embeddings_hook1(self, input, output, clamp=True):
+        embeddings1.append(np.array(output.data.cpu().numpy()))
+
+    def extract_embeddings_hook2(self, input, output, clamp=True):
+        embeddings2.append(np.array(output.data.cpu().numpy()))
+
+    model.id0.register_forward_hook(extract_embeddings_hook0)
+    model.id1.register_forward_hook(extract_embeddings_hook1)
+    model.id2.register_forward_hook(extract_embeddings_hook2)
+
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
     solver.evaluation(data_set, args.output_files_name, lookup_set, args.distance_threshold)
 
-
-checkpoint = ''
+    print(embeddings1[0].shape)
+    print(np.concatenate(embeddings0).shape)
+    np.save('data/results/embedings0', np.concatenate(embeddings0))
+    np.save('data/results/embedings1', np.concatenate(embeddings1))
+    np.save('data/results/embedings2', np.concatenate(embeddings2))
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/1.yaml')
-    print(checkpoint)
-    p.add_argument('--checkpoint', type=str, default='runs/..finalModels/' + checkpoint,
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference.yaml')
+    p.add_argument('--checkpoint', type=str, default='runs/FFN__02-11_15-32-02',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--output_files_name', type=str, default='inference',
                    help='string that is appended to produced evaluation files in the run folder')
@@ -83,17 +102,4 @@ def parse_arguments():
 
 
 if __name__ == '__main__':
-    checkpoints = ['FFN__BERT_166_21-01_08-57-07',
-                   'FFN__BERT_223_21-01_09-39-42',
-                   'FFN__BERT_306_21-01_09-48-35',
-                   'FFN__BERT_320_21-01_08-15-17',
-                   'FFN__BERT_377_21-01_09-01-46',
-                   'FFN__BERT_452_21-01_08-15-17',
-                   'FFN__BERT_590_21-01_10-25-12',
-                   'FFN__BERT_717_21-01_09-51-43',
-                   'FFN__BERT_881_21-01_09-05-43',
-                   'FFN__BERT_976_21-01_08-15-17']
-
-    for l in checkpoints:
-        checkpoint = l
-        inference(parse_arguments())
+    inference(parse_arguments())
