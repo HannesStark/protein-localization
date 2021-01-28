@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 from models.loss_functions import JointCrossEntropy
 from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, plot_class_accuracies, \
-    tensorboard_class_accuracies, annotation_transfer
+    tensorboard_class_accuracies, annotation_transfer, plot_confusion_matrix
 
 
 class Solver():
@@ -229,7 +229,7 @@ class Solver():
         accuracy_stderr = np.std(accuracies)
         mcc = np.mean(mccs)
         mcc_stderr = np.std(mccs)
-        try: #TODO: implement better solution for when there are no correct predictions in a certain class
+        try:  # TODO: implement better solution for when there are no correct predictions in a certain class
             class_accuracy = np.mean(np.array(class_accuracies), axis=0)
             class_accuracy_stderr = np.std(np.array(class_accuracies), axis=0)
         except:
@@ -251,6 +251,8 @@ class Solver():
         print(results_string)
         plot_class_accuracies(class_accuracy, class_accuracy_stderr,
                               os.path.join(self.writer.log_dir, 'class_accuracies_' + filename + '.png'), self.args)
+        plot_confusion_matrix(de_novo_predictions,
+                              os.path.join(self.writer.log_dir, 'conf_matrix_' + filename + '.png'))
 
     def save_checkpoint(self, epoch: int):
         """

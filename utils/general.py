@@ -11,8 +11,9 @@ from torch.utils.data import DataLoader, Dataset
 from torch.utils.tensorboard import SummaryWriter
 import pandas as pd
 import matplotlib.pyplot as plt
+
+plt.rcParams['figure.dpi'] = 300
 import seaborn as sn
-sn.set_theme()
 from models import *  # imports all classes in the models directory
 
 LOCALIZATION = ['Cell.membrane', 'Cytoplasm', 'Endoplasmic.reticulum', 'Golgi.apparatus', 'Lysosome/Vacuole',
@@ -61,13 +62,14 @@ def annotation_transfer(evaluation_set: Dataset, lookup_set: Dataset):
     evaluation_data = next(iter(evaluation_loader))  # tuple of embedding, localization, solubility, metadata
 
     print('Running 1-NN classification for annotation transfer')
-    classifier = KNeighborsClassifier(n_neighbors=1, p=1) # use 1 neighbor and L1 distance
+    classifier = KNeighborsClassifier(n_neighbors=1, p=1)  # use 1 neighbor and L1 distance
     classifier.fit(lookup_data[0], lookup_data[1])
     predictions = classifier.predict(evaluation_data[0])
     distances, _ = classifier.kneighbors(evaluation_data[0])
     print('Finished 1-NN classification for annotation transfer')
 
     return np.array([predictions, evaluation_data[1], distances.squeeze()]).T
+
 
 def tensorboard_class_accuracies(train_results: np.ndarray, val_results: np.ndarray, writer: SummaryWriter, args,
                                  step: int):
@@ -144,6 +146,25 @@ def tensorboard_confusion_matrix(train_results: np.ndarray, val_results: np.ndar
     writer.add_figure('Confusion Matrix ', fig, global_step=step)
 
 
+def plot_confusion_matrix(results, path):
+    '''
+
+    Args:
+        results: [n_samples, 2] the first column is the prediction the second is the true label
+        path: where to save the plot
+
+    Returns:
+
+    '''
+    confusion = confusion_matrix(results[:, 1], results[:, 0], normalize='true')# confusion matrix for train
+    confusion[confusion < 0.01] = np.nan
+    confusion_df = pd.DataFrame(confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
+    sn.set_style("whitegrid")
+    sn.heatmap(confusion_df, annot=True, cmap='gray_r', fmt='.2f', rasterized=False, cbar=False)
+    plt.savefig(path)
+    plt.clf()
+
+
 def plot_class_accuracies(accuracy, stderr, path, args=None):
     """
     Create seaborn plot and save it to path
@@ -159,6 +180,7 @@ def plot_class_accuracies(accuracy, stderr, path, args=None):
     df = pd.DataFrame({'Localization': labels,
                        "Accuracy": accuracy,
                        "std": stderr})
+
     sn.set_style('darkgrid')
     barplot = sn.barplot(x="Accuracy", y="Localization", data=df, ci=None)
     barplot.set(xlabel='Average accuracy over ' + str(args.n_draws) + ' draws', ylabel='')
@@ -166,6 +188,7 @@ def plot_class_accuracies(accuracy, stderr, path, args=None):
     plt.errorbar(x=df['Accuracy'], y=labels, xerr=df['std'], fmt='none', c='black', capsize=3)
     plt.tight_layout()
     plt.savefig(path)
+    plt.clf()
 
 
 def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict]]) -> Tuple[
@@ -187,6 +210,7 @@ def padded_permuted_collate(batch: List[Tuple[torch.Tensor, torch.Tensor, torch.
     embeddings = pad_sequence(embeddings, batch_first=True)
     return embeddings.permute(0, 2, 1), localization, solubility, metadata
 
+
 def numpy_collate_to_reduced(batch: List[Tuple[np.array, np.array, np.array, dict]]) -> Tuple[
     np.array, np.array, np.array, dict]:
     """
@@ -197,12 +221,13 @@ def numpy_collate_to_reduced(batch: List[Tuple[np.array, np.array, np.array, dic
     Returns: tuple of np.arrays of embeddings with [batchsize, embeddings_dim] and the rest in batched form
 
     """
-    embeddings = [np.array(item[0]).mean(axis=-2) for item in batch] # take mean over lenght dimension
+    embeddings = [np.array(item[0]).mean(axis=-2) for item in batch]  # take mean over lenght dimension
     localization = [np.array(item[1]) for item in batch]
     solubility = [item[2] for item in batch]
     metadata = [item[3] for item in batch]
     metadata = torch.utils.data.dataloader.default_collate(metadata)
     return embeddings, localization, solubility, metadata
+
 
 def numpy_collate_for_reduced(batch: List[Tuple[np.array, np.array, np.array, dict]]) -> Tuple[
     np.array, np.array, np.array, dict]:

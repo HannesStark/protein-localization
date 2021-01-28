@@ -45,8 +45,9 @@ class LightAttention(nn.Module):
         # This padding is added by the dataloader when using the padded_permuted_collate function in utils/general.py
         attention = attention.masked_fill(mask[:, None, :] == False, -1e9)
 
-        extraction =  torch.sum(x * self.softmax(attention), dim=-1)
-        extraction = self.id0(extraction)
+        # code used for extracting embeddings for UMAP visualizations
+        # extraction =  torch.sum(x * self.softmax(attention), dim=-1)
+        # extraction = self.id0(extraction)
 
         o1 = torch.sum(o * self.softmax(attention), dim=-1)  # [batchsize, embeddings_dim]
         o1 = self.id1(o1)

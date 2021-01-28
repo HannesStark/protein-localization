@@ -32,14 +32,10 @@ def inference(args):
     solver.evaluation(data_set, args.output_files_name, lookup_set, args.distance_threshold)
 
 
-checkpoint = ''
-
-
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/1.yaml')
-    print(checkpoint)
-    p.add_argument('--checkpoint', type=str, default='runs/..finalModels/' + checkpoint,
+    p.add_argument('--checkpoint', type=str, default='runs/..finalModels/LightAttention_t5-encoderOnly_02-01_19-01-52',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--output_files_name', type=str, default='inference',
                    help='string that is appended to produced evaluation files in the run folder')
@@ -83,17 +79,4 @@ def parse_arguments():
 
 
 if __name__ == '__main__':
-    checkpoints = ['FFN__BERT_166_21-01_08-57-07',
-                   'FFN__BERT_223_21-01_09-39-42',
-                   'FFN__BERT_306_21-01_09-48-35',
-                   'FFN__BERT_320_21-01_08-15-17',
-                   'FFN__BERT_377_21-01_09-01-46',
-                   'FFN__BERT_452_21-01_08-15-17',
-                   'FFN__BERT_590_21-01_10-25-12',
-                   'FFN__BERT_717_21-01_09-51-43',
-                   'FFN__BERT_881_21-01_09-05-43',
-                   'FFN__BERT_976_21-01_08-15-17']
-
-    for l in checkpoints:
-        checkpoint = l
-        inference(parse_arguments())
+    inference(parse_arguments())
