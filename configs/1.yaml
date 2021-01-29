@@ -3,7 +3,7 @@ output_files_name: 'deep_loc_test_set'
 log_iterations: 100
 n_draws: 1000
 batch_size: 4
-checkpoint: runs/..finalModels/LightAttentionMaxAblation__T5_976_24-01_05-56-20
+checkpoint: runs/..finalModels/LightAttention_t5-encoderOnly_02-01_19-01-52
 
 
 embeddings: 'data/embeddings/test_t5-encoderOnly.h5'

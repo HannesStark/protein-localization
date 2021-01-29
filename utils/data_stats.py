@@ -3,15 +3,15 @@ import os
 from Bio import SeqIO
 import pandas as pd
 import matplotlib.pyplot as plt
-from utils.general import LOCALIZATION
+from utils.general import LOCALIZATION, LOCALIZATION_abbrev
 import seaborn as sn
 
 from utils.preprocess import remove_duplicates
 
 sn.set_style('darkgrid')
 
-
-fasta_path = '../data/embeddings/new_hard_set_t5_remapping.fasta'
+fasta_path = '../data/fasta_files/deeploc_data.fasta'
+fasta_path = '../data/fasta_files/new_hard_set.fasta'
 
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
@@ -35,10 +35,11 @@ df['length'] = df['seq'].apply(lambda x: len(x))
 
 print('number sequences: ', len(df))
 
-print(df['label'].value_counts())
+print(df['label'].value_counts()/len(df))
 
 print('percentage of sequences larger than threshold AAs: {}'.format(100 * len(df[df['length'] > 1000]) / len(df)))
-print(df[df['length'] > 6000])
+print('average length: ', df['length'].mean())
+
 
 
 # visualize class prevalences
@@ -46,11 +47,11 @@ counts = df['label'].value_counts()
 counts = pd.DataFrame({'Localization': counts.index,
                        "Number_Sequences": counts.array})
 counts['ordering'] = counts['Localization'].apply(lambda x: LOCALIZATION.index(x))
+counts['Localization'] = counts['Localization'].apply(lambda x: LOCALIZATION_abbrev[LOCALIZATION.index(x)])
 counts = counts.sort_values(by=['ordering'])
 barplot = sn.barplot(x='Number_Sequences', y='Localization', data=counts, ci=None)
 barplot.set(xlabel='Number Sequences per Class', ylabel='')
 plt.show()
-
 
 cut_off = 2000
 df[df['length'] < cut_off].hist(bins=50, ec='black', color=color)

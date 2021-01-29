@@ -4,9 +4,7 @@ import h5py
 from Bio import SeqIO
 from tqdm import tqdm
 
-counter = 0
-for record in tqdm(SeqIO.parse(open('data/fasta_files/duplicates_removed.fasta'), 'fasta')):
-    if '-U' not in record.description:
-        counter += 1
+seqs = os.listdir('C:\\Users\\HannesStark\\tmp\\ppc')
 
-print(counter)
+for seq in seqs:
+    print(seq)
