@@ -229,7 +229,7 @@ class Solver():
         accuracy_stderr = np.std(accuracies)
         mcc = np.mean(mccs)
         mcc_stderr = np.std(mccs)
-        try:  # TODO: implement better solution for when there are no correct predictions in a certain class
+        try:  # TODO: implement better solution in case there are no  correct predictions in a class
             class_accuracy = np.mean(np.array(class_accuracies), axis=0)
             class_accuracy_stderr = np.std(np.array(class_accuracies), axis=0)
         except:
