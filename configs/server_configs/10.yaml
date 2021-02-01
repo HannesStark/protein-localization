@@ -1,8 +1,0 @@
-log_iterations: 100
-n_draws: 1000
-batch_size: 150
-checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/LightAttention__t5-HALF_440_06-01_17-53-07
-
-embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings/test_t5-encoderOnly.h5'
-remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/fasta_files/test_as_per_deeploc.fasta'
-
