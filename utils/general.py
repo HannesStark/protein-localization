@@ -159,7 +159,7 @@ def plot_confusion_matrix(results, path):
     confusion = confusion_matrix(results[:, 1], results[:, 0], normalize=None)  # normalize='true' for relative freq
     confusion = np.array(confusion, dtype=float)
     # confusion[confusion < 0.01] = np.nan
-    confusion[confusion == 0.] = np.nan
+    #confusion[confusion == 0.] = np.nan
     confusion_df = pd.DataFrame(confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
     sn.set_style("whitegrid")
 
