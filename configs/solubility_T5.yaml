@@ -1,0 +1,29 @@
+num_epochs: 5000
+batch_size: 4
+log_iterations: 1
+patience: 80
+min_train_acc: 99.6
+optimizer_parameters:
+  lr: 5.0e-5
+
+
+target: sol
+unknown_solubility: False
+loss_function: SolCrossEntropy
+
+
+# Paths to Data
+train_embeddings: 'data/embeddings/train_t5-encoderOnly.h5'
+train_remapping: 'data/fasta_files/train.fasta'
+val_embeddings: 'data/embeddings/val_t5-encoderOnly.h5'
+val_remapping: 'data/fasta_files/val_homreduced.fasta'
+test_embeddings: 'data/embeddings/test_t5-encoderOnly.h5'
+test_remapping: 'data/fasta_files/test_as_per_deeploc.fasta'
+remapping_in_hash_format: False
+
+# Model parameters
+model_type: 'LightAttention'
+model_parameters:
+  dropout: 0.25
+  kernel_size: 9
+  output_dim: 2

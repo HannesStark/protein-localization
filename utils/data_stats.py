@@ -10,8 +10,8 @@ from utils.preprocess import remove_duplicates
 
 sn.set_style('darkgrid')
 
-fasta_path = '../data/fasta_files/deeploc_data.fasta'
 fasta_path = '../data/fasta_files/new_hard_set.fasta'
+fasta_path = '../data/fasta_files/deeploc_data.fasta'
 
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
@@ -54,6 +54,7 @@ barplot.set(xlabel='Number Sequences per Class', ylabel='')
 plt.show()
 
 cut_off = 2000
+print(df['length'].max())
 df[df['length'] < cut_off].hist(bins=50, ec='black', color=color)
 plt.xlim((40, cut_off))  # there are only sequences longer than 40 in the datset
 plt.title("Sequence lengths in {}".format(filename))
