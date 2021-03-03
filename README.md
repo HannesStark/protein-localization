@@ -48,6 +48,10 @@ conda env create -f environment.yml
 
 The DeepLoc [data set](http://www.cbs.dtu.dk/services/DeepLoc/data.php) has 10 different subcellular localizations
 that need to be classified.
+
+![accuracyplot](https://github.com/HannesStark/protein-localization/blob/master/.accuracy.png)
+
+
 Accuracy on the DeepLoc test set:
 
 | Method | Accuracy |
@@ -60,5 +64,4 @@ Accuracy on the DeepLoc test set:
 | SherLoc2 | 58.15% |
 
 (Ours evaluated accross 10 different randomly chosen seeds)
-
 (Numbers taken from the DeepLoc [paper](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857))
