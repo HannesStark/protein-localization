@@ -96,8 +96,8 @@ save_name = ['train_',
 #    save_file.close()
 
 for split_index, fasta_path in enumerate(fasta_paths):
-    embeddings_file = h5py.File(os.path.join('data/embeddings', save_name[split_index] + 'T5.h5'), 'r')
-    reduced_embeddings = h5py.File(os.path.join('data/embeddings', save_name[split_index] + 'T5_reduced.h5'), 'w')
+    embeddings_file = h5py.File(os.path.join('../data/embeddings', save_name[split_index] + 'T5.h5'), 'r')
+    reduced_embeddings = h5py.File(os.path.join('../data/embeddings', save_name[split_index] + 'T5_reduced.h5'), 'w')
     for record in SeqIO.parse(open(fasta_path), 'fasta'):
         if len(record.seq) < 13000:
             embedding = embeddings_file[str(record.description).replace('.', '_').replace('/', '_')][:]

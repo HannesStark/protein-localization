@@ -18,7 +18,7 @@ font = {'family': 'normal',
         'size': 10}
 
 plt.rc('font', **font)
-df = pd.read_csv('data/results/paper_tables.CSV')
+df = pd.read_csv('../data/results/paper_tables.CSV')
 remapping = {'Baseline': 'Baseline',
              'LocTree2': 'LocTree2',
              'MultiLoc2': 'MultiLoc2',

@@ -24,7 +24,7 @@ from utils.preprocess import remove_duplicates
 
 sn.set_style('darkgrid')
 
-deeploc_preds = pd.read_csv('deep_loc_results_BLOSUM.csv')
+deeploc_preds = pd.read_csv('../data/results/deep_loc_results_BLOSUM.csv')
 
 deeploc_preds['true_label'] = deeploc_preds['true_label'].map(switched_mapping).map(lambda x: LOCALIZATION.index(x))
 deeploc_preds['deep_loc_prediction'] = deeploc_preds['deep_loc_prediction'].map(switched_mapping).map(
@@ -34,12 +34,12 @@ deeploc_preds = np.array(
     [deeploc_preds['deep_loc_prediction'], deeploc_preds['true_label'], deeploc_preds['correct']]).T
 
 results = np.load(
-    'runs/..finalModels/FirstAttention_927_15-11_08-38-57/results_array_new_hard_set.npy')  # predictions first and true label second
+    '../runs/..finalModels/FirstAttention_927_15-11_08-38-57/results_array_new_hard_set.npy')  # predictions first and true label second
 
 # for stuff loaded from csv as produced by another tmp
 results = deeploc_preds
 
-fasta_path = 'data/fasta_files/deeploc_data.fasta'
+fasta_path = '../data/fasta_files/deeploc_data.fasta'
 
 filename = os.path.basename(fasta_path)
 

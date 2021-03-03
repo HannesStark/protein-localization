@@ -4,15 +4,15 @@ import pandas as pd
 from sklearn.metrics import matthews_corrcoef
 
 deep_loc_results_dfs = []
-path = 'data/results/deeploc_hard_set'
+path = '../data/results/deeploc_hard_set'
 for filename in os.listdir(path):
     if filename.endswith(".csv"):
         csv = pd.read_csv(os.path.join(path, filename))
         deep_loc_results_dfs.append(csv)
 results = pd.concat(deep_loc_results_dfs, axis=0, ignore_index=True)
 
-results = pd.read_csv('data/deeploc_predictions.csv')
-annotations = pd.read_csv('data/final_hard_set_annotations.csv')
+results = pd.read_csv('../data/deeploc_predictions.csv')
+annotations = pd.read_csv('../data/final_hard_set_annotations.csv')
 annotations["location"] = annotations["location"].map({"Endoplasmic.reticulum": "Endoplasmic reticulum",
                                                        "Cell.membrane": 'Cell membrane',
                                                        'Golgi.apparatus': 'Golgi apparatus',
