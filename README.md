@@ -48,6 +48,7 @@ conda env create -f environment.yml
 
 The DeepLoc [data set](http://www.cbs.dtu.dk/services/DeepLoc/data.php) has 10 different subcellular localizations
 that need to be classified.
+Meanwhile, `setHard` is a new Dataset with less redundancy and harder targets. The dataset details can be found in our paper.
 
 ![accuracyplot](https://github.com/HannesStark/protein-localization/blob/master/.accuracy.png)
 
