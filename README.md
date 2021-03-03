@@ -23,7 +23,7 @@ tensorboard --logdir=runs --port=6006
 If everything works without errors, you can now go to `localhost:6006` in your browser and the model training.
 ### Architecture
 
-![architecture](https://github.com/HannesStark/protein-localization/blob/master/architecture.png)
+![architecture](https://github.com/HannesStark/protein-localization/blob/master/.architecture.png)
 
 ### Setup
 
