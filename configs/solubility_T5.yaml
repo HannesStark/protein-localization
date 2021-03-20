@@ -2,7 +2,6 @@ num_epochs: 5000
 batch_size: 4
 log_iterations: 1
 patience: 80
-min_train_acc: 99.6
 optimizer_parameters:
   lr: 5.0e-5
 

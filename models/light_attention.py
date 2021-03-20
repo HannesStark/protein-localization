@@ -38,7 +38,7 @@ class LightAttention(nn.Module):
             classification: [batch_size,output_dim] tensor with logits
         """
         o = self.feature_convolution(x)  # [batch_size, embeddings_dim, sequence_length]
-        o = self.dropout(o)  # [batch_size, embeddings_dim, sequence_length]
+        o = self.dropout(o)  # [batch_gsize, embeddings_dim, sequence_length]
         attention = self.attention_convolution(x)  # [batch_size, embeddings_dim, sequence_length]
 
         # mask out the padding to which we do not want to pay any attention (we have the padding because the sequences have different lenghts).
