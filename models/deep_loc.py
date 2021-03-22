@@ -73,7 +73,6 @@ class DeepLoc(nn.Module):
 
         o = F.relu(self.conv7(o))
         o = self.dropout(o)
-        print(o.shape)
         o = o.permute(2, 0, 1)  # [seq_len, batch_size, embedding_dim]
         # num_directions is 2 for a bidirectional lstm
         # output: [seq_len, batch, num_directions * hidden_size] hidden state of t=seq_len

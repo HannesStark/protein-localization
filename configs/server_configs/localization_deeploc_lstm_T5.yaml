@@ -1,11 +1,10 @@
 eval_on_test: True
 num_epochs: 5000
-batch_size: 150
+batch_size: 60
 log_iterations: 100
 patience: 80
-min_train_acc: 99.6
 optimizer_parameters:
-  lr: 5.0e-5
+  lr: 5.0e-4
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings/train_t5-encoderOnlyHALF.h5'
@@ -19,6 +18,8 @@ remapping_in_hash_format: False
 # Model parameters
 model_type: 'DeepLoc'
 model_parameters:
-  dropout: 0.25
-  kernel_size: 9
   output_dim: 10
+  lstm_hidden_dim: 256
+  n_layers: 2
+  dropout: 0.2
+
