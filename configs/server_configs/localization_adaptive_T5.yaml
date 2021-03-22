@@ -1,10 +1,11 @@
-eval_on_test: True
+experiment_name: ''
+
 num_epochs: 5000
-batch_size: 16
+batch_size: 150
 log_iterations: 100
 patience: 40
 optimizer_parameters:
-  lr: 5.0e-4
+  lr: 5.0e-5
 
 # Paths to Data
 train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings/train_t5-encoderOnlyHALF.h5'
@@ -16,10 +17,8 @@ test_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/da
 remapping_in_hash_format: False
 
 # Model parameters
-model_type: 'DeepLoc'
+model_type: 'AdaptivePooling'
 model_parameters:
+  dropout: 0.25
+  kernel_size: 9
   output_dim: 10
-  lstm_hidden_dim: 256
-  n_layers: 2
-  dropout: 0.2
-
