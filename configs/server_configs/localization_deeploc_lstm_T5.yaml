@@ -1,6 +1,6 @@
 eval_on_test: True
 num_epochs: 5000
-batch_size: 32
+batch_size: 16
 log_iterations: 100
 patience: 80
 optimizer_parameters:

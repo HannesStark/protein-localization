@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class AdaptivePooling(nn.Module):
@@ -10,14 +11,13 @@ class AdaptivePooling(nn.Module):
         self.conv2 = nn.Conv1d(embeddings_dim, embeddings_dim, 15, stride=1)
         self.conv3 = nn.Conv1d(embeddings_dim, embeddings_dim, 9, stride=1)
 
-        self.apdaptive_pool = nn.AdaptiveAvgPool2d(output_size)
+        self.adaptive_pool = nn.AdaptiveAvgPool1d(5)
 
-        self.softmax = nn.Softmax(dim=-1)
 
         self.dropout = nn.Dropout(conv_dropout)
 
         self.linear = nn.Sequential(
-            nn.Linear(2 * embeddings_dim, 32),
+            nn.Linear(3 * embeddings_dim, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
@@ -38,22 +38,14 @@ class AdaptivePooling(nn.Module):
         Returns:
             classification: [batch_size,output_dim] tensor with logits
         """
-        o = self.feature_convolution(x)  # [batch_size, embeddings_dim, sequence_length]
-        o = self.dropout(o)  # [batch_gsize, embeddings_dim, sequence_length]
-        attention = self.attention_convolution(x)  # [batch_size, embeddings_dim, sequence_length]
 
-        # mask out the padding to which we do not want to pay any attention (we have the padding because the sequences have different lenghts).
-        # This padding is added by the dataloader when using the padded_permuted_collate function in utils/general.py
-        attention = attention.masked_fill(mask[:, None, :] == False, -1e9)
+        o1 = F.relu(self.conv1(x))  # [batchsize, embeddingsdim, seq_len]
+        o2 = F.relu(self.conv2(x))
+        o3 = F.relu(self.conv3(x))
 
-        # code used for extracting embeddings for UMAP visualizations
-        # extraction =  torch.sum(x * self.softmax(attention), dim=-1)
-        # extraction = self.id0(extraction)
 
-        o1 = torch.sum(o * self.softmax(attention), dim=-1)  # [batchsize, embeddings_dim]
-        o1 = self.id1(o1)
-        o2, _ = torch.max(o, dim=-1)  # [batchsize, embeddings_dim]
-        o = torch.cat([o1, o2], dim=-1)  # [batchsize, 2*embeddings_dim]
-        o = self.id2(o)
+        o = torch.cat([o1, o2, o3], dim=-1)
+        o = self.adaptive_pool(o)
+
         o = self.linear(o)  # [batchsize, 32]
         return self.output(o)  # [batchsize, output_dim]
