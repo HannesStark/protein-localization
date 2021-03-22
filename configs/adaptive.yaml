@@ -1,8 +1,8 @@
 experiment_name: ''
 
 num_epochs: 5000
-batch_size: 10
-log_iterations: 100
+batch_size: 2
+log_iterations: 1
 patience: 80
 optimizer_parameters:
   lr: 5.0e-5
@@ -16,8 +16,10 @@ val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'AdaptivePooling'
+model_type: 'LSTMConv'
 model_parameters:
-  dropout: 0.25
-  kernel_size: 9
   output_dim: 10
+  kernel_size: 9
+  lstm_hidden_dim: 256
+  n_layers: 2
+  dropout: 0.2

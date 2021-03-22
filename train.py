@@ -15,7 +15,7 @@ def train(args):
     seed_all(args.seed)
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
-                                              args.remapping_in_hash_format, args.max_length, transform)
+                                              args.remapping_in_hash_format, args.max_length, transform=transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
                                             args.remapping_in_hash_format, args.max_length, transform=transform)
 

@@ -16,6 +16,7 @@ class EmbeddingsLocalizationDataset(Dataset):
     def __init__(self, embeddings_path: str, remapped_sequences: str, unknown_solubility: bool = True,
                  descriptions_with_hash=True,
                  max_length: int = float('inf'),
+                 embedding_mode: str = 'lm',
                  transform=lambda x: x) -> None:
         """Create dataset.
         Args:
@@ -27,13 +28,17 @@ class EmbeddingsLocalizationDataset(Dataset):
             unknown_solubility: Whether or not to include sequences with unknown solubility in the dataset
             transform: Pytorch torchvision transforms that should be applied to each sample
             max_length: bigger sequences wont be taken into the dataset
+            embedding_mode: ['lm', 'onehot', 'profiles'] what type of protein encoding to return (lm stands for language model)
         """
         super().__init__()
         self.transform = transform
         self.embeddings_file = h5py.File(embeddings_path, 'r')
         self.localization_solubility_metadata_list = []
         self.class_weights = torch.zeros(10)
+        self.one_hot_enc = []
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
+            if embedding_mode == 'onehot':
+                self.one_hot_enc.append(None)
             if descriptions_with_hash:
                 localization = record.description.split(' ')[2].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
