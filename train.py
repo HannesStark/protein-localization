@@ -15,9 +15,11 @@ def train(args):
     seed_all(args.seed)
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
-                                              args.remapping_in_hash_format, args.max_length, transform=transform)
+                                              args.remapping_in_hash_format, args.max_length,
+                                              embedding_mode=args.embedding_mode, transform=transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
-                                            args.remapping_in_hash_format, args.max_length, transform=transform)
+                                            args.remapping_in_hash_format, args.max_length,
+                                            embedding_mode=args.embedding_mode, transform=transform)
 
     if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
         collate_function = padded_permuted_collate
@@ -37,14 +39,15 @@ def train(args):
     solver.train(train_loader, val_loader, eval_data=val_set)
 
     if args.eval_on_test:
-        test_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
-                                                 args.remapping_in_hash_format, transform=transform)
-        solver.evaluation(test_set, 'test_set_after_train')
+        test_set = EmbeddingsLocalizationDataset(args.test_embeddings, args.test_remapping, args.unknown_solubility,
+                                                 args.remapping_in_hash_format, embedding_mode=args.embedding_mode,
+                                                 transform=transform)
+        solver.evaluation(test_set, filename='test_set_after_train')
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/adaptive.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/light_attention_one_hot.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=2500, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
@@ -70,6 +73,8 @@ def parse_arguments():
                    help='whether or not to include sequences with unknown solubility in the dataset')
     p.add_argument('--max_length', type=int, default=6000, help='maximum lenght of sequences that will be used for '
                                                                 'training when using embedddings of variable length')
+    p.add_argument('--embedding_mode', type=str, default='lm',
+                   help='type of embedding to use (lm means Language model) [lm, onehot, profile]')
 
     p.add_argument('--eval_on_test', type=bool, default=True, help='runs evaluation on test set if true')
     p.add_argument('--train_embeddings', type=str, default='data/embeddings/train.h5',

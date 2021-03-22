@@ -1,9 +1,9 @@
-output_files_name: 'hard_set'
+output_files_name: 'deeploc_test'
 
 log_iterations: 100
 n_draws: 1000
 batch_size: 4
-checkpoint: runs/..finalModels/LightAttention_t5-encoderOnly_31-12_23-25-59
+checkpoint: runs/..rebuttal/BahdanauAttention__976_21-03_17-25-39
 
 
 #embeddings: 'data/embeddings/test_t5-encoderOnly.h5'

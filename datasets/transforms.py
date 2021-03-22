@@ -16,7 +16,7 @@ class ToTensor():
 
     def __call__(self, sample: Tuple[np.ndarray, int, int]) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         embedding, localization, solubility = sample
-        embedding = torch.from_numpy(embedding).float()
+        embedding = torch.tensor(embedding).float()
         localization = torch.tensor(localization).long()
         solubility = torch.tensor(solubility).long()
         return embedding, localization, solubility

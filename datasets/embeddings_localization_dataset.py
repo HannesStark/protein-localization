@@ -4,8 +4,9 @@ import h5py
 import torch
 from Bio import SeqIO
 from torch.utils.data import Dataset
+import torch.nn.functional as F
 
-from utils.general import LOCALIZATION
+from utils.general import LOCALIZATION, AMINO_ACIDS
 
 
 class EmbeddingsLocalizationDataset(Dataset):
@@ -32,13 +33,13 @@ class EmbeddingsLocalizationDataset(Dataset):
         """
         super().__init__()
         self.transform = transform
-        self.embeddings_file = h5py.File(embeddings_path, 'r')
+        self.embedding_mode = embedding_mode
+        if self.embedding_mode == 'lm':
+            self.embeddings_file = h5py.File(embeddings_path, 'r')
         self.localization_solubility_metadata_list = []
         self.class_weights = torch.zeros(10)
         self.one_hot_enc = []
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
-            if embedding_mode == 'onehot':
-                self.one_hot_enc.append(None)
             if descriptions_with_hash:
                 localization = record.description.split(' ')[2].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
@@ -50,6 +51,12 @@ class EmbeddingsLocalizationDataset(Dataset):
                 solubility = record.description.split(' ')[1].split('-')[-1]
                 id = str(record.description)
             if len(record.seq) <= max_length:
+                if self.embedding_mode == 'onehot':
+                    amino_acid_ids = []
+                    for char in record.seq:
+                        amino_acid_ids.append(AMINO_ACIDS[char])
+                    one_hot_enc = F.one_hot(torch.tensor(amino_acid_ids), num_classes=len(AMINO_ACIDS))
+                    self.one_hot_enc.append(one_hot_enc)
                 metadata = {'id': id,
                             'sequence': str(record.seq),
                             'length': len(record.seq),
@@ -75,7 +82,12 @@ class EmbeddingsLocalizationDataset(Dataset):
             solubility: solubility as specified by a transform.
         """
         localization_solubility_metadata = self.localization_solubility_metadata_list[index]
-        embedding = self.embeddings_file[localization_solubility_metadata['metadata']['id']][:]
+        if self.embedding_mode == 'lm':
+            embedding = self.embeddings_file[localization_solubility_metadata['metadata']['id']][:]
+        elif self.embedding_mode == 'onehot':
+            embedding = self.one_hot_enc[index]
+        else:
+            raise Exception('embedding_mode {} not supported'.format(self.embedding_mode))
 
         embedding, localization, solubility = self.transform(
             (embedding, localization_solubility_metadata['localization'],

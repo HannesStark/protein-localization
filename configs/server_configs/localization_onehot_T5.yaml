@@ -1,9 +1,8 @@
 eval_on_test: True
 num_epochs: 5000
-batch_size: 150
+batch_size: 512
 log_iterations: 100
-patience: 80
-min_train_acc: 99.6
+patience: 40
 optimizer_parameters:
   lr: 5.0e-5
 
@@ -15,9 +14,10 @@ val_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/dat
 test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings/test_t5-encoderOnly.h5'
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/fasta_files/test_as_per_deeploc.fasta'
 remapping_in_hash_format: False
+embedding_format: onehot
 
 # Model parameters
-model_type: 'LightAttentionSoftmaxAblation'
+model_type: 'LightAttention'
 model_parameters:
   dropout: 0.25
   kernel_size: 9

@@ -22,6 +22,32 @@ LOCALIZATION_abbrev = ['Mem', 'Cyt', 'End', 'Gol', 'Lys', 'Mit', 'Nuc', 'Per', '
 
 SOLUBILITY = ['M', 'S', 'U']
 
+AMINO_ACIDS = {'A': 0,
+               'R': 1,
+               'N': 2,
+               'D': 3,
+               'C': 4,
+               'Q': 5,
+               'E': 6,
+               'G': 7,
+               'H': 8,
+               'I': 9,
+               'L': 10,
+               'K': 11,
+               'M': 12,
+               'F': 13,
+               'P': 14,
+               'S': 15,
+               'T': 16,
+               'W': 17,
+               'Y': 18,
+               'V': 19,
+               'U': 20,
+               'X': 21,
+               'B': 22,
+               'J': 23,
+               'Z': 24}
+
 
 def seed_all(seed):
     if not seed:
@@ -159,12 +185,12 @@ def plot_confusion_matrix(results, path):
     confusion = confusion_matrix(results[:, 1], results[:, 0], normalize=None)  # normalize='true' for relative freq
     confusion = np.array(confusion, dtype=float)
     # confusion[confusion < 0.01] = np.nan
-    #confusion[confusion == 0.] = np.nan
+    # confusion[confusion == 0.] = np.nan
     confusion_df = pd.DataFrame(confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
     sn.set_style("whitegrid")
 
     # fmt='.2f' for relative freq
-    sn.heatmap(confusion_df, annot=True, cmap='gray_r',fmt='g', rasterized=False, cbar=False)
+    sn.heatmap(confusion_df, annot=True, cmap='gray_r', fmt='g', rasterized=False, cbar=False)
     plt.savefig(path)
     plt.clf()
 

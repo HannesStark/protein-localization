@@ -17,11 +17,13 @@ def inference(args):
     data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping,
                                              unknown_solubility=args.unknown_solubility,
                                              descriptions_with_hash=args.remapping_in_hash_format,
+                                             #embedding_mode=args.embedding_mode,
                                              transform=transform)
     lookup_set = None
     if args.distance_threshold >= 0:  # use lookup set for embedding space similarity annotation transfer
         lookup_set = EmbeddingsLocalizationDataset(args.lookup_embeddings, args.lookup_remapping,
                                                    descriptions_with_hash=args.remapping_in_hash_format,
+                                                   #embedding_mode=args.embedding_mode,
                                                    transform=transform)
 
     # Needs "from models import *" to work
@@ -35,7 +37,7 @@ def inference(args):
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/1.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/..finalModels/LightAttention_t5-encoderOnly_02-01_19-01-52',
+    p.add_argument('--checkpoint', type=str, default='runs/..rebuttal/BahdanauAttention__320_21-03_22-15-00',
                    help='path to directory that contains a checkpoint')
     p.add_argument('--output_files_name', type=str, default='inference',
                    help='string that is appended to produced evaluation files in the run folder')

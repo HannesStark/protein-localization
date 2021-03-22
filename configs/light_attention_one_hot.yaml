@@ -1,8 +1,8 @@
 experiment_name: ''
 
-num_epochs: 5000
-batch_size: 150
-log_iterations: 100
+num_epochs: 1
+batch_size: 20
+log_iterations: 6
 patience: 80
 min_train_acc: 99.6
 optimizer_parameters:
@@ -15,6 +15,7 @@ test_embeddings: 'data/embeddings/test.h5'
 train_remapping: 'data/embeddings/train_remapped.fasta'
 val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
+embedding_mode: onehot
 
 # Model parameters
 model_type: 'LightAttention'
