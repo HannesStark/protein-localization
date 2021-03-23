@@ -1,0 +1,25 @@
+experiment_name: ''
+
+num_epochs: 1
+batch_size: 20
+log_iterations: 6
+patience: 80
+min_train_acc: 99.6
+optimizer_parameters:
+  lr: 5.0e-5
+
+# Paths to Data
+train_embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
+val_embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
+test_embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
+train_remapping: 'data/embeddings/train_remapped.fasta'
+val_remapping: 'data/embeddings/val_remapped.fasta'
+test_remapping: 'data/embeddings/test_remapped.fasta'
+embedding_mode: profiles
+
+# Model parameters
+model_type: 'LightAttention'
+model_parameters:
+  dropout: 0.25
+  kernel_size: 9
+  output_dim: 10

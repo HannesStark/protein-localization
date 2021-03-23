@@ -38,7 +38,7 @@ remapping = {'Baseline': 'Baseline',
              'LA SeqVec': 'LA SeqVec',
              'LA ProtBert': 'LA ProtBert',
              'LA ProtT5': 'LA ProtT5'}
-df = df[['method', 'acc_deeploc', 'stdev_acc_deeploc', 'acc_hard', 'stdev_acc_hard']]
+df = df[['method', 'mcc_deeploc', 'stdev_mcc_deeploc', 'mcc_hard', 'stdev_mcc_hard']]
 ordering = [0, 5, 2, 4, 6, 1, 7, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
 df['ordering'] = ordering
 df = df.sort_values('ordering')
@@ -50,8 +50,8 @@ print(df)
 #
 # plt.rcParams['ytick.labelsize'] = 12
 
-deep_loc, deep_loc_std = np.array(df['acc_deeploc']), np.array(df['stdev_acc_deeploc'])
-hard_set, hard_std = np.array(df['acc_hard']), np.array(df['stdev_acc_hard'])
+deep_loc, deep_loc_std = np.array(df['mcc_deeploc']), np.array(df['stdev_mcc_deeploc'])
+hard_set, hard_std = np.array(df['mcc_hard']), np.array(df['stdev_mcc_hard'])
 ind = np.arange(len(deep_loc))  # the x locations for the groups
 width = 0.45
 fig, ax = plt.subplots()
@@ -70,9 +70,9 @@ deep_rects = ax.bar(ticks, deep_loc, width, color=cmap[3], yerr=deep_loc_std, ca
 hard_rects = ax.bar(ind + width / 2, hard_set, width, color=cmap[0], yerr=hard_std, capsize=2, ecolor=cmap2[3],
                     error_kw={'elinewidth': 2}, label='setHard')
 ax.margins(x=0.03)
-ax.set_ylabel('10 state accuracy (Q10)')
+ax.set_ylabel('10 class MCC')
 ax.set_title('')
-ax.set_ylim(0, 100)
+ax.set_ylim(0, 1)
 ax.set_xticks(ind)
 #ax.set_xticklabels(df['method'], rotation=90)
 ax.set_xticklabels(df['method'], rotation=60, horizontalalignment='right')
@@ -97,7 +97,7 @@ def autolabel2(rects, displacement=[], displacement_width=[], xpos='center'):
         else:
             placement = 0
         height = rect.get_height()
-        ax.annotate('{:1.0f}'.format(height),
+        ax.annotate('{:.2f}'.format(height),
                     xy=(rect.get_x() + rect.get_width() / 2, height + placement),
                     xytext=(offset[xpos] * 3, 3),  # use 3 points offset
                     textcoords="offset points",  # in both directions
@@ -109,8 +109,8 @@ def autolabel2(rects, displacement=[], displacement_width=[], xpos='center'):
 autolabel2(deep_rects, displacement=[16, 14, 12, 13], displacement_width=[1.5, 1.5, 5, 6], xpos="center")
 autolabel2(hard_rects, displacement=[15, 14, 9], displacement_width=[1, 3, 3.5], xpos="center")
 
-plt.hlines(77.4, 8.6, 18, colors=cmap[1], linestyles='dashed', label='')  # ,zorder=-1
-plt.hlines(56.3, 8, 18, colors=cmap[1], linestyles='dashed', label='')
+plt.hlines(0.4, 8.6, 18, colors=cmap[1], linestyles='dashed', label='')  # ,zorder=-1
+plt.hlines(0.3, 8, 18, colors=cmap[1], linestyles='dashed', label='')
 fig.tight_layout()
 
 plt.show()
@@ -119,7 +119,7 @@ plt.clf()
 raise Exception
 
 f, ax = plt.subplots(figsize=(6, 15))
-df = df.melt(id_vars=['method', 'stdev_acc_deeploc', 'stdev_acc_hard'])
+df = df.melt(id_vars=['method', 'stdev_mcc_deeploc', 'stdev_mcc_hard'])
 g = sns.barplot(data=df, x='value', y='method', hue='variable', palette='gray')
 for p in ax.patches:
     width = p.get_width()  # get bar length
@@ -130,7 +130,7 @@ for p in ax.patches:
             va='center')  # vertical alignment
 # for index, row in df.iterrows():
 #    g.text(row.name,row.value, round(row.value,2), color='black', ha="center")
-plt.errorbar(x=df['value'], y=df['method'], xerr=df['stdev_acc_deeploc'], fmt='none', c='black', capsize=3)
+plt.errorbar(x=df['value'], y=df['method'], xerr=df['stdev_mcc_deeploc'], fmt='none', c='black', capsize=3)
 plt.xlim(40, 100)
 plt.ylabel('')
 plt.tight_layout()

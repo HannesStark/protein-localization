@@ -9,7 +9,7 @@ import torch
 import numpy as np
 from models import *
 import warnings
-from sklearn.metrics import matthews_corrcoef, confusion_matrix
+from sklearn.metrics import matthews_corrcoef, confusion_matrix, f1_score
 from torch.utils.data import DataLoader, RandomSampler, Dataset, Subset
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
@@ -199,6 +199,7 @@ class Solver():
         # to save the results of the inference
         np.save(os.path.join(self.writer.log_dir, 'results_array_' + filename), de_novo_predictions)
         mccs = []
+        f1s = []
         accuracies = []
         denovo_accuracies = []
         knn_accuracies = []
@@ -221,6 +222,7 @@ class Solver():
                     results = de_novo_predictions[samples]
                 accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                 mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
+                f1s.append(f1_score(results[:, 1], results[:, 0]))
                 conf = confusion_matrix(results[:, 1], results[:, 0])
                 class_accuracies.append(np.diag(conf) / conf.sum(1))
 
@@ -228,6 +230,8 @@ class Solver():
         accuracy_stderr = np.std(accuracies)
         mcc = np.mean(mccs)
         mcc_stderr = np.std(mccs)
+        f1 = np.mean(f1s)
+        f1_stderr = np.std(f1s)
         try:  # TODO: implement better solution in case there are no  correct predictions in a class
             class_accuracy = np.mean(np.array(class_accuracies), axis=0)
             class_accuracy_stderr = np.std(np.array(class_accuracies), axis=0)
@@ -238,7 +242,10 @@ class Solver():
                          'Accuracy: {:.2f}% \n' \
                          'Accuracy stderr: {:.2f}%\n' \
                          'MCC: {:.4f}\n' \
-                         'MCC stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr)
+                         'MCC stderr: {:.4f}\n' \
+                         'F1: {:.4f}\n' \
+                         'F1 stderr: {:.4f}\n'.format(self.args.n_draws, accuracy, accuracy_stderr, mcc, mcc_stderr, f1,
+                                                      f1_stderr)
         if lookup_dataset:  # if we did lookups we append the individual accuracies to the results file
             unsupervised_accuracy = np.mean(np.array(knn_accuracies), axis=0)
             supervised_accuracy = np.mean(np.array(denovo_accuracies), axis=0)
