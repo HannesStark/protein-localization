@@ -47,12 +47,12 @@ def train(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/light_attention_profiles.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/light_attention_one_hot.yaml')
     p.add_argument('--experiment_name', type=str, help='name that will be added to the runs folder output')
     p.add_argument('--num_epochs', type=int, default=2500, help='number of times to iterate through all samples')
     p.add_argument('--batch_size', type=int, default=1024, help='samples that will be processed in parallel')
     p.add_argument('--patience', type=int, default=50, help='stop training after no improvement in this many epochs')
-    p.add_argument('--min_train_acc', type=int, default=95, help='dont stop training before reaching this acc')
+    p.add_argument('--min_train_acc', type=int, default=0, help='dont stop training before reaching this acc')
     p.add_argument('--n_draws', type=int, default=200, help='number of times to sample for estimation of stderr')
     p.add_argument('--seed', type=int, default=123, help='seed for reproducibility')
     p.add_argument('--optimizer', type=str, default='Adam', help='Class name of torch.optim like [Adam, SGD, AdamW]')

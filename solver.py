@@ -222,7 +222,7 @@ class Solver():
                     results = de_novo_predictions[samples]
                 accuracies.append(100 * np.equal(results[:, 0], results[:, 1]).sum() / len(results))
                 mccs.append(matthews_corrcoef(results[:, 1], results[:, 0]))
-                f1s.append(f1_score(results[:, 1], results[:, 0]))
+                f1s.append(f1_score(results[:, 1], results[:, 0], average='weighted'))
                 conf = confusion_matrix(results[:, 1], results[:, 0])
                 class_accuracies.append(np.diag(conf) / conf.sum(1))
 
