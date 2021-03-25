@@ -1,5 +1,4 @@
 import difflib
-from collections import defaultdict
 
 import h5py
 import pandas as pd
@@ -21,18 +20,22 @@ count = 0
 # Strips the newline character
 skipnext = False
 with h5py.File('../data/embeddings/subCell_all_pssmFile.h5', 'w') as hf:
-    pssms = {}
-    lengths = defaultdict(list)
+    sequences = []
     sequence = []
     pssm = []
     for i, line in tqdm(enumerate(Lines[2:])):
         if not skipnext:
             string = line.strip().split()
+
             if string[0] == 'Query':
+                print(i)
                 skipnext = True
                 pssm_sequence = ''.join(sequence)
-                pssms[pssm_sequence] = torch.stack(pssm)
-                lengths[len(pssm_sequence)].append(pssm_sequence)
+                if pssm_sequence not in sequences:
+                    sequence_id = difflib.get_close_matches(pssm_sequence, fasta_sequences, n=1, cutoff=0)
+                    print('sequence_id', sequence_id[0])
+                    hf.create_dataset(sequence_id[0], data=torch.stack(pssm))
+                    sequences.append(pssm_sequence)
                 sequence = []
                 pssm = []
             else:
@@ -41,12 +44,7 @@ with h5py.File('../data/embeddings/subCell_all_pssmFile.h5', 'w') as hf:
                 pssm.append(torch.tensor(np.array(string[2:], dtype=int)))
         else:
             skipnext = False
-
-    for i, fasta_sequence in tqdm(enumerate(fasta_sequences)):
-        lookup_sequences = lengths[len(fasta_sequence)]
-        sequence_id = difflib.get_close_matches(fasta_sequence, lookup_sequences, n=1, cutoff=0)[0]
-        pssm = pssms[sequence_id]
-        hf.create_dataset(fasta_sequence, data=pssms[sequence_id])
+    hf.create_dataset(''.join(sequence), data=torch.stack(pssm))
 
 with h5py.File('../data/embeddings/subCell_all_pssmFile.h5', 'r') as hf:
     keys = list(hf.keys())

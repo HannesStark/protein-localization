@@ -95,8 +95,6 @@ class EmbeddingsLocalizationDataset(Dataset):
             (embedding, localization_solubility_metadata['localization'],
              localization_solubility_metadata['solubility']))
 
-        localization_solubility_metadata['metadata']['length'] = len(embedding)
-
         return embedding, localization, solubility, localization_solubility_metadata['metadata']
 
     def __len__(self) -> int:

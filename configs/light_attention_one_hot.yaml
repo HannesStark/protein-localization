@@ -1,8 +1,9 @@
-eval_on_test: True
-num_epochs: 20
-batch_size: 150
+experiment_name: ''
+
+num_epochs: 1
+batch_size: 20
 log_iterations: 6
-patience: 40
+patience: 80
 optimizer_parameters:
   lr: 5.0e-5
 
