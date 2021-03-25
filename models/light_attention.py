@@ -6,9 +6,9 @@ class LightAttention(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size=9, conv_dropout: float = 0.25):
         super(LightAttention, self).__init__()
 
-        self.feature_convolution = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1,
+        self.feature_convolution = nn.Conv1d(embeddings_dim, 1024, kernel_size, stride=1,
                                              padding=kernel_size // 2)
-        self.attention_convolution = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1,
+        self.attention_convolution = nn.Conv1d(embeddings_dim, 1024, kernel_size, stride=1,
                                                padding=kernel_size // 2)
 
         self.softmax = nn.Softmax(dim=-1)
@@ -16,7 +16,7 @@ class LightAttention(nn.Module):
         self.dropout = nn.Dropout(conv_dropout)
 
         self.linear = nn.Sequential(
-            nn.Linear(2 * embeddings_dim, 32),
+            nn.Linear(2 * 1024, 32),
             nn.Dropout(dropout),
             nn.ReLU(),
             nn.BatchNorm1d(32)
