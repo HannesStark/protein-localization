@@ -16,7 +16,7 @@ test_embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
 embedding_mode: profiles
 
 # Model parameters
-model_type: 'LightAttention'
+model_type: 'LightAttentionPSSM'
 model_parameters:
   dropout: 0.25
   kernel_size: 9
