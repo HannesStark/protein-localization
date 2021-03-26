@@ -82,7 +82,6 @@ if __name__ == '__main__':
         args = copy.copy(original_args)
         arg_dict = args.__dict__
         arg_dict['checkpoint'] = checkpoint
-        print(checkpoint)
         # get the arguments from the yaml config file that is saved in the runs checkpoint
         data = yaml.load(open(os.path.join(args.checkpoint, 'train_arguments.yaml'), 'r'), Loader=yaml.FullLoader)
         for key, value in data.items():
