@@ -259,6 +259,7 @@ class Solver():
                               os.path.join(self.writer.log_dir, 'class_accuracies_' + filename + '.png'), self.args)
         plot_confusion_matrix(de_novo_predictions,
                               os.path.join(self.writer.log_dir, 'conf_matrix_' + filename + '.png'))
+        return accuracy, mcc, f1
 
     def save_checkpoint(self, epoch: int):
         """

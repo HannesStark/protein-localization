@@ -2,8 +2,18 @@ output_files_name: 'set_hard'
 
 log_iterations: 100
 n_draws: 1000
-batch_size: 3
-checkpoint: runs/..rebuttal/LightAttention__411_23-03_12-15-45
+batch_size: 2
+checkpoints_list:
+  - runs/..rebuttal/LightAttention_onehot_162_24-03_12-07-37
+  - runs/..rebuttal/LightAttention_onehot_296_24-03_12-32-52
+  - runs/..rebuttal/LightAttention_onehot_357_24-03_12-50-51
+  - runs/..rebuttal/LightAttention_onehot_411_24-03_11-37-31
+  - runs/..rebuttal/LightAttention_onehot_576_24-03_11-11-46
+  - runs/..rebuttal/LightAttention_onehot_586_24-03_13-13-37
+  - runs/..rebuttal/LightAttention_onehot_654_24-03_12-22-37
+  - runs/..rebuttal/LightAttention_onehot_661_24-03_11-50-24
+  - runs/..rebuttal/LightAttention_onehot_716_24-03_13-01-53
+  - runs/..rebuttal/LightAttention_onehot_782_24-03_13-23-57
 
 
 #embeddings: 'data/embeddings/test_t5-encoderOnly.h5'

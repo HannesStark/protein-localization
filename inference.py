@@ -1,3 +1,5 @@
+import copy
+
 from models import *  # For loading classes specified in config
 from models.legacy import *  # For loading classes specified in config
 from torch.optim import *  # For loading optimizer class that was used in the checkpoint
@@ -17,13 +19,13 @@ def inference(args):
     data_set = EmbeddingsLocalizationDataset(args.embeddings, args.remapping,
                                              unknown_solubility=args.unknown_solubility,
                                              descriptions_with_hash=args.remapping_in_hash_format,
-                                             #embedding_mode=args.embedding_mode,
+                                             embedding_mode=args.embedding_mode,
                                              transform=transform)
     lookup_set = None
     if args.distance_threshold >= 0:  # use lookup set for embedding space similarity annotation transfer
         lookup_set = EmbeddingsLocalizationDataset(args.lookup_embeddings, args.lookup_remapping,
                                                    descriptions_with_hash=args.remapping_in_hash_format,
-                                                   #embedding_mode=args.embedding_mode,
+                                                   embedding_mode=args.embedding_mode,
                                                    transform=transform)
 
     # Needs "from models import *" to work
@@ -31,14 +33,14 @@ def inference(args):
 
     # Needs "from torch.optim import *" and "from models import *" to work
     solver = Solver(model, args, globals()[args.optimizer], globals()[args.loss_function])
-    solver.evaluation(data_set, args.output_files_name, lookup_set, args.distance_threshold)
+    return solver.evaluation(data_set, args.output_files_name, lookup_set, args.distance_threshold)
 
 
 def parse_arguments():
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/1.yaml')
-    p.add_argument('--checkpoint', type=str, default='runs/..rebuttal/BahdanauAttention__320_21-03_22-15-00',
-                   help='path to directory that contains a checkpoint')
+    p.add_argument('--checkpoints_list', default=[],
+                   help='if there are paths specified here, they all are evaluated')
     p.add_argument('--output_files_name', type=str, default='inference',
                    help='string that is appended to produced evaluation files in the run folder')
     p.add_argument('--batch_size', type=int, default=16, help='samples that will be processed in parallel')
@@ -68,17 +70,34 @@ def parse_arguments():
                     arg_dict[key].append(v)
             else:
                 arg_dict[key] = value
-    # get the arguments from the yaml config file that is saved in the runs checkpoint
-    data = yaml.load(open(os.path.join(args.checkpoint, 'train_arguments.yaml'), 'r'), Loader=yaml.FullLoader)
-    for key, value in data.items():
-        if key not in args.__dict__.keys():
-            if isinstance(value, list):
-                for v in value:
-                    arg_dict[key].append(v)
-            else:
-                arg_dict[key] = value
     return args
 
 
 if __name__ == '__main__':
-    inference(parse_arguments())
+    original_args = copy.copy(parse_arguments())
+    accuracies = []
+    mccs = []
+    f1s = []
+    for checkpoint in original_args.checkpoints_list:
+        args = copy.copy(original_args)
+        arg_dict = args.__dict__
+        arg_dict['checkpoint'] = checkpoint
+        print(checkpoint)
+        # get the arguments from the yaml config file that is saved in the runs checkpoint
+        data = yaml.load(open(os.path.join(args.checkpoint, 'train_arguments.yaml'), 'r'), Loader=yaml.FullLoader)
+        for key, value in data.items():
+            if key not in args.__dict__.keys():
+                if isinstance(value, list):
+                    for v in value:
+                        arg_dict[key].append(v)
+                else:
+                    arg_dict[key] = value
+        # call teh actual inference
+        accuracy, mcc, f1 = inference(args)
+        accuracies.append(accuracy)
+        mccs.append(mcc)
+        f1s.append(f1)
+
+    print('accuracies: ', accuracies)
+    print('MCCs: ', mccs)
+    print('F1s: ', f1s)
