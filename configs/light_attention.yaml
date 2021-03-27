@@ -17,7 +17,7 @@ val_remapping: 'data/embeddings/val_remapped.fasta'
 test_remapping: 'data/embeddings/test_remapped.fasta'
 
 # Model parameters
-model_type: 'LightAttention'
+model_type: 'LightAttentionMetaData'
 model_parameters:
   dropout: 0.25
   kernel_size: 9
