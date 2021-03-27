@@ -4,16 +4,13 @@ log_iterations: 100
 n_draws: 1000
 batch_size: 2
 checkpoints_list:
-  - runs/..rebuttal/LightAttention_profiles_120_25-03_21-45-16
-  - runs/..rebuttal/LightAttention_profiles_153_25-03_21-27-50
-  - runs/..rebuttal/LightAttention_profiles_250_25-03_23-51-08
-  - runs/..rebuttal/LightAttention_profiles_314_26-03_01-43-30
-  - runs/..rebuttal/LightAttention_profiles_344_26-03_01-25-00
-  - runs/..rebuttal/LightAttention_profiles_441_25-03_23-18-33
-  - runs/..rebuttal/LightAttention_profiles_505_25-03_22-41-44
-  - runs/..rebuttal/LightAttention_profiles_700_25-03_22-20-17
-  - runs/..rebuttal/LightAttention_profiles_786_26-03_01-03-05
-  - runs/..rebuttal/LightAttention_profiles_864_26-03_00-31-42
+  - runs/..rebuttal/LightAttention_large_profiles_120_26-03_08-56-01
+  - runs/..rebuttal/LightAttention_large_profiles_153_26-03_08-38-58
+  - runs/..rebuttal/LightAttention_large_profiles_505_26-03_09-35-27
+  - runs/..rebuttal/LightAttention_large_profiles_700_26-03_09-28-11
+
+
+
 
 ## T5 deeploc
 #embeddings: 'data/embeddings/test_t5-encoderOnly.h5'

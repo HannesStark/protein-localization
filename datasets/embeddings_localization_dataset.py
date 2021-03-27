@@ -57,9 +57,14 @@ class EmbeddingsLocalizationDataset(Dataset):
                         amino_acid_ids.append(AMINO_ACIDS[char])
                     one_hot_enc = F.one_hot(torch.tensor(amino_acid_ids), num_classes=len(AMINO_ACIDS))
                     self.one_hot_enc.append(one_hot_enc)
+                frequencies = torch.zeros(25)
+                for i, aa in enumerate(AMINO_ACIDS):
+                    frequencies[i] = str(record.seq).count(aa)
+                frequencies /= len(record.seq)
                 metadata = {'id': id,
                             'sequence': str(record.seq),
                             'length': len(record.seq),
+                            'frequencies': frequencies,
                             'solubility_known': not (solubility == 'U')}
 
                 # if unknown solubility is false only the sequences with known solubility are included

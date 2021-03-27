@@ -140,9 +140,12 @@ class Solver():
             embedding, loc, sol, metadata = batch  # get localization and solubility label
             embedding, loc, sol, sol_known = embedding.to(self.device), loc.to(self.device), sol.to(self.device), \
                                              metadata['solubility_known'].to(self.device)
+            sequence_lengths = metadata['length'][:, None].to(self.device)  # [batchsize, 1]
+            frequencies = metadata['frequencies'].to(self.device)  # [batchsize, 25]
+
             # create mask corresponding to the zero padding used for the shorter sequecnes in the batch. All values corresponding to padding are False and the rest is True.
             mask = torch.arange(metadata['length'].max())[None, :] < metadata['length'][:, None]  # [batchsize, seq_len]
-            prediction = self.model(embedding, mask.to(self.device))
+            prediction = self.model(embedding, mask.to(self.device), sequence_lengths, frequencies)
             loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
             if optim:  # run backpropagation if an optimizer is provided
                 loss.backward()
