@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 
 
-class LightAttention(nn.Module):
+class LightAttentionMetaData(nn.Module):
     def __init__(self, embeddings_dim=1024, output_dim=11, dropout=0.25, kernel_size=9, conv_dropout: float = 0.25):
-        super(LightAttention, self).__init__()
+        super(LightAttentionMetaData, self).__init__()
 
         self.feature_convolution = nn.Conv1d(embeddings_dim, embeddings_dim, kernel_size, stride=1,
                                              padding=kernel_size // 2)
