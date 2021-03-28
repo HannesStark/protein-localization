@@ -11,7 +11,7 @@ from utils.preprocess import remove_duplicates
 sn.set_style('darkgrid')
 
 fasta_path = '../data/fasta_files/new_hard_set.fasta'
-fasta_path = '../data/fasta_files/deeploc_data.fasta'
+fasta_path = '../data/fasta_files/val_homreduced.fasta'
 
 filename = os.path.basename(fasta_path)
 if 'test' in filename:
