@@ -1,0 +1,10 @@
+output_files_name: 'deeploc_test_set'
+
+log_iterations: 100
+n_draws: 1000
+batch_size: 150
+checkpoint: /mnt/project/bio_embeddings/runs/hannes/protein-localization/runs/LightAttention__ELMo_223_20-01_07-12-12
+
+embeddings: '/mnt/project/bio_embeddings/runs/hannes/embed_test_seqvec/embeddings/bert_embeddings/embeddings_file.h5'
+remapping: '/mnt/project/bio_embeddings/runs/hannes/embed_test_seqvec/embeddings/remapped_sequences_file.fasta'
+
