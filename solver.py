@@ -145,7 +145,8 @@ class Solver():
 
             # create mask corresponding to the zero padding used for the shorter sequecnes in the batch. All values corresponding to padding are False and the rest is True.
             mask = torch.arange(metadata['length'].max())[None, :] < metadata['length'][:, None]  # [batchsize, seq_len]
-            prediction = self.model(embedding, mask.to(self.device), sequence_lengths, frequencies)
+            prediction = self.model(embedding, mask=mask.to(self.device), sequence_lengths=sequence_lengths,
+                                    frequencies=frequencies)
             loss, loc_loss, sol_loss = self.loss_func(prediction, loc, sol, sol_known, args)
             if optim:  # run backpropagation if an optimizer is provided
                 loss.backward()

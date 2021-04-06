@@ -1,0 +1,24 @@
+eval_on_test: True
+num_epochs: 5000
+batch_size: 1024
+log_iterations: 100
+patience: 100
+optimizer_parameters:
+  lr: 1.0e-4
+
+# Paths to Data
+train_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50_pooled/train.h5'
+train_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50_pooled/train.fasta'
+val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50_pooled/val_homreduced.h5'
+val_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50_pooled/val_homreduced.fasta'
+test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50_pooled/test_as_per_deeploc.h5'
+test_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50_pooled/test_as_per_deeploc.fasta'
+key_format: mheinzinger
+
+# Model parameters
+model_type: 'FFN'
+model_parameters:
+  output_dim: 10
+  hidden_dim: 32
+  n_hidden_layers: 0
+  dropout: 0.25

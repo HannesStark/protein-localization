@@ -46,17 +46,17 @@ class EmbeddingsLocalizationDataset(Dataset):
                 solubility = record.description.split(' ')[2].split('-')[-1]
                 id = str(record.id)
             elif key_format == 'mheinzinger':
-                localization = record.description.split(' ')[2].split('-')[0]
+                localization = record.description.split(' ')[1].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
-                solubility = record.description.split(' ')[2].split('-')[-1]
-                id = str(record.id).replace('.','_')
+                solubility = record.description.split(' ')[1].split('-')[-1]
+                id = str(record.description).replace('.','_').replace('/','_')
             elif key_format == 'hash':
                 localization = record.description.split(' ')[1].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
                 solubility = record.description.split(' ')[1].split('-')[-1]
                 id = str(record.description)
             else:
-                raise Exception('Unknown key_format')
+                raise Exception('Unknown key_format: ', key_format)
             if len(record.seq) <= max_length:
                 if self.embedding_mode == 'onehot':
                     amino_acid_ids = []
