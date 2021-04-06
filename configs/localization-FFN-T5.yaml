@@ -14,7 +14,7 @@ val_embeddings: 'data/embeddings/val_T5_reduced.h5'
 val_remapping: 'data/fasta_files/val_homreduced.fasta'
 test_embeddings: 'data/embeddings/test_T5_reduced.h5'
 test_remapping: 'data/fasta_files/test_as_per_deeploc.fasta'
-remapping_in_hash_format: False
+key_format: mheinzinger_old
 
 # Model parameters
 model_type: 'FFN'

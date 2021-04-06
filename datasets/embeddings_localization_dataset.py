@@ -15,7 +15,7 @@ class EmbeddingsLocalizationDataset(Dataset):
     """
 
     def __init__(self, embeddings_path: str, remapped_sequences: str, unknown_solubility: bool = True,
-                 descriptions_with_hash=True,
+                 key_format:str = 'hash',
                  max_length: int = float('inf'),
                  embedding_mode: str = 'lm',
                  transform=lambda x: x) -> None:
@@ -40,16 +40,23 @@ class EmbeddingsLocalizationDataset(Dataset):
         self.class_weights = torch.zeros(10)
         self.one_hot_enc = []
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
-            if descriptions_with_hash:
+            if key_format == 'mheinzinger_old':
                 localization = record.description.split(' ')[2].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
                 solubility = record.description.split(' ')[2].split('-')[-1]
                 id = str(record.id)
-            else:
+            elif key_format == 'mheinzinger':
+                localization = record.description.split(' ')[2].split('-')[0]
+                localization = LOCALIZATION.index(localization)  # get localization as integer
+                solubility = record.description.split(' ')[2].split('-')[-1]
+                id = str(record.id).replace('.','_')
+            elif key_format == 'hash':
                 localization = record.description.split(' ')[1].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
                 solubility = record.description.split(' ')[1].split('-')[-1]
                 id = str(record.description)
+            else:
+                raise Exception('Unknown key_format')
             if len(record.seq) <= max_length:
                 if self.embedding_mode == 'onehot':
                     amino_acid_ids = []
