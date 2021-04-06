@@ -15,10 +15,10 @@ def train(args):
     seed_all(args.seed)
     transform = transforms.Compose([SolubilityToInt(), ToTensor()])
     train_set = EmbeddingsLocalizationDataset(args.train_embeddings, args.train_remapping, args.unknown_solubility,
-                                              args.remapping_in_hash_format, args.max_length,
+                                               max_length=args.max_length, key_format=args.key_format,
                                               embedding_mode=args.embedding_mode, transform=transform)
     val_set = EmbeddingsLocalizationDataset(args.val_embeddings, args.val_remapping, args.unknown_solubility,
-                                            args.remapping_in_hash_format, args.max_length,
+                                            key_format=args.key_format, max_length=args.max_length,
                                             embedding_mode=args.embedding_mode, transform=transform)
 
     if len(train_set[0][0].shape) == 2:  # if we have per residue embeddings they have an additional length dim
@@ -40,7 +40,7 @@ def train(args):
 
     if args.eval_on_test:
         test_set = EmbeddingsLocalizationDataset(args.test_embeddings, args.test_remapping, args.unknown_solubility,
-                                                 args.remapping_in_hash_format, embedding_mode=args.embedding_mode,
+                                                 key_format=args.key_format, embedding_mode=args.embedding_mode,
                                                  transform=transform)
         solver.evaluation(test_set, filename='test_set_after_train')
 
@@ -89,8 +89,8 @@ def parse_arguments():
                    help='.h5 or .h5py file with keys fitting the ids in the corresponding fasta remapping file')
     p.add_argument('--test_remapping', type=str, default='data/embeddings/test_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
-    p.add_argument('--remapping_in_hash_format', type=bool, default=True,
-                   help='whether or not the identifiers are remapped to hashes or if they just are the fasta description of the sequence')
+    p.add_argument('--key_format', type=str, default='hash',
+                   help='the formatting of the keys in the h5 file [mheinzinger_old, mheinzinger, hash]')
     args = p.parse_args()
     if args.config:
         data = yaml.load(args.config, Loader=yaml.FullLoader)
