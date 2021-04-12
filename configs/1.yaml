@@ -4,10 +4,8 @@ log_iterations: 100
 n_draws: 1000
 batch_size: 2
 checkpoints_list:
-  - runs/..rebuttal/LightAttention_large_profiles_120_26-03_08-56-01
-  - runs/..rebuttal/LightAttention_large_profiles_153_26-03_08-38-58
-  - runs/..rebuttal/LightAttention_large_profiles_505_26-03_09-35-27
-  - runs/..rebuttal/LightAttention_large_profiles_700_26-03_09-28-11
+  - runs/..finalModels/LightAttention__921_10-04_07-14-24
+
 
 
 
@@ -23,9 +21,14 @@ checkpoints_list:
 #remapping_in_hash_format: False
 
 # pssm hard
-embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
-remapping: 'data/embeddings/new_hard_set_t5_remapping.fasta'
+#embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
+#remapping: 'data/embeddings/new_hard_set_t5_remapping.fasta'
 
+
+# hard set
+embeddings: 'data/embeddings_uniref50/new_hard_set.h5'
+remapping: 'data/embeddings_uniref50/new_hard_set.fasta'
+key_format: mheinzinger
 
 #embeddings: 'data/embeddings/test_T5_reduced.h5'
 #remapping: data/fasta_files/test_as_per_deeploc.fasta
