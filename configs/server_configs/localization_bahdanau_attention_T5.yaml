@@ -1,3 +1,6 @@
+experiment_name: 'bahdanau_attention'
+
+
 eval_on_test: True
 num_epochs: 5000
 batch_size: 150
