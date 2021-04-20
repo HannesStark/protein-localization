@@ -1,0 +1,40 @@
+output_files_name: 'hard_set'
+
+log_iterations: 100
+n_draws: 1000
+batch_size: 2
+checkpoints_list:
+  - runs/..Uniref50/LSTMConv__279_18-04_20-11-59
+  - runs/..Uniref50/LSTMConv__303_18-04_10-29-24
+  - runs/..Uniref50/LSTMConv__309_17-04_22-55-10
+  - runs/..Uniref50/LSTMConv__451_18-04_13-05-25
+  - runs/..Uniref50/LSTMConv__559_18-04_03-30-30
+  - runs/..Uniref50/LSTMConv__624_19-04_05-30-54
+  - runs/..Uniref50/LSTMConv__624_19-04_06-57-57
+  - runs/..Uniref50/LSTMConv__657_19-04_06-57-56
+  - runs/..Uniref50/LSTMConv__702_19-04_09-41-34
+  - runs/..Uniref50/LSTMConv__921_17-04_13-10-07
+
+
+
+#embeddings: 'data/embeddings/new_hard_set_BERT_reduced.h5'
+#remapping: data/embeddings/new_hard_set_BERT_remapping.fastas
+
+# pssm hard
+#embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
+#remapping: 'data/embeddings/new_hard_set_t5_remapping.fasta'
+
+#embeddings: 'data/embeddings/new_hard_set_t5.h5'
+#remapping: 'data/embeddings/new_hard_set_t5_remapping.fasta'
+
+# deeploc UNIREF50
+embeddings: 'data/embeddings_uniref50/new_hard_set.h5'
+remapping: 'data/embeddings_uniref50/new_hard_set.fasta'
+key_format: mheinzinger
+
+## deeploc UNIREF50 POOLeD
+#embeddings: 'data/uniref_embeddings_pooled/new_hard_set.h5'
+#remapping: 'data/uniref_embeddings_pooled/new_hard_set.fasta'
+#key_format: mheinzinger
+
+

@@ -38,7 +38,7 @@ def inference(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/1.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference_hard_set.yaml')
     p.add_argument('--checkpoints_list', default=[],
                    help='if there are paths specified here, they all are evaluated')
     p.add_argument('--output_files_name', type=str, default='inference',
@@ -97,6 +97,7 @@ if __name__ == '__main__':
         mccs.append(mcc)
         f1s.append(f1)
 
-    print('accuracies: ', accuracies)
-    print('MCCs: ', mccs)
-    print('F1s: ', f1s)
+    print(args.checkpoint)
+    print('accuracies: \n', accuracies)
+    print('MCCs: \n', mccs)
+    print('F1s: \n', f1s)

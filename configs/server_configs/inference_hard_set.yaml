@@ -1,0 +1,31 @@
+output_files_name: 'hard_set'
+
+log_iterations: 100
+n_draws: 1000
+batch_size: 2
+checkpoints_list:
+  - runs/LSTMConv__279_18-04_20-11-59
+  - runs/LSTMConv__303_18-04_10-29-24
+  - runs/LSTMConv__309_17-04_22-55-10
+  - runs/LSTMConv__451_18-04_13-05-25
+  - runs/LSTMConv__559_18-04_03-30-30
+  - runs/LSTMConv__624_19-04_05-30-54
+  - runs/LSTMConv__624_19-04_06-57-57
+  - runs/LSTMConv__657_19-04_06-57-56
+  - runs/LSTMConv__702_19-04_09-41-34
+  - runs/LSTMConv__921_17-04_13-10-07
+
+
+
+
+# deeploc UNIREF50
+embeddings: 'data/embeddings_t5_Uniref50/new_hard_set.h5'
+remapping: 'data/embeddings_t5_Uniref50/new_hard_set.fasta'
+key_format: mheinzinger
+
+## deeploc UNIREF50 POOLeD
+#embeddings: 'data/embeddings_t5_Uniref50_pooled/new_hard_set.h5'
+#remapping: 'data/embeddings_t5_Uniref50_pooled/new_hard_set.fasta'
+#key_format: mheinzinger
+
+

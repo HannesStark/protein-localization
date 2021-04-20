@@ -1,0 +1,42 @@
+output_files_name: 'deeploc_test'
+
+log_iterations: 100
+n_draws: 1000
+batch_size: 2
+checkpoints_list:
+  - runs/..Uniref50/LightAttention__279_15-04_01-39-41
+  - runs/..Uniref50/LightAttention__303_13-04_13-52-25
+  - runs/..Uniref50/LightAttention__309_11-04_18-55-27
+  - runs/..Uniref50/LightAttention__451_14-04_05-40-15
+  - runs/..Uniref50/LightAttention__559_13-04_00-55-46
+  - runs/..Uniref50/LightAttention__624_15-04_08-27-56
+  - runs/..Uniref50/LightAttention__657_16-04_03-15-05
+  - runs/..Uniref50/LightAttention__702_16-04_23-00-52
+  - runs/..Uniref50/LightAttention__921_10-04_07-14-24
+  - runs/..Uniref50/LightAttention__969_11-04_01-58-43
+
+
+
+
+
+## T5 deeploc
+#embeddings: 'data/embeddings/test_t5-encoderOnly.h5'
+#remapping: data/fasta_files/test_as_per_deeploc.fasta
+#remapping_in_hash_format: False
+
+## pssm deeploc
+#embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
+#remapping: data/fasta_files/test_as_per_deeploc.fasta
+#remapping_in_hash_format: False
+
+
+# deeploc UNIREF50
+embeddings: 'data/embeddings_uniref50/test_as_per_deeploc.h5'
+remapping: 'data/embeddings_uniref50/test_as_per_deeploc.fasta'
+key_format: mheinzinger
+
+## deeploc UNIREF50 POOLeD
+#embeddings: 'data/uniref_embeddings_pooled/test_as_per_deeploc.h5'
+#remapping: 'data/uniref_embeddings_pooled/test_as_per_deeploc.fasta'
+#key_format: mheinzinger
+
