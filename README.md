@@ -20,7 +20,7 @@ conda activate bio
 python train.py --config configs/light_attention.yaml
 tensorboard --logdir=runs --port=6006
 ```
-If everything works without errors, you can now go to `localhost:6006` in your browser and watch the model training.
+If everything works without errors, you can now go to `localhost:6006` in your browser and watch the model train.
 ### Architecture
 
 ![architecture](https://github.com/HannesStark/protein-localization/blob/master/.architecture.png)
@@ -29,7 +29,7 @@ If everything works without errors, you can now go to `localhost:6006` in your b
 
 Python 3 dependencies:
 
-- pytorch (verified with version 1.6 and 1.7)
+- pytorch 
 - biopython
 - h5py
 - matplotlib
