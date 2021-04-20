@@ -57,7 +57,6 @@ class EmbeddingsLocalizationDataset(Dataset):
                 id = str(record.description)
             else:
                 raise Exception('Unknown key_format: ', key_format)
-            # TODO: remove that one sequence agian
             if len(record.seq) <= max_length and id != 'Q9W596 Cytoplasm-U new_test_set':
                 if self.embedding_mode == 'onehot':
                     amino_acid_ids = []

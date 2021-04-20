@@ -38,7 +38,7 @@ def inference(args):
 
 def parse_arguments():
     p = argparse.ArgumentParser()
-    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference_hard_set.yaml')
+    p.add_argument('--config', type=argparse.FileType(mode='r'), default='configs/inference_deeploc.yaml')
     p.add_argument('--checkpoints_list', default=[],
                    help='if there are paths specified here, they all are evaluated')
     p.add_argument('--output_files_name', type=str, default='inference',
