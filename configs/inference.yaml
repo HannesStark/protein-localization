@@ -4,11 +4,11 @@ log_iterations: 100
 n_draws: 1000
 batch_size: 2
 checkpoints_list:
-  - runs/..Uniref50/LightAttention__559_13-04_00-55-46
+  - runs/LightAttention__11-04_18-55-27
 
 
-embeddings: 'data/uniref_embeddings_from_pipeline/embeddings_file.h5'
-remapping: 'data/uniref_embeddings_from_pipeline/remapped_sequences_file.fasta'
+embeddings: 'data/embeddings/test_as_per_deeploc.h5'
+remapping: 'data/embeddings/test_as_per_deeploc.fasta'
 
 
 
