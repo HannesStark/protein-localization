@@ -182,15 +182,16 @@ def plot_confusion_matrix(results, path):
     Returns:
 
     '''
-    confusion = confusion_matrix(results[:, 1], results[:, 0], normalize=None)  # normalize='true' for relative freq
+    confusion = confusion_matrix(results[:, 1], results[:, 0], normalize='true')  # normalize='true' for relative freq
     confusion = np.array(confusion, dtype=float)
-    # confusion[confusion < 0.01] = np.nan
+    confusion[confusion < 0.01] = np.nan
     # confusion[confusion == 0.] = np.nan
     confusion_df = pd.DataFrame(confusion, LOCALIZATION_abbrev, LOCALIZATION_abbrev)
     sn.set_style("whitegrid")
 
     # fmt='.2f' for relative freq
-    sn.heatmap(confusion_df, annot=True, cmap='gray_r', fmt='g', rasterized=False, cbar=False)
+    # fmt='g' for absolute freq
+    sn.heatmap(confusion_df, annot=True, cmap='gray_r', fmt='.2f', rasterized=False, cbar=False)
     plt.savefig(path)
     plt.clf()
 

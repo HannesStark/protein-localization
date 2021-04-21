@@ -1,0 +1,31 @@
+output_files_name: 'hard_set'
+
+log_iterations: 100
+n_draws: 1000
+batch_size: 2
+checkpoints_list:
+  - runs/..Uniref50/LightAttention__309_11-04_18-55-27
+
+
+
+#embeddings: 'data/embeddings/new_hard_set_BERT_reduced.h5'
+#remapping: data/embeddings/new_hard_set_BERT_remapping.fastas
+
+# pssm hard
+#embeddings: 'data/embeddings/subCell_all_pssmFile.h5'
+#remapping: 'data/embeddings/new_hard_set_t5_remapping.fasta'
+
+#embeddings: 'data/embeddings/new_hard_set_t5.h5'
+#remapping: 'data/embeddings/new_hard_set_t5_remapping.fasta'
+
+# deeploc UNIREF50
+embeddings: 'data/embeddings_uniref50/new_hard_set.h5'
+remapping: 'data/embeddings_uniref50/new_hard_set.fasta'
+key_format: mheinzinger
+
+## deeploc UNIREF50 POOLeD
+#embeddings: 'data/uniref_embeddings_pooled/new_hard_set.h5'
+#remapping: 'data/uniref_embeddings_pooled/new_hard_set.fasta'
+#key_format: mheinzinger
+
+

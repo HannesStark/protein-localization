@@ -40,7 +40,7 @@ class EmbeddingsLocalizationDataset(Dataset):
         self.class_weights = torch.zeros(10)
         self.one_hot_enc = []
         for record in SeqIO.parse(open(remapped_sequences), 'fasta'):
-            if key_format == 'mheinzinger_old':
+            if key_format == 'hash':
                 localization = record.description.split(' ')[2].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
                 solubility = record.description.split(' ')[2].split('-')[-1]
@@ -50,14 +50,14 @@ class EmbeddingsLocalizationDataset(Dataset):
                 localization = LOCALIZATION.index(localization)  # get localization as integer
                 solubility = record.description.split(' ')[1].split('-')[-1]
                 id = str(record.description).replace('.','_').replace('/','_')
-            elif key_format == 'hash':
+            elif key_format == 'mheinzinger_old':
                 localization = record.description.split(' ')[1].split('-')[0]
                 localization = LOCALIZATION.index(localization)  # get localization as integer
                 solubility = record.description.split(' ')[1].split('-')[-1]
                 id = str(record.description)
             else:
                 raise Exception('Unknown key_format: ', key_format)
-            if len(record.seq) <= max_length and id != 'Q9W596 Cytoplasm-U new_test_set':
+            if len(record.seq) <= max_length:
                 if self.embedding_mode == 'onehot':
                     amino_acid_ids = []
                     for char in record.seq:

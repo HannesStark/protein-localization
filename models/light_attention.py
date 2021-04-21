@@ -24,11 +24,7 @@ class LightAttention(nn.Module):
 
         self.output = nn.Linear(32, output_dim)
 
-        self.id0 = nn.Identity()
-        self.id1 = nn.Identity()
-        self.id2 = nn.Identity()
-
-    def forward(self, x: torch.Tensor, mask, sequence_lengths, frequencies) -> torch.Tensor:
+    def forward(self, x: torch.Tensor, mask, **kwargs) -> torch.Tensor:
         """
         Args:
             x: [batch_size, embeddings_dim, sequence_length] embedding tensor that should be classified
@@ -50,9 +46,7 @@ class LightAttention(nn.Module):
         # extraction = self.id0(extraction)
 
         o1 = torch.sum(o * self.softmax(attention), dim=-1)  # [batchsize, embeddings_dim]
-        o1 = self.id1(o1)
         o2, _ = torch.max(o, dim=-1)  # [batchsize, embeddings_dim]
         o = torch.cat([o1, o2], dim=-1)  # [batchsize, 2*embeddings_dim]
-        o = self.id2(o)
         o = self.linear(o)  # [batchsize, 32]
         return self.output(o)  # [batchsize, output_dim]

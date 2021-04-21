@@ -4,18 +4,7 @@ log_iterations: 100
 n_draws: 1000
 batch_size: 2
 checkpoints_list:
-  - runs/..Uniref50/BahdanauAttention__309_13-04_12-11-13
-  - runs/..Uniref50/BahdanauAttention__921_12-04_22-00-55
-  - runs/..Uniref50/BahdanauAttention__969_13-04_07-54-00
-  - runs/..Uniref50/BahdanauAttention_bahdanau_attention_13-04_18-49-34
-  - runs/..Uniref50/BahdanauAttention_bahdanau_attention_13-04_21-00-13
-  - runs/..Uniref50/BahdanauAttention_bahdanau_attention_14-04_02-30-08
-  - runs/..Uniref50/BahdanauAttention_bahdanau_attention_14-04_09-51-51
-  - runs/..Uniref50/BahdanauAttention_bahdanau_attention_14-04_13-26-05
-  - runs/..Uniref50/BahdanauAttention_bahdanau_attention_14-04_16-00-48
-  - runs/..Uniref50/BahdanauAttention_bahdanau_attention_15-04_07-24-11
-
-
+  - runs/..Uniref50/LightAttention__309_11-04_18-55-27
 
 
 

@@ -34,10 +34,10 @@ deeploc_preds = np.array(
     [deeploc_preds['deep_loc_prediction'], deeploc_preds['true_label'], deeploc_preds['correct']]).T
 
 results = np.load(
-    '../runs/..finalModels/FirstAttention_927_15-11_08-38-57/results_array_new_hard_set.npy')  # predictions first and true label second
+    '../runs/..Uniref50/LightAttention__309_11-04_18-55-27/results_array_hard_set.npy')  # predictions first and true label second
 
 # for stuff loaded from csv as produced by another tmp
-results = deeploc_preds
+#results = deeploc_preds
 
 fasta_path = '../data/fasta_files/deeploc_data.fasta'
 

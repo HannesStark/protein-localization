@@ -1,7 +1,7 @@
  # Protein Subcellular Localization Prediction :microscope:
 
 PyTorch Implementation for predicting the subcellular localization of proteins.
-Achieves **83.37%** accuracy on the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
+Achieves **86.01%** accuracy on the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
 (previous SOTA is 78%). To reproduce just run ``train.py`` on the embedded DeepLoc 
 [train set](http://www.cbs.dtu.dk/services/DeepLoc/data.php) and ``inference.py`` on 
 the [test set](http://www.cbs.dtu.dk/services/DeepLoc/data.php).
@@ -21,6 +21,7 @@ python train.py --config configs/light_attention.yaml
 tensorboard --logdir=runs --port=6006
 ```
 If everything works without errors, you can now go to `localhost:6006` in your browser and watch the model train.
+
 ### Architecture
 
 ![architecture](https://github.com/HannesStark/protein-localization/blob/master/.architecture.png)
@@ -43,6 +44,17 @@ You can use the conda environment file to install all of the above dependencies.
 ```
 conda env create -f environment.yml
 ```
+
+### Reproduce exact results
+You can use the respective configuration file to reproduce the results of the methods in the paper. The 10 randomly 
+generated seeds with which we trained 10 models of each method to get standard errors are:
+```
+[921, 969, 309, 559, 303, 451, 279, 624, 657, 702]
+```
+Besides using the config files and `train.py` you can also use `inference.py` where you can specify a list of trained
+checkpoints and evaluate them on different test sets. Again, have a look at `configs/inference.yaml` for an example
+of how to use it.
+
 
 ### Performance
 
