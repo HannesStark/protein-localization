@@ -12,7 +12,8 @@ information as in profile embeddings. Such embeddings can be generated from ``.f
 
 ### Quickstart
 Change the training and validation file paths in ``configs/light_attention.yaml`` to point to your embeddings
-and remapping files obtained from [bio-embeddings](https://pypi.org/project/bio-embeddings/) .
+and remapping files obtained from [bio-embeddings](https://pypi.org/project/bio-embeddings/).
+The library has many jupyter [notebook examples](https://github.com/sacdallago/bio_embeddings/blob/develop/notebooks/extract_localization_from_ProtBert_using_light_attention.ipynb) on how to easily generate those embeddings that can simply be run in google colab.
 Then start the training like this.
 ```
 conda env create -f environment.yml
