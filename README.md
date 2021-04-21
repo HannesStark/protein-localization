@@ -69,7 +69,7 @@ Accuracy on the DeepLoc test set:
 
 | Method | Accuracy |
 | --- | --- |
-| Ours | **83.37%** |
+| Ours | **86.01%** |
 | DeepLoc | 77.97% |
 | iLoc-Euk | 68.20% |
 | YLoc | 61.22% |
