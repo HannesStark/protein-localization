@@ -10,6 +10,8 @@ The architecture works on embeddings that are generated from single sequences of
 information as in profile embeddings. Such embeddings can be generated from ``.fasta`` files using the 
 [bio-embeddings](https://pypi.org/project/bio-embeddings/) library.
 
+If you have any questions, please do not hesitate to open an issue or contact me at hannes.staerk@gmail.com
+
 ### Quickstart
 Change the training and validation file paths in ``configs/light_attention.yaml`` to point to your embeddings
 and remapping files obtained from [bio-embeddings](https://pypi.org/project/bio-embeddings/).
