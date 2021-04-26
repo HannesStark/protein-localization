@@ -2,31 +2,51 @@
 
 PyTorch Implementation for predicting the subcellular localization of proteins.
 Achieves **86.01%** accuracy on the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
-(previous SOTA is 78%). To reproduce just run ``train.py`` on the embedded DeepLoc 
-[train set](http://www.cbs.dtu.dk/services/DeepLoc/data.php) and ``inference.py`` on 
-the [test set](http://www.cbs.dtu.dk/services/DeepLoc/data.php).
+(previous SOTA is 78%).
 
+## Usage
+Either train your own model or use the weights I provide in this repository and do only inference.
+
+### 1. Get Protein Embeddings
 The architecture works on embeddings that are generated from single sequences of amino acids without additional evolutionary
-information as in profile embeddings. Such embeddings can be generated from ``.fasta`` files using the 
-[bio-embeddings](https://pypi.org/project/bio-embeddings/) library.
+information as in profile embeddings. 
+Just [download](https://drive.google.com/drive/folders/1Qsu8uvPuWr7e0sOdjBAsWQW7KvHcSo1y?usp=sharing) 
+the embeddings and place them in `data_files`. 
 
-### Quickstart
-Change the training and validation file paths in ``configs/light_attention.yaml`` to point to your embeddings
-and remapping files obtained from [bio-embeddings](https://pypi.org/project/bio-embeddings/) .
-Then start the training like this.
+Alternatively you can generate the embedding files from ``.fasta`` files using the 
+[bio-embeddings](https://pypi.org/project/bio-embeddings/) library. For using the embeddings here, just replace the path 
+in the corresponding config file, such as `configs/light_attention.yaml` to point to your embeddings and remapping file and set
+the parameter `key_format: hash`.
+
+### 2. Setup environment
+If you are using conda, you can install all dependencies like this. Otherwise, look at the setup below.
 ```
 conda env create -f environment.yml
 conda activate bio
+```
+### 3.1 Training
+Make sure that you have the [embeddings](https://drive.google.com/drive/folders/1Qsu8uvPuWr7e0sOdjBAsWQW7KvHcSo1y?usp=sharing) 
+placed in the files specified in `configs/light_attention.yaml` as described in step 1. Then start training:
+```
 python train.py --config configs/light_attention.yaml
 tensorboard --logdir=runs --port=6006
 ```
-If everything works without errors, you can now go to `localhost:6006` in your browser and watch the model train.
+You can now go to `localhost:6006` in your browser and watch the model train.
 
-### Architecture
+### 3.2 Inference
+
+In the `trained_model_weights` folder I provide the weights of a trained LA model. Running the following command will use
+them to generate the predictions for the protein embeddings specified in `configs/inference.yaml` (setHARD currently).
+```
+python inference.py --config configs/inference.yaml
+```
+The predictions are then saved in the checkpoint in `trained_model_weights` as `predictions.txt` in the same order as your input.
+
+## Architecture
 
 ![architecture](https://github.com/HannesStark/protein-localization/blob/master/.architecture.png)
 
-### Setup
+## Setup
 
 Python 3 dependencies:
 
@@ -51,9 +71,6 @@ generated seeds with which we trained 10 models of each method to get standard e
 ```
 [921, 969, 309, 559, 303, 451, 279, 624, 657, 702]
 ```
-Besides using the config files and `train.py` you can also use `inference.py` where you can specify a list of trained
-checkpoints and evaluate them on different test sets. Again, have a look at `configs/inference.yaml` for an example
-of how to use it.
 
 
 ### Performance

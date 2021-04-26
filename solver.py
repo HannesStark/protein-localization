@@ -13,12 +13,11 @@ from sklearn.metrics import matthews_corrcoef, confusion_matrix, f1_score
 from torch.utils.data import DataLoader, RandomSampler, Dataset, Subset
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
-
 from tqdm import tqdm
 
 from models.loss_functions import JointCrossEntropy
 from utils.general import tensorboard_confusion_matrix, padded_permuted_collate, plot_class_accuracies, \
-    tensorboard_class_accuracies, annotation_transfer, plot_confusion_matrix
+    tensorboard_class_accuracies, annotation_transfer, plot_confusion_matrix, LOCALIZATION
 
 
 class Solver():
@@ -202,6 +201,11 @@ class Solver():
 
         # to save the results of the inference
         np.save(os.path.join(self.writer.log_dir, 'results_array_' + filename), de_novo_predictions)
+        with open(os.path.join(self.writer.log_dir, 'predictions' + filename + '.txt'), 'w') as f:
+            results_as_string_list = [LOCALIZATION[index] for index in de_novo_predictions[:, 1]]
+            for item in results_as_string_list:
+                f.write("%s\n" % item)
+
         mccs = []
         f1s = []
         accuracies = []

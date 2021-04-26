@@ -21,11 +21,11 @@ checkpoints_list:
 # deeploc UNIREF50
 embeddings: 'data/embeddings_uniref50/new_hard_set.h5'
 remapping: 'data/embeddings_uniref50/new_hard_set.fasta'
-key_format: mheinzinger
+key_format: fasta_descriptor
 
 ## deeploc UNIREF50 POOLeD
 #embeddings: 'data/uniref_embeddings_pooled/new_hard_set.h5'
 #remapping: 'data/uniref_embeddings_pooled/new_hard_set.fasta'
-#key_format: mheinzinger
+#key_format: fasta_descriptor
 
 

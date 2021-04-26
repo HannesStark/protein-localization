@@ -13,7 +13,7 @@ val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/da
 val_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/fasta_files/val_homreduced.fasta'
 test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings/test_t5-encoderOnly.h5'
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/fasta_files/test_as_per_deeploc.fasta'
-key_format: mheinzinger_old
+key_format: fasta_descriptor_old
 embedding_mode: onehot
 
 # Model parameters

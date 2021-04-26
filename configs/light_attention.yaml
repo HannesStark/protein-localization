@@ -1,5 +1,6 @@
 experiment_name: 'localization_prediction_T5_Embedding'
 
+seed: 123
 num_epochs: 5000
 batch_size: 150
 log_iterations: 100
@@ -9,12 +10,14 @@ optimizer_parameters:
   lr: 5.0e-5
 
 # Paths to Data
-train_embeddings: 'data/embeddings/train.h5'
-val_embeddings: 'data/embeddings/val.h5'
-test_embeddings: 'data/embeddings/test.h5'
-train_remapping: 'data/embeddings/train_remapped.fasta'
-val_remapping: 'data/embeddings/val_remapped.fasta'
-test_remapping: 'data/embeddings/test_remapped.fasta'
+train_embeddings: 'data_files/deeploc_our_train_embeddings.h5'
+val_embeddings: 'data_files/deeploc_our_val_embeddings.h5'
+test_embeddings: 'data_files/deeploc_test_embeddings.h5'
+
+train_remapping: 'data_files/deeploc_our_train_set.fasta'
+val_remapping: 'data_files/deeploc_our_val_set.fasta'
+test_remapping: 'data_files/deeploc_test_set.fasta'
+key_format: fasta_descriptor
 
 # Model parameters
 model_type: 'LightAttention'

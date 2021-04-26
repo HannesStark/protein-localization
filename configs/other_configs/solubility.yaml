@@ -20,7 +20,7 @@ val_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/da
 val_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50/val_homreduced.fasta'
 test_embeddings: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50/test_as_per_deeploc.h5'
 test_remapping: '/mnt/project/bio_embeddings/runs/hannes/protein-localization/data/embeddings_t5_Uniref50/test_as_per_deeploc.fasta'
-key_format: mheinzinger
+key_format: fasta_descriptor
 
 # Model parameters
 model_type: 'LightAttention'

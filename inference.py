@@ -58,7 +58,7 @@ def parse_arguments():
     p.add_argument('--lookup_remapping', type=str, default='data/embeddings/val_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file for embedding based similarity annotation transfer')
     p.add_argument('--key_format', type=str, default='hash',
-                   help='the formatting of the keys in the h5 file [mheinzinger_old, mheinzinger, hash]')
+                   help='the formatting of the keys in the h5 file [fasta_descriptor_old, fasta_descriptor, hash]')
 
     args = p.parse_args()
     arg_dict = args.__dict__

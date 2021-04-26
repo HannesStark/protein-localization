@@ -22,10 +22,10 @@ checkpoints_list:
 # deeploc UNIREF50
 embeddings: 'data/embeddings_uniref50/test_as_per_deeploc.h5'
 remapping: 'data/embeddings_uniref50/test_as_per_deeploc.fasta'
-key_format: mheinzinger
+key_format: fasta_descriptor
 
 ## deeploc UNIREF50 POOLeD
 #embeddings: 'data/uniref_embeddings_pooled/test_as_per_deeploc.h5'
 #remapping: 'data/uniref_embeddings_pooled/test_as_per_deeploc.fasta'
-#key_format: mheinzinger
+#key_format: fasta_descriptor
 

@@ -90,7 +90,7 @@ def parse_arguments():
     p.add_argument('--test_remapping', type=str, default='data/embeddings/test_remapped.fasta',
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file')
     p.add_argument('--key_format', type=str, default='hash',
-                   help='the formatting of the keys in the h5 file [mheinzinger_old, mheinzinger, hash]')
+                   help='the formatting of the keys in the h5 file [fasta_descriptor_old, fasta_descriptor, hash]')
     args = p.parse_args()
     if args.config:
         data = yaml.load(args.config, Loader=yaml.FullLoader)

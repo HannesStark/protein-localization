@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 from utils.preprocess import reduce_embeddings, remove_duplicates_full
 
-base_path = '/mnt/home/mheinzinger/deepppi1tb/embedder/embeddings/hannes_embeddings'
+base_path = '/mnt/home/fasta_descriptor/deepppi1tb/embedder/embeddings/hannes_embeddings'
 
 appendix = ['hannes_deeploc_bertSECONDLAST.h5']
 
