@@ -6,7 +6,8 @@ the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857
 
 ## Usage
 
-Either train your own model or use the weights I provide in this repository and do only inference.
+Either train your own model or use the weights I provide in this repository and do only inference. We also provide
+a webserver https://embed.protein.properties/ where you can just upload sequences and get the localization predictions (and more).
 
 ### 1. Get Protein Embeddings
 
