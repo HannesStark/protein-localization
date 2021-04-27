@@ -1,6 +1,6 @@
 # Protein Subcellular Localization Prediction :microscope:
 
-PyTorch Implementation for predicting the subcellular localization of proteins. Achieves **86.01%** accuracy on
+Repository for the paper [Light Attention Predicts Protein Location from the Language of Life](https://www.biorxiv.org/content/10.1101/622803v3). The method achieves **86.01%** accuracy on
 the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
 (previous SOTA is 78%).
 
