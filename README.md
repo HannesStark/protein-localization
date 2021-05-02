@@ -4,7 +4,7 @@ Repository for the paper [Light Attention Predicts Protein Location from the Lan
 the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
 (previous SOTA is 78%).
 
-If you have any questions can't run some of the code, don't hesitate to open an issue or ask me via hannes.staerk@gmail.com
+If you have questions or any trouble running some of the code, don't hesitate to open an issue or ask me via hannes.staerk@gmail.com. I am happy to hear from you!
 ## Usage
 
 Either train your own model or use the weights I provide in this repository and do only inference. We also provide
