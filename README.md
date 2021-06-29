@@ -1,8 +1,10 @@
-# Protein Subcellular Localization Prediction :microscope:
+# Protein Subcellular Localization Prediction :dna:
 
-Repository for the paper [Light Attention Predicts Protein Location from the Language of Life](https://www.biorxiv.org/content/10.1101/2021.04.25.441334v1). The method achieves **86.01%** accuracy on
-the [DeepLoc](https://academic.oup.com/bioinformatics/article/33/21/3387/3931857) test set
-(previous SOTA is 78%).
+Repository for the paper [Light Attention Predicts Protein Location from the Language of Life](https://www.biorxiv.org/content/10.1101/2021.04.25.441334v1). The method beats the previous SOTA by **8 percentage points** on the standard subcellular localization dataset and our new benchmark.
+
+:clapper: Have a look at the video explanation on [YouTube](https://www.youtube.com/watch?v=6gDy8-yOJqY)! 
+
+
 
 If you have questions or any trouble running some of the code, don't hesitate to open an issue or ask me via hannes.staerk@gmail.com. I am happy to hear from you!
 ## Usage
