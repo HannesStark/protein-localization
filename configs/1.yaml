@@ -16,7 +16,7 @@ test_embeddings: 'data/esm1v_embeddings/deeploc_test_esm1b/bert_embeddings/embed
 train_remapping: 'data/esm1v_embeddings/train_esm1b/remapped_sequences_file.fasta'
 val_remapping: 'data/esm1v_embeddings/val_esm1b/remapped_sequences_file.fasta'
 test_remapping: 'data/esm1v_embeddings/deeploc_test_esm1b/remapped_sequences_file.fasta'
-key_format: fasta_descriptor
+key_format: hash
 
 # Model parameters
 model_type: 'LightAttention'
