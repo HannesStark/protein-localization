@@ -1,0 +1,26 @@
+experiment_name: 'localization_prediction_esmb1'
+
+seed: 123
+num_epochs: 5000
+batch_size: 150
+log_iterations: 100
+patience: 80
+optimizer_parameters:
+  lr: 5.0e-5
+
+# Paths to Data
+train_embeddings: 'data/esm1v_embeddings/train_esm1b/bert_embeddings/embeddings_file.h5'
+val_embeddings: 'data/esm1v_embeddings/val_esm1b/bert_embeddings/embeddings_file.h5'
+test_embeddings: 'data/esm1v_embeddings/deeploc_test_esm1b/bert_embeddings/embeddings_file.h5'
+
+train_remapping: 'data/esm1v_embeddings/train_esm1b/remapped_sequences_file.fasta'
+val_remapping: 'data/esm1v_embeddings/val_esm1b/remapped_sequences_file.fasta'
+test_remapping: 'data/esm1v_embeddings/deeploc_test_esm1b/remapped_sequences_file.fasta'
+key_format: fasta_descriptor
+
+# Model parameters
+model_type: 'LightAttention'
+model_parameters:
+  dropout: 0.25
+  kernel_size: 9
+  output_dim: 10

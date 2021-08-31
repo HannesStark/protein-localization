@@ -16,6 +16,7 @@ from tqdm import tqdm
 
 from utils.preprocess import reduce_embeddings, remove_duplicates_full
 
+os.chdir('..')
 base_path = '/mnt/home/fasta_descriptor/deepppi1tb/embedder/embeddings/hannes_embeddings'
 
 appendix = ['hannes_deeploc_bertSECONDLAST.h5']
@@ -23,14 +24,16 @@ appendix = ['hannes_deeploc_bertSECONDLAST.h5']
 save_appendix = ['bertSECONDLAST.h5']
 
 fasta_paths = [
-    'data/fasta_files/train.fasta',
-    'data/fasta_files/val_homreduced.fasta',
-    'data/fasta_files/test_as_per_deeploc.fasta'
+    'data/train.fasta',
+    'data/val_homreduced.fasta',
+    'data/test_as_per_deeploc.fasta',
+    'data/new_hard_set.fasta'
 ]
 
 save_name = ['train_',
              'val_',
-             'test_']
+             'test_',
+             'test_hard']
 
 #paths = []
 #save_paths = []
@@ -95,13 +98,26 @@ save_name = ['train_',
 #    save_file.flush()
 #    save_file.close()
 
+#for split_index, fasta_path in enumerate(fasta_paths):
+#    embeddings_file = h5py.File(os.path.join('../data/embeddings', save_name[split_index] + 'T5.h5'), 'r')
+#    reduced_embeddings = h5py.File(os.path.join('../data/embeddings', save_name[split_index] + 'T5_reduced.h5'), 'w')
+#    for record in SeqIO.parse(open(fasta_path), 'fasta'):
+#        if len(record.seq) < 13000:
+#            embedding = embeddings_file[str(record.description).replace('.', '_').replace('/', '_')][:]
+#            reduced_embeddings.create_dataset(record.description,
+#                                     data=np.mean(embedding, axis=0))
+#        else:
+#            print(record.description)
+
 for split_index, fasta_path in enumerate(fasta_paths):
-    embeddings_file = h5py.File(os.path.join('../data/embeddings', save_name[split_index] + 'T5.h5'), 'r')
-    reduced_embeddings = h5py.File(os.path.join('../data/embeddings', save_name[split_index] + 'T5_reduced.h5'), 'w')
+    records = []
+    counter = 0
     for record in SeqIO.parse(open(fasta_path), 'fasta'):
-        if len(record.seq) < 13000:
-            embedding = embeddings_file[str(record.description).replace('.', '_').replace('/', '_')][:]
-            reduced_embeddings.create_dataset(record.description,
-                                     data=np.mean(embedding, axis=0))
-        else:
-            print(record.description)
+        counter +=1
+        if len(record.seq) < 1022:
+            records.append(record)
+    print('a')
+    print(counter)
+    print(len(records))
+    with open(os.path.join('data', 'max_1021' + os.path.basename(fasta_path)), "w") as output_handle:
+        SeqIO.write(records, output_handle, "fasta")
