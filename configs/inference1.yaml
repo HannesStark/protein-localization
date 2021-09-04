@@ -3,7 +3,7 @@ output_files_name: 'inference_on_setHARD'
 log_iterations: 100
 n_draws: 1000
 batch_size: 6
-checkpoint:
+checkpoints_list:
   - runs/LightAttention_localization_prediction_esmb1_02-09_15-40-51
 
 
