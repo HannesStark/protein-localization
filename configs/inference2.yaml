@@ -4,11 +4,11 @@ log_iterations: 100
 n_draws: 1000
 batch_size: 6
 checkpoints_list:
-  - runs/LightAttention_localization_prediction_esmb1_02-09_15-40-51
+  - runs/LightAttention_localization_prediction_esmb1_03-09_16-00-05
 
 
-embeddings: 'data/test_esmb1.h5'
-remapping: 'data/test_esmb1.h5'
+embeddings: 'data/bepler_embeddings/hard_test/embeddings/embeddings_file.h5'
+remapping: 'data/bepler_embeddings/hard_test/remapped_sequences_file.fasta'
 key_format: hash
 
 
