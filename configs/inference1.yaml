@@ -1,0 +1,15 @@
+output_files_name: 'inference_on_setHARD'
+
+log_iterations: 100
+n_draws: 1000
+batch_size: 6
+checkpoints_list:
+  - runs/LightAttention_localization_prediction_esmb1_02-09_15-40-51
+
+
+embeddings: 'data/esm1v_embeddings/hard_test/bert_embeddings/embeddings_file.h5'
+remapping: 'data/esm1v_embeddings/hard_test/remapped_sequences_file.fasta'
+key_format: hash
+
+
+
