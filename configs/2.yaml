@@ -1,4 +1,4 @@
-experiment_name: 'localization_prediction_esmb1'
+experiment_name: 'localization_prediction_bepler'
 
 seed: 123
 num_epochs: 5000
