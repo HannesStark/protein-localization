@@ -1,10 +1,10 @@
 experiment_name: ''
 
 eval_on_test: True
-num_epochs: 1
+num_epochs: 5000
 batch_size: 2048
 log_iterations: 100
-patience: 400
+patience: 80
 optimizer_parameters:
   lr: 1.0e-4
 
