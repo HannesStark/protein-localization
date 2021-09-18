@@ -19,7 +19,7 @@ font = {'family': 'normal',
 
 plt.rc('font', **font)
 df = pd.read_csv('../data/results/paper_tables.CSV')
-remapping = {'Baseline': 'Baseline',
+remapping = {'Baseline': 'Majority',
              'LocTree2': 'LocTree2',
              'MultiLoc2': 'MultiLoc2',
              'SherLoc2': 'SherLoc2',
@@ -30,29 +30,29 @@ remapping = {'Baseline': 'Baseline',
              'DeepLoc-BLOSUM62': 'DeepLoc62',
              'DeepLoc-profiles': 'DeepLoc',
              'AT BB': 'BB',
-             'AT Unirep': 'Unirep',
+             'AT Unirep': 'UniRep',
              'AT SeqVec': 'SeqVec',
              'AT ProtBert': 'ProtBert',
-             'AT ESM1b': 'ESM1b',
+             'AT ESM1b': 'ESM-1b',
              'AT ProtT5': 'ProtT5',
              'MLP BB': 'BB',
-             'MLP Unirep': 'Unirep',
+             'MLP Unirep': 'UniRep',
              'MLP SeqVec': 'SeqVec',
              'MLP ProtBert': 'ProtBert',
-             'MLP ESM1b': 'ESM1b',
+             'MLP ESM1b': 'ESM-1b',
              'MLP ProtT5': 'ProtT5',
              'LA BB': 'BB',
-             'LA Unirep': 'Unirep',
+             'LA Unirep': 'UniRep',
              'LA SeqVec': 'SeqVec',
              'LA ProtBert': 'ProtBert',
-             'LA ESM1b': 'ESM1b',
+             'LA ESM1b': 'ESM-1b',
              'LA ProtT5': 'ProtT5'}
 df = df[['method', 'acc_deeploc', 'stdev_acc_deeploc', 'acc_hard', 'stdev_acc_hard']]
 ordering = [0, 5, 2, 4, 6, 1, 7, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
 df['ordering'] = ordering
 df = df.sort_values('ordering')
 df['method'] = df['method'].map(remapping)
-
+df = df.drop([2,3,4,6,7,10,16,22])
 print(df)
 # plt.rcParams.update({'font.size': 13})  # numbers font size
 # plt.rcParams['xtick.labelsize'] = 14
@@ -85,7 +85,6 @@ ax.set_ylim(0, 100)
 ax.set_xticks(ind)
 # ax.set_xticklabels(df['method'], rotation=90)
 ax.set_xticklabels(df['method'], rotation=60, horizontalalignment='right')
-ax.legend(loc='upper left')
 plt.xticks(fontsize=8)
 
 
@@ -116,23 +115,24 @@ def autolabel2(rects, displacement=[], displacement_width=[], xpos='center'):
 autolabel2(deep_rects, displacement=[16, 14, 12, 13], displacement_width=[0, 0, 0, 0], xpos="center")
 autolabel2(hard_rects, displacement=[15, 14, 9], displacement_width=[0, 0, 0], xpos="center")
 
-plt.hlines(77.4, 8.6, 27, colors='gray', linestyles='dashed', label='')  # ,zorder=-1
-plt.hlines(56.3, 8, 27, colors='gray', linestyles='dashed', label='')
-plt.vlines(x=9.5, color='sandybrown', label='axvline - full height', ymin=0, ymax=120, ls=':', lw=2)
-plt.vlines(x=15.5, color='sandybrown', label='axvline - full height', ymin=0, ymax=120, ls=':', lw=2)
-plt.vlines(x=21.5, color='sandybrown', label='axvline - full height', ymin=0, ymax=120, ls=':', lw=2)
-plt.text(x=12.5, y=95, s='AT', c='sandybrown',
+ax.legend(loc='upper left', prop={'size': 9.4}, bbox_to_anchor=(0., 1, 0.0, 0.0))
+plt.hlines(77.4, 8.6-5, 27-8, colors='gray', linestyles='dashed', label='')  # ,zorder=-1
+plt.hlines(56.3, 8-5, 27-8, colors='gray', linestyles='dashed', label='')
+plt.vlines(x=9.5-5, color='sandybrown', label='axvline - full height', ymin=0, ymax=120, ls='-', lw=2)
+plt.vlines(x=15.5-6, color='sandybrown', label='axvline - full height', ymin=0, ymax=120, ls='-', lw=2)
+plt.vlines(x=21.5-7, color='sandybrown', label='axvline - full height', ymin=0, ymax=120, ls='-', lw=2)
+plt.text(x=12-5, y=105, s='AT', c='sandybrown',
          horizontalalignment='center',
          verticalalignment='center', size=15)
-plt.text(x=18.5, y=95, s='MLP', c='sandybrown',
+plt.text(x=18-6, y=105, s='MLP', c='sandybrown',
          horizontalalignment='center',
          verticalalignment='center', size=15)
-plt.text(x=24.5, y=95, s='LA', c='sandybrown',
+plt.text(x=24-7, y=105, s='LA', c='sandybrown',
          horizontalalignment='center',
          verticalalignment='center', size=15)
-plt.text(x=4, y=73, s='previous', c='sandybrown',
+plt.text(x=2, y=105, s='Baselines', c='sandybrown',
          horizontalalignment='center',
-         verticalalignment='center', size=15)
+         verticalalignment='center', size=13)
 ax.margins(x=0.01)
 fig.tight_layout()
 
