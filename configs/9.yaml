@@ -10,6 +10,7 @@ checkpoints_list:
 embeddings: 'data/esm1b_embeddings/hard_test/embeddings/reduced_embeddings_file.h5'
 remapping: 'data/esm1b_embeddings/hard_test/remapped_sequences_file.fasta'
 key_format: hash
+add_start_token: False
 
 
 
