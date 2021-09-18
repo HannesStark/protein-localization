@@ -10,6 +10,6 @@ checkpoints_list:
 embeddings: 'data/unirep_embeddings/hard_test/embeddings/embeddings_file.h5'
 remapping: 'data/unirep_embeddings/hard_test/remapped_sequences_file.fasta'
 key_format: hash
-
+add_start_token: True
 
 
