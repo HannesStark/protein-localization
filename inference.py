@@ -59,7 +59,6 @@ def parse_arguments():
                    help='fasta file with remappings by bio_embeddings for the keys in the corresponding .h5 file for embedding based similarity annotation transfer')
     p.add_argument('--key_format', type=str, default='hash',
                    help='the formatting of the keys in the h5 file [fasta_descriptor_old, fasta_descriptor, hash]')
-    p.add_argument('--add_start_token, type', type=bool, default=False, help='increases size of mask by 1 (needed for unirep)')
 
 
     args = p.parse_args()

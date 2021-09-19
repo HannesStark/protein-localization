@@ -143,11 +143,7 @@ class Solver():
             frequencies = metadata['frequencies'].to(self.device)  # [batchsize, 25]
 
             # create mask corresponding to the zero padding used for the shorter sequecnes in the batch. All values corresponding to padding are False and the rest is True.
-            if args.add_start_token:  # because we have an extra token with esm1b embeddings
-                mask = torch.arange(metadata['length'].max() + 1)[None, :] < (
-                            metadata['length'][:, None] + 1)  # [batchsize, seq_len]
-            else:
-                mask = torch.arange(metadata['length'].max())[None, :] < metadata['length'][:,
+            mask = torch.arange(metadata['length'].max())[None, :] < metadata['length'][:,
                                                                          None]  # [batchsize, seq_len]
             prediction = self.model(embedding, mask=mask.to(self.device), sequence_lengths=sequence_lengths,
                                     frequencies=frequencies)

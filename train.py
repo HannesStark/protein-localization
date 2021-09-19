@@ -60,7 +60,6 @@ def parse_arguments():
     p.add_argument('--log_iterations', type=int, default=-1,
                    help='log every log_iterations iterations (-1 for only logging after each epoch)')
     p.add_argument('--checkpoint', type=str, help='path to directory that contains a checkpoint')
-    p.add_argument('--add_start_token, type', type=bool, default=False, help='increases size of mask by 1 (needed for unirep)')
 
     p.add_argument('--model_type', type=str, default='FFN', help='Classname of one of the models in the models dir')
     p.add_argument('--model_parameters', type=dict, help='dictionary of model parameters')
