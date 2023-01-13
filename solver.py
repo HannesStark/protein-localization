@@ -203,7 +203,7 @@ class Solver():
         # to save the results of the inference
         np.save(os.path.join(self.writer.log_dir, 'results_array_' + filename), de_novo_predictions)
         with open(os.path.join(self.writer.log_dir, 'predictions' + filename + '.txt'), 'w') as f:
-            results_as_string_list = [LOCALIZATION[index] for index in de_novo_predictions[:, 1]]
+            results_as_string_list = [LOCALIZATION[index] for index in de_novo_predictions[:, 0]]
             for item in results_as_string_list:
                 f.write("%s\n" % item)
 
